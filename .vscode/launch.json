@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Rust Backend",
+      "type": "lldb",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/backend",
+      "envFile": "${workspaceFolder}/backend/.env",
+      "cargo": {
+        "args": [
+          "build",
+          "--manifest-path=${workspaceFolder}/backend/Cargo.toml"
+        ],
+        "filter": {
+          "name": "backend",
+          "kind": "bin"
+        }
+      }
+    }
+  ]
+}

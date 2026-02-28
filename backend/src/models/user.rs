@@ -1,7 +1,9 @@
 use serde::Serialize;
 use sqlx::FromRow;
+use utoipa::ToSchema;
 
-#[derive(Serialize, FromRow)]
+
+#[derive(Serialize, FromRow, ToSchema)]
 pub struct User {
     pub id: i32,
     pub name: String,

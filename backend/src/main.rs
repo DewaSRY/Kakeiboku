@@ -15,7 +15,7 @@ use tokio::net::TcpListener;
 use tracing::{error, info};
 use tracing_subscriber::{EnvFilter, fmt::{self}, prelude::*};
 
-use routes::user_routes;
+use routes::{user_routes, swagger_router};
 use state::AppState;
 
 use crate::configs::app_config;
@@ -52,6 +52,7 @@ async fn main() -> Result<()> {
     info!("Connected to database successfully");
 
     let app = Router::new()
+        .merge(swagger_router::swagger_routes())
         .merge(user_routes::user_routes())
         .with_state(AppState { pool });
 
@@ -60,6 +61,7 @@ async fn main() -> Result<()> {
         .context("Failed to parse server address")?;
 
     info!("Starting server on {}", addr);
+    info!("swagger-ui available at http://{}:{}/swagger-ui", app_config.host, app_config.port);
 
     let listener = TcpListener::bind(addr)
         .await

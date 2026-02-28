@@ -4,10 +4,21 @@ use axum::{
     Json,
 };
 
+
 use crate::state::AppState;
 use crate::dtos::user_dto::UserPayload;
 use crate::services::user_service;
 
+/// List users
+#[utoipa::path(
+    get,
+    path = "/users",
+    responses(
+        (status = 200, description = "List all users", body = [crate::models::user::User]),
+        (status = 500, description = "Internal server error")
+    ),
+    tag = "users"
+)]
 pub async fn list_users(
     State(state): State<AppState>,
 ) -> Result<Json<Vec<crate::models::user::User>>, StatusCode> {
@@ -17,6 +28,16 @@ pub async fn list_users(
         .map_err(|_| StatusCode::INTERNAL_SERVER_ERROR)
 }
 
+#[utoipa::path(
+    post,
+    path = "/users",
+    request_body = UserPayload,
+    responses(
+        (status = 201, description = "User created", body = crate::models::user::User),
+        (status = 500, description = "Internal server error")
+    ),
+    tag = "users"
+)]
 pub async fn create_user(
     State(state): State<AppState>,
     Json(payload): Json<UserPayload>,

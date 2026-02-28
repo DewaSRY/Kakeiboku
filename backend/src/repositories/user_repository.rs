@@ -1,28 +1,57 @@
-use sqlx::PgPool;
 use crate::models::user::User;
+use sqlx::PgPool;
 
-pub async fn find_all(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {
-    sqlx::query_as::<_, User>("SELECT id, name, email FROM users")
-        .fetch_all(pool)
+pub async fn create(
+    pool: &PgPool,
+    first_name: String,
+    last_name: String,
+    hashed_password: String,
+    email: String,
+) -> anyhow::Result<i64> {
+    let user_id = sqlx::query_scalar(
+        r#"
+        INSERT INTO users (first_name, last_name, email, password)
+        VALUES ($1, $2, $3, $4)
+        RETURNING id
+        "#,
+    )
+    .bind(first_name)
+    .bind(last_name)
+    .bind(email)
+    .bind(hashed_password)
+    .fetch_one(pool)
+    .await?;
+
+    Ok(user_id)
+}
+
+pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<i64, sqlx::Error> {
+    sqlx::query_scalar("SELECT id FROM users WHERE email = $1")
+        .bind(email)
+        .fetch_one(pool)
         .await
 }
 
-pub async fn find_by_id(pool: &PgPool, id: i32) -> Result<User, sqlx::Error> {
+pub async fn find_by_id(pool: &PgPool, id: i64) -> Result<User, sqlx::Error> {
     sqlx::query_as::<_, User>(
-        "SELECT id, name, email FROM users WHERE id = $1"
+        r#"
+        SELECT id, first_name, last_name, email, created_at, updated_at, password
+        FROM users
+        WHERE id = $1
+        "#,
     )
     .bind(id)
     .fetch_one(pool)
     .await
 }
 
-pub async fn create(pool: &PgPool, name: String, email: String) -> Result<User, sqlx::Error> {
+pub async fn find_all(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {
     sqlx::query_as::<_, User>(
-        "INSERT INTO users (name, email) VALUES ($1, $2) RETURNING id, name, email"
+        r#"
+        SELECT id, first_name, last_name, email, created_at, updated_at 
+        FROM users"#,
     )
-    .bind(name)
-    .bind(email)
-    .fetch_one(pool)
+    .fetch_all(pool)
     .await
 }
 

@@ -1,13 +1,13 @@
 use utoipa::OpenApi;
 
 
-use crate::handlers::user_handlers;
+use crate::handlers::auth_handler;
 
 #[derive(OpenApi)]
 #[openapi(
     paths(
-        user_handlers::list_users,
-        user_handlers::create_user,
+        auth_handler::register,
+        auth_handler::login,
     ),
     components(
         schemas(
@@ -15,7 +15,7 @@ use crate::handlers::user_handlers;
         )
     ),
     tags(
-        (name = "users", description = "User management")
+        (name = "auth", description = "Authentication management")
     ),
     info(
         title = "Kakeiboku API",

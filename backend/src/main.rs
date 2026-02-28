@@ -17,7 +17,7 @@ use tokio::net::TcpListener;
 use tracing::{error, info};
 use tracing_subscriber::{EnvFilter, fmt::{self}, prelude::*};
 
-use routes::{user_routes, swagger_router};
+use routes::{ swagger_router, auth_routes};
 use state::AppState;
 
 use crate::configs::app_config;
@@ -55,7 +55,7 @@ async fn main() -> Result<()> {
 
     let app = Router::new()
         .merge(swagger_router::swagger_routes())
-        .merge(user_routes::user_routes())
+        .merge(auth_routes::auth_routes())
         .with_state(AppState { pool , jwt_secret: app_config.jwt_secret.clone()});
 
     let addr:SocketAddr = format!("{}:{}", app_config.host, app_config.port)

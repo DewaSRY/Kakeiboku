@@ -4,6 +4,7 @@ pub struct AppConfig{
     pub port: u16,
     pub database_url: String,
     pub host: String,
+    pub jwt_secret: String,
 }
 
 
@@ -20,10 +21,14 @@ impl AppConfig {
         let host = env::var("SERVER_HOST")
             .unwrap_or_else(|_| "127.0.0.1".into());
 
+        let jwt_secret = env::var("JWT_SECRET")
+            .expect("JWT_SECRET must be set in environment variables");
+
         Self {
             port,
             database_url,
             host,
+            jwt_secret
         }
     }
 }

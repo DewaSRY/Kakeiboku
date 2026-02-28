@@ -6,6 +6,8 @@ mod routes;
 mod services;
 mod state;
 mod configs;
+mod middlewares;
+mod utils;
 
 use anyhow::{Context, Result};
 use axum::Router;
@@ -54,7 +56,7 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .merge(swagger_router::swagger_routes())
         .merge(user_routes::user_routes())
-        .with_state(AppState { pool });
+        .with_state(AppState { pool , jwt_secret: app_config.jwt_secret.clone()});
 
     let addr:SocketAddr = format!("{}:{}", app_config.host, app_config.port)
         .parse()

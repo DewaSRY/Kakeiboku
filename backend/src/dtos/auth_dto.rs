@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct RegisterPayload {
     pub first_name: String,
@@ -24,9 +23,8 @@ pub struct UserProfile {
     pub email: String,
 }
 
-
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct AuthResponse {
     pub token: String,
-    pub user: UserProfile,  
+    pub user: UserProfile,
 }

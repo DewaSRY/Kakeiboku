@@ -6,6 +6,6 @@
 //     Router::new()
 //         .route("/users", get(user_handler::list_users))
 //         .route("/users", post(user_handler::create_user))
-//         .route("/users/{id}", get(user_handler::get_user))     
-//         .route("/users/{id}", delete(user_handler::delete_user)) 
+//         .route("/users/{id}", get(user_handler::get_user))
+//         .route("/users/{id}", delete(user_handler::delete_user))
 // }

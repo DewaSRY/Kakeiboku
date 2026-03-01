@@ -7,12 +7,12 @@ pub async fn create(
     last_name: String,
     hashed_password: String,
     email: String,
-) -> anyhow::Result<i64> {
-    let user_id = sqlx::query_scalar(
+) -> anyhow::Result<User> {
+    let user = sqlx::query_as::<_, User>(
         r#"
         INSERT INTO users (first_name, last_name, email, password)
         VALUES ($1, $2, $3, $4)
-        RETURNING id
+        RETURNING id, first_name, last_name, email, created_at -- List all fields needed for User struct
         "#,
     )
     .bind(first_name)
@@ -22,7 +22,7 @@ pub async fn create(
     .fetch_one(pool)
     .await?;
 
-    Ok(user_id)
+    Ok(user)
 }
 
 pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<i64, sqlx::Error> {

@@ -1,23 +1,27 @@
+mod configs;
 mod dtos;
 mod handlers;
+mod middlewares;
 mod models;
 mod repositories;
 mod routes;
 mod services;
 mod state;
-mod configs;
-mod middlewares;
 mod utils;
 
 use anyhow::{Context, Result};
 use axum::Router;
 use sqlx::postgres::PgPoolOptions;
-use std::{ net::SocketAddr};
+use std::net::SocketAddr;
 use tokio::net::TcpListener;
 use tracing::{error, info};
-use tracing_subscriber::{EnvFilter, fmt::{self}, prelude::*};
+use tracing_subscriber::{
+    EnvFilter,
+    fmt::{self},
+    prelude::*,
+};
 
-use routes::{ swagger_router, auth_routes};
+use routes::{auth_routes, swagger_router};
 use state::AppState;
 
 use crate::configs::app_config;
@@ -56,14 +60,20 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .merge(swagger_router::swagger_routes())
         .merge(auth_routes::auth_routes())
-        .with_state(AppState { pool , jwt_secret: app_config.jwt_secret.clone()});
+        .with_state(AppState {
+            pool,
+            jwt_secret: app_config.jwt_secret.clone(),
+        });
 
-    let addr:SocketAddr = format!("{}:{}", app_config.host, app_config.port)
+    let addr: SocketAddr = format!("{}:{}", app_config.host, app_config.port)
         .parse()
         .context("Failed to parse server address")?;
 
     info!("Starting server on {}", addr);
-    info!("swagger-ui available at http://{}:{}/swagger-ui", app_config.host, app_config.port);
+    info!(
+        "swagger-ui available at http://{}:{}/swagger-ui",
+        app_config.host, app_config.port
+    );
 
     let listener = TcpListener::bind(addr)
         .await

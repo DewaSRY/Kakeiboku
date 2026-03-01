@@ -1,13 +1,11 @@
-use axum::{
-    extract::{ State},
-    http::StatusCode,
-    Json,
+use axum::{Json, extract::State, http::StatusCode};
+
+use crate::dtos::{
+    auth_dto::{AuthResponse, LoginPayload, RegisterPayload},
+    common_dto::CommonErrorResponse,
 };
-
-
-use crate::dtos::auth_dto::{LoginPayload, RegisterPayload, AuthResponse};
-use crate::state::AppState;
 use crate::services::auth_service;
+use crate::state::AppState;
 
 #[utoipa::path(
     post,
@@ -15,24 +13,20 @@ use crate::services::auth_service;
     request_body = RegisterPayload,
     responses(
         (status = 200, description = "User registered successfully", body = AuthResponse),
-        (status = 400, description = "Bad request"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Bad request",body = CommonErrorResponse),
+        (status = 500, description = "Internal server error", body = CommonErrorResponse)
     ),
     tag = "auth"
 )]
 pub async fn register(
     State(state): State<AppState>,
     Json(payload): Json<RegisterPayload>,
-) -> Result<Json<AuthResponse>, StatusCode> {
+) -> Result<Json<AuthResponse>, (StatusCode, Json<CommonErrorResponse>)> {
     auth_service::register_user(&state, payload)
         .await
         .map(Json)
-        .map_err(|e| {
-            eprintln!("Registration error: {:?}", e);
-            StatusCode::BAD_REQUEST
-        })
-}   
-
+        .map_err(|err| err.to_response())
+}
 
 #[utoipa::path(
     post,
@@ -40,21 +34,17 @@ pub async fn register(
     request_body = LoginPayload,
     responses(
         (status = 200, description = "User logged in successfully", body = AuthResponse),
-        (status = 400, description = "Bad request"),
-        (status = 500, description = "Internal server error")
+        (status = 400, description = "Bad request", body= CommonErrorResponse),
+        (status = 500, description = "Internal server error", body = CommonErrorResponse)
     ),
     tag = "auth"
 )]
-pub  async fn login(
+pub async fn login(
     State(state): State<AppState>,
     Json(payload): Json<LoginPayload>,
-) -> Result<Json<AuthResponse>, StatusCode> {
+) -> Result<Json<AuthResponse>, (StatusCode, Json<CommonErrorResponse>)> {
     auth_service::login_user(&state, payload)
         .await
         .map(Json)
-        .map_err(|e| {
-            eprintln!("Login error: {:?}", e);
-            StatusCode::BAD_REQUEST
-        })
-}   
-
+        .map_err(|err| err.to_response())
+}

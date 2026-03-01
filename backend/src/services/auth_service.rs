@@ -1,32 +1,41 @@
-use crate::state::AppState;
-use crate::utils::jwt_util::{
-  create_access_token,
-};
-use crate::utils::hash_util::{hash_password, verify_password};
-use  crate::dtos::auth_dto::UserProfile;
+use axum::http::StatusCode;
+
+use crate::dtos::auth_dto::{AuthResponse, LoginPayload, RegisterPayload};
+use crate::dtos::{auth_dto::UserProfile, common_dto::CommonErrorResponse};
 use crate::repositories::user_repository;
-use crate::dtos::auth_dto::{
-    AuthResponse, 
-    LoginPayload, 
-    RegisterPayload,
-};
+use crate::state::AppState;
+use crate::utils::hash_util::{hash_password, verify_password};
+use crate::utils::jwt_util::create_access_token;
 
-
-pub  async fn register_user(
+pub async fn register_user(
     state: &AppState,
     payload: RegisterPayload,
-) ->anyhow:: Result<AuthResponse> {
-    if user_repository::find_by_email(&state.pool, &payload.email).await.is_ok() {
-         anyhow::bail!("Email already registered")
-    }
-
+) -> Result<AuthResponse, CommonErrorResponse> {
     let hashed_password = hash_password(&payload.password).map_err(|_| {
-        anyhow::anyhow!("Failed to hash password")
+        CommonErrorResponse::new(
+            "Failed to hash password".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
     })?;
 
-    let user_id = user_repository::create(&state.pool, payload.first_name, payload.last_name, hashed_password, payload.email).await?;
-    let token = create_access_token(user_id, &state.jwt_secret.as_bytes())?;
-    let user = user_repository::find_by_id(&state.pool, user_id).await?;
+    let user = user_repository::create(
+        &state.pool,
+        payload.first_name,
+        payload.last_name,
+        hashed_password,
+        payload.email,
+    )
+    .await
+    .map_err(|_| {
+        CommonErrorResponse::new("Failed to create user".to_string(), StatusCode::CONFLICT)
+    })?;
+
+    let token = create_access_token(user.id, &state.jwt_secret.as_bytes()).map_err(|_| {
+        CommonErrorResponse::new(
+            "Failed to create access token".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
 
     let user_profile = UserProfile {
         id: user.id,
@@ -35,21 +44,46 @@ pub  async fn register_user(
         email: user.email,
     };
 
-    Ok(AuthResponse { token, user:user_profile })
+    Ok(AuthResponse {
+        token,
+        user: user_profile,
+    })
 }
 
 pub async fn login_user(
     state: &AppState,
     payload: LoginPayload,
-) -> anyhow::Result<AuthResponse> {
-    let user_id = user_repository::find_by_email(&state.pool, &payload.email).await?;
-    let user = user_repository::find_by_id(&state.pool, user_id).await?;
+) -> Result<AuthResponse, CommonErrorResponse> {
+    let user_id = user_repository::find_by_email(&state.pool, &payload.email)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Invalid email or password".to_string(),
+                StatusCode::UNAUTHORIZED,
+            )
+        })?;
+    let user = user_repository::find_by_id(&state.pool, user_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Failed to retrieve user".to_string(),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )
+        })?;
 
     if !verify_password(&payload.password, &user.password) {
-        anyhow::bail!("Invalid credentials")
+        return Err(CommonErrorResponse::new(
+            "Invalid email or password".to_string(),
+            StatusCode::UNAUTHORIZED,
+        ));
     }
 
-    let token = create_access_token(user_id, &state.jwt_secret.as_bytes())?;
+    let token = create_access_token(user_id, &state.jwt_secret.as_bytes()).map_err(|_| {
+        CommonErrorResponse::new(
+            "Failed to create access token".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
 
     let user_profile = UserProfile {
         id: user.id,
@@ -58,5 +92,8 @@ pub async fn login_user(
         email: user.email,
     };
 
-    Ok(AuthResponse { token, user:user_profile })
+    Ok(AuthResponse {
+        token,
+        user: user_profile,
+    })
 }

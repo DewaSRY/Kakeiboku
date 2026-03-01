@@ -1,19 +1,19 @@
 use chrono::{Duration, Utc};
-use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
+use jsonwebtoken::{DecodingKey, EncodingKey, Header, Validation, decode, encode};
 use serde::{Deserialize, Serialize};
 
 use axum::{
-    extract::{FromRequestParts }, 
-    http::{request::Parts, header, StatusCode},
+    extract::FromRequestParts,
+    http::{StatusCode, header, request::Parts},
 };
 
 use crate::state::AppState;
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Claims {
-    pub sub: i64,           
-    pub exp: usize,         
-    pub iat: usize,         
+    pub sub: i64,
+    pub exp: usize,
+    pub iat: usize,
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -28,12 +28,20 @@ pub enum AuthError {
 
 pub fn create_access_token(user_id: i64, secret: &[u8]) -> Result<String, AuthError> {
     let iat = Utc::now().timestamp() as usize;
-    let exp = (Utc::now() + Duration::hours(24)).timestamp() as usize; 
+    let exp = (Utc::now() + Duration::hours(24)).timestamp() as usize;
 
-    let claims = Claims { sub: user_id, exp, iat };
+    let claims = Claims {
+        sub: user_id,
+        exp,
+        iat,
+    };
 
-    encode(&Header::default(), &claims, &EncodingKey::from_secret(secret))
-        .map_err(|_| AuthError::Internal)
+    encode(
+        &Header::default(),
+        &claims,
+        &EncodingKey::from_secret(secret),
+    )
+    .map_err(|_| AuthError::Internal)
 }
 
 pub fn validate_token(token: &str, secret: &[u8]) -> Result<Claims, AuthError> {
@@ -62,11 +70,15 @@ impl FromRequestParts<AppState> for AuthUser {
             .headers
             .get(header::AUTHORIZATION)
             .and_then(|h| h.to_str().ok())
-            .ok_or((StatusCode::UNAUTHORIZED, "Missing Authorization header".to_string()))?;
+            .ok_or((
+                StatusCode::UNAUTHORIZED,
+                "Missing Authorization header".to_string(),
+            ))?;
 
-        let token = auth_header
-            .strip_prefix("Bearer ")
-            .ok_or((StatusCode::BAD_REQUEST, "Invalid Authorization format".to_string()))?;
+        let token = auth_header.strip_prefix("Bearer ").ok_or((
+            StatusCode::BAD_REQUEST,
+            "Invalid Authorization format".to_string(),
+        ))?;
 
         let claims = validate_token(token, state.jwt_secret.as_bytes())
             .map_err(|e| (StatusCode::UNAUTHORIZED, e.to_string()))?;

@@ -1,6 +1,5 @@
 use utoipa::OpenApi;
 
-
 use crate::handlers::auth_handler;
 
 #[derive(OpenApi)]

@@ -32,7 +32,7 @@ CREATE TABLE basket_category (
 CREATE TABLE transactions (
     id BIGSERIAL PRIMARY KEY,
     created_by_id BIGINT NOT NULL,
-    from_basket_id BIGINT NOT NULL,
+    from_basket_id BIGINT,
     to_basket_id BIGINT NOT NULL,
     amount DECIMAL(15, 2) NOT NULL CHECK (amount >= 0),
     transaction_type_id BIGINT NOT NULL,

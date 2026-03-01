@@ -50,6 +50,16 @@ pub async fn login(
         .map_err(|err| err.to_response())
 }
 
+#[utoipa::path(
+    get,
+    path = "/auth/profile",
+    responses(
+        (status = 200, description = "User profile retrieved successfully", body = UserProfile),
+        (status = 400, description = "Bad request", body= CommonErrorResponse),
+        (status = 500, description = "Internal server error", body = CommonErrorResponse)
+    ),
+    tag = "auth"
+)]
 pub async fn get_profile(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,

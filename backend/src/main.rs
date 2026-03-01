@@ -21,7 +21,7 @@ use tracing_subscriber::{
     prelude::*,
 };
 
-use routes::{auth_routes, swagger_router};
+use routes::{auth_routes, basket_routes, swagger_router, transaction_routes};
 use state::AppState;
 
 use crate::configs::app_config;
@@ -62,6 +62,8 @@ async fn main() -> Result<()> {
     let app = Router::new()
         .merge(swagger_router::swagger_routes())
         .merge(auth_routes::auth_routes())
+        .merge(basket_routes::basket_routes())
+        .merge(transaction_routes::transaction_routes())
         .with_state(AppState {
             pool,
             jwt_secret: app_config.jwt_secret.clone(),

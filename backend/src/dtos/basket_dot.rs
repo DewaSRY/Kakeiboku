@@ -1,8 +1,12 @@
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct UserPayload {
+pub struct BasketItem {
     pub name: String,
-    pub email: String,
+    pub price: f64,
+    pub quantity: i32,
 }
+
+

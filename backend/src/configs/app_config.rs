@@ -5,6 +5,8 @@ pub struct AppConfig {
     pub database_url: String,
     pub host: String,
     pub jwt_secret: String,
+    pub db_max_connections: u32,
+    pub db_acquire_timeout_secs: u64,
 }
 
 impl AppConfig {
@@ -22,11 +24,23 @@ impl AppConfig {
         let jwt_secret =
             env::var("JWT_SECRET").expect("JWT_SECRET must be set in environment variables");
 
+        let db_max_connections = env::var("DB_MAX_CONNECTIONS")
+            .ok()
+            .and_then(|s| s.parse::<u32>().ok())
+            .unwrap_or(5);
+
+        let db_acquire_timeout_secs = env::var("DB_ACQUIRE_TIMEOUT_SECS")
+            .ok()
+            .and_then(|s| s.parse::<u64>().ok())
+            .unwrap_or(3);
+
         Self {
             port,
             database_url,
             host,
             jwt_secret,
+            db_max_connections,
+            db_acquire_timeout_secs,
         }
     }
 }

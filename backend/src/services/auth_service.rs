@@ -12,7 +12,7 @@ pub async fn register_user<'e, E>(
     payload: RegisterPayload,
 ) -> Result<AuthResponse, CommonErrorResponse>
 where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres>  + 'e,
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
     let hashed_password = hash_password(&payload.password).map_err(|_| {
         CommonErrorResponse::new(
@@ -98,11 +98,12 @@ where
 }
 
 pub async fn get_profile<'e, E>(
-   executor: E,
+    executor: E,
     user_id: i64,
 ) -> Result<UserProfile, CommonErrorResponse>
 where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e, {
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
+{
     let user = user_repository::find_by_id(executor, user_id)
         .await
         .map_err(|_| {

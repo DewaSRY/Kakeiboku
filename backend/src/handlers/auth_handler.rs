@@ -6,7 +6,7 @@ use crate::dtos::{
 };
 use crate::services::auth_service;
 use crate::state::AppState;
-use crate::utils::jwt_util::{AuthUser};
+use crate::utils::jwt_util::AuthUser;
 
 #[utoipa::path(
     post,
@@ -50,13 +50,10 @@ pub async fn login(
         .map_err(|err| err.to_response())
 }
 
-
 pub async fn get_profile(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,
-
 ) -> Result<Json<UserProfile>, (StatusCode, Json<CommonErrorResponse>)> {
-
     auth_service::get_profile(&state.pool, user_id)
         .await
         .map(Json)

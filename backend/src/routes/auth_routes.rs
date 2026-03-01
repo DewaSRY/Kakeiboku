@@ -1,6 +1,6 @@
 use crate::handlers::auth_handler;
 use axum::Router;
-use axum::routing::{post, get};
+use axum::routing::{get, post};
 
 pub fn auth_routes() -> Router<crate::state::AppState> {
     Router::new()

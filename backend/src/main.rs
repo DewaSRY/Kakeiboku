@@ -49,8 +49,10 @@ async fn main() -> Result<()> {
     info!("Database URL: {}", safe_url);
 
     let pool = PgPoolOptions::new()
-        .max_connections(5)
-        .acquire_timeout(std::time::Duration::from_secs(3))
+        .max_connections(app_config.db_max_connections)
+        .acquire_timeout(std::time::Duration::from_secs(
+            app_config.db_acquire_timeout_secs,
+        ))
         .connect(&app_config.database_url)
         .await
         .context("Failed to create pool")?;

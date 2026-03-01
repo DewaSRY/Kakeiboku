@@ -8,7 +8,7 @@ pub async fn create<'e, E>(
     email: String,
 ) -> anyhow::Result<User>
 where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres>  + 'e,
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
     let user = sqlx::query_as::<_, User>(
         r#"
@@ -43,8 +43,6 @@ where
     .await
 }
 
-
-
 pub async fn find_by_id<'e, E>(executor: E, id: i64) -> Result<User, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
@@ -60,4 +58,3 @@ where
     .fetch_one(executor)
     .await
 }
-

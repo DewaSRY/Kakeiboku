@@ -12,7 +12,7 @@ pub async fn create(
         r#"
         INSERT INTO users (first_name, last_name, email, password)
         VALUES ($1, $2, $3, $4)
-        RETURNING id, first_name, last_name, email, created_at -- List all fields needed for User struct
+        RETURNING id, first_name, last_name, email, password, created_at, updated_at
         "#,
     )
     .bind(first_name)

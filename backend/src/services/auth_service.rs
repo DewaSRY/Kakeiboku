@@ -97,3 +97,34 @@ pub async fn login_user(
         user: user_profile,
     })
 }
+
+#[cfg(test)]
+mod tests {
+   use  super::*;
+   use  crate::utils::test_setup_util::setup;
+
+    #[sqlx::test]
+    async fn test_register() {
+        let state = setup().await;
+        let email = format!("test_{}@email.com", uuid::Uuid::new_v4());
+
+        let payload = RegisterPayload {
+            first_name: "Dewa".to_string(),
+            last_name: "Surya".to_string(),
+            email: email.clone(),
+            password: "password123".to_string(),
+        };
+
+        let result = register_user(&state, payload).await;
+
+        assert!(result.is_ok());
+
+        let response = result.unwrap();
+        
+        assert_eq!(response.user.first_name, "Dewa");
+        assert_eq!(response.user.last_name, "Surya");
+        assert_eq!(response.user.email, email);
+        assert!(!response.token.is_empty());
+
+    }
+}

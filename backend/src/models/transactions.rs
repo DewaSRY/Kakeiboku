@@ -1,0 +1,15 @@
+use serde::Serialize;
+use sqlx::FromRow;
+use utoipa::ToSchema;
+use chrono::NaiveDateTime;
+
+#[derive(Serialize, FromRow, ToSchema)]
+pub struct Transaction {
+    pub id: i64,
+    pub created_by_id: i64,
+    pub from_basket_id: i64,
+    pub to_basket_id: i64,
+    pub amount: f64,
+    pub transaction_type_id: i64,
+    pub created_at: NaiveDateTime,
+}

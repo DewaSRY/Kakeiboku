@@ -15,14 +15,14 @@ CREATE TABLE baskets(
     user_id BIGINT NOT NULL,
     name VARCHAR(100) NOT NULL,
     description TEXT,
-    basket_type_id BIGINT NOT NULL, 
+    basket_category_id BIGINT NOT NULL, 
     type varchar(20) not null check (type in ('main', 'branch')),
     status varchar(20) not null check (status in('active', 'frozen', 'archived')),
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE baskets_type (
+CREATE TABLE basket_category (
     id BIGSERIAL PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     description TEXT,
@@ -58,7 +58,7 @@ CREATE TABLE transactions_detail (
 
 
 ALTER TABLE baskets
-    ADD CONSTRAINT fk_basket_basket_type FOREIGN KEY (basket_type_id) REFERENCES baskets_type(id),
+    ADD CONSTRAINT fk_basket_basket_category FOREIGN KEY (basket_category_id) REFERENCES basket_category(id),
     ADD CONSTRAINT fk_basket_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     ADD CONSTRAINT unique_basket_per_user UNIQUE (user_id, name, type);
 
@@ -73,7 +73,7 @@ ALTER TABLE transactions_detail
 CREATE INDEX idx_users_email ON users(email);
 
 CREATE INDEX idx_basket_user_id ON baskets(user_id);
-CREATE INDEX idx_basket_type ON baskets(basket_type_id);
+CREATE INDEX idx_basket_category_id ON baskets(basket_category_id);
 CREATE INDEX idx_basket_status ON baskets(status);
 
 CREATE INDEX idx_transactions_basket_history ON transactions(from_basket_id, created_at DESC);
@@ -81,7 +81,7 @@ CREATE INDEX idx_transactions_to_basket_history ON transactions(to_basket_id, cr
 
 CREATE UNIQUE INDEX idx_unique_main_basket_per_user ON baskets(user_id) WHERE type = 'main';
 
-CREATE UNIQUE INDEX idx_basket_type_name ON baskets_type(name);
+CREATE UNIQUE INDEX idx_basket_category_name ON basket_category(name);
 
 CREATE INDEX idx_transactions_from_basket ON transactions(from_basket_id);
 CREATE INDEX idx_transactions_to_basket ON transactions(to_basket_id);

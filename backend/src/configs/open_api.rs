@@ -10,7 +10,7 @@ use crate::handlers::auth_handler;
     ),
     components(
         schemas(
-            crate::models::user::User
+            crate::models::users::User
         )
     ),
     tags(

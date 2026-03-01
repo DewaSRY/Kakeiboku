@@ -1,4 +1,4 @@
-use crate::models::user::User;
+use crate::models::users::User;
 
 pub async fn create<'e, E>(
     executor: E,

@@ -1,5 +1,5 @@
 use crate::models::baskets::{Basket, BasketWithBalance};
-use sqlx::{ Row};
+use sqlx::Row;
 
 pub async fn create<'e, E>(
     executor: E,
@@ -46,7 +46,10 @@ where
     .await
 }
 
-pub async fn find_by_id_with_balance<'e, E>(executor: E, id: i64) -> Result<BasketWithBalance, sqlx::Error>
+pub async fn find_by_id_with_balance<'e, E>(
+    executor: E,
+    id: i64,
+) -> Result<BasketWithBalance, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -87,7 +90,10 @@ where
     .await
 }
 
-pub async fn find_user_main_basket_with_balance<'e, E>(executor: E, user_id: i64) -> Result<BasketWithBalance, sqlx::Error>
+pub async fn find_user_main_basket_with_balance<'e, E>(
+    executor: E,
+    user_id: i64,
+) -> Result<BasketWithBalance, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -112,7 +118,10 @@ where
     .await
 }
 
-pub async fn find_all_by_user_id<'e, E>(executor: E, user_id: i64) -> Result<Vec<Basket>, sqlx::Error>
+pub async fn find_all_by_user_id<'e, E>(
+    executor: E,
+    user_id: i64,
+) -> Result<Vec<Basket>, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -129,7 +138,10 @@ where
     .await
 }
 
-pub async fn find_all_by_user_id_with_balance<'e, E>(executor: E, user_id: i64) -> Result<Vec<BasketWithBalance>, sqlx::Error>
+pub async fn find_all_by_user_id_with_balance<'e, E>(
+    executor: E,
+    user_id: i64,
+) -> Result<Vec<BasketWithBalance>, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -154,7 +166,10 @@ where
     .await
 }
 
-pub async fn find_branch_baskets_by_user<'e, E>(executor: E, user_id: i64) -> Result<Vec<BasketWithBalance>, sqlx::Error>
+pub async fn find_branch_baskets_by_user<'e, E>(
+    executor: E,
+    user_id: i64,
+) -> Result<Vec<BasketWithBalance>, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -266,7 +281,11 @@ where
     Ok(row.get("balance"))
 }
 
-pub async fn check_ownership<'e, E>(executor: E, basket_id: i64, user_id: i64) -> Result<bool, sqlx::Error>
+pub async fn check_ownership<'e, E>(
+    executor: E,
+    basket_id: i64,
+    user_id: i64,
+) -> Result<bool, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {

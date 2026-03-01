@@ -1,7 +1,7 @@
+use chrono::NaiveDateTime;
 use serde::Serialize;
 use sqlx::FromRow;
 use utoipa::ToSchema;
-use chrono::NaiveDateTime;
 
 #[derive(Serialize, FromRow, ToSchema)]
 pub struct Basket {
@@ -16,7 +16,6 @@ pub struct Basket {
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
-
 
 #[derive(FromRow)]
 pub struct BasketWithBalance {

@@ -72,7 +72,10 @@ where
     .await
 }
 
-pub async fn find_children<'e, E>(executor: E, parent_id: i64) -> Result<Vec<TransactionType>, sqlx::Error>
+pub async fn find_children<'e, E>(
+    executor: E,
+    parent_id: i64,
+) -> Result<Vec<TransactionType>, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {

@@ -41,7 +41,10 @@ where
     .await
 }
 
-pub async fn find_by_transaction_id<'e, E>(executor: E, transaction_id: i64) -> Result<TransactionDetail, sqlx::Error>
+pub async fn find_by_transaction_id<'e, E>(
+    executor: E,
+    transaction_id: i64,
+) -> Result<TransactionDetail, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {

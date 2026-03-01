@@ -4,7 +4,7 @@ use chrono::NaiveDateTime;
 pub async fn create<'e, E>(
     executor: E,
     created_by_id: i64,
-    from_basket_id: Option<i64>, 
+    from_basket_id: Option<i64>,
     to_basket_id: i64,
     amount: f64,
     transaction_type_id: i64,

@@ -141,7 +141,9 @@ pub async fn get_transaction_by_id(
         Some(id) => basket_repository::find_by_id(pool, id).await.ok(),
         None => None,
     };
-    let to_basket = basket_repository::find_by_id(pool, transaction.to_basket_id).await.ok();
+    let to_basket = basket_repository::find_by_id(pool, transaction.to_basket_id)
+        .await
+        .ok();
 
     // User has access if they own either the from or to basket
     let has_access = match (&from_basket, &to_basket) {
@@ -183,18 +185,19 @@ pub async fn get_transaction_by_id(
             basket_type: "external".to_string(),
         });
 
-    let transaction_type = transaction_type_repository::find_by_id(pool, transaction.transaction_type_id)
-        .await
-        .map(|t| TransactionTypeInfo {
-            id: t.id,
-            name: t.name,
-            parent_id: t.parent_id,
-        })
-        .unwrap_or(TransactionTypeInfo {
-            id: 0,
-            name: "Unknown".to_string(),
-            parent_id: None,
-        });
+    let transaction_type =
+        transaction_type_repository::find_by_id(pool, transaction.transaction_type_id)
+            .await
+            .map(|t| TransactionTypeInfo {
+                id: t.id,
+                name: t.name,
+                parent_id: t.parent_id,
+            })
+            .unwrap_or(TransactionTypeInfo {
+                id: 0,
+                name: "Unknown".to_string(),
+                parent_id: None,
+            });
 
     let detail = transaction_detail_repository::find_by_transaction_id(pool, transaction_id)
         .await
@@ -229,7 +232,9 @@ pub async fn get_basket_transactions(
     // Verify basket ownership
     let basket = basket_repository::find_by_id(pool, basket_id)
         .await
-        .map_err(|_| CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND))?;
+        .map_err(|_| {
+            CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND)
+        })?;
 
     if basket.user_id != user_id {
         return Err(CommonErrorResponse::new(

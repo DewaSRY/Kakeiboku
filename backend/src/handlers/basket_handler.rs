@@ -183,7 +183,12 @@ pub async fn delete_basket(
 ) -> Result<Json<CommonResponse>, (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::delete_basket(&state.pool, basket_id, user_id)
         .await
-        .map(|_| Json(CommonResponse::new("Basket deleted successfully".to_string(), StatusCode::OK)))
+        .map(|_| {
+            Json(CommonResponse::new(
+                "Basket deleted successfully".to_string(),
+                StatusCode::OK,
+            ))
+        })
         .map_err(|err| err.to_response())
 }
 
@@ -304,6 +309,11 @@ pub async fn delete_basket_category(
 ) -> Result<Json<CommonResponse>, (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::delete_basket_category(&state.pool, category_id)
         .await
-        .map(|_| Json(CommonResponse::new("Category deleted successfully".to_string(), StatusCode::OK)))
+        .map(|_| {
+            Json(CommonResponse::new(
+                "Category deleted successfully".to_string(),
+                StatusCode::OK,
+            ))
+        })
         .map_err(|err| err.to_response())
 }

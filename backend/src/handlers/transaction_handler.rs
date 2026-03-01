@@ -95,10 +95,15 @@ pub async fn get_user_transactions(
     AuthUser(user_id): AuthUser,
     Query(pagination): Query<PaginationQuery>,
 ) -> Result<Json<Vec<TransactionResponse>>, (StatusCode, Json<CommonErrorResponse>)> {
-    transaction_service::get_user_transactions(&state.pool, user_id, pagination.limit, pagination.offset)
-        .await
-        .map(Json)
-        .map_err(|err| err.to_response())
+    transaction_service::get_user_transactions(
+        &state.pool,
+        user_id,
+        pagination.limit,
+        pagination.offset,
+    )
+    .await
+    .map(Json)
+    .map_err(|err| err.to_response())
 }
 
 #[utoipa::path(

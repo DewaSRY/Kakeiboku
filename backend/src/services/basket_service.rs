@@ -1,15 +1,14 @@
 use axum::http::StatusCode;
 
 use crate::dtos::basket_dto::{
-    BasketCategoryResponse, BasketResponse, CreateBasketCategoryPayload,
-    CreateBasketPayload, DepositToMainBasketPayload, TransferToBranchPayload, UpdateBasketPayload,
+    BasketCategoryResponse, BasketResponse, CreateBasketCategoryPayload, CreateBasketPayload,
+    DepositToMainBasketPayload, TransferToBranchPayload, UpdateBasketPayload,
 };
 use crate::dtos::common_dto::CommonErrorResponse;
 use crate::repositories::{
     basket_category_repository, basket_repository, transaction_detail_repository,
     transaction_repository,
 };
-
 
 pub async fn create_basket<'e, E>(
     executor: E,
@@ -37,7 +36,10 @@ where
     )
     .await
     .map_err(|_| {
-        CommonErrorResponse::new("Failed to create basket".to_string(), StatusCode::INTERNAL_SERVER_ERROR)
+        CommonErrorResponse::new(
+            "Failed to create basket".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
     })?;
 
     Ok(BasketResponse {
@@ -75,10 +77,10 @@ pub async fn get_or_create_main_basket<'e>(
         Err(_) => {
             // Create main basket if it doesn't exist
             // First, get or create a default category
-            let default_category = match basket_category_repository::find_by_name(pool, "Default").await {
-                Ok(category) => category,
-                Err(_) => {
-                    basket_category_repository::create(
+            let default_category =
+                match basket_category_repository::find_by_name(pool, "Default").await {
+                    Ok(category) => category,
+                    Err(_) => basket_category_repository::create(
                         pool,
                         "Default".to_string(),
                         Some("Default basket category".to_string()),
@@ -89,9 +91,8 @@ pub async fn get_or_create_main_basket<'e>(
                             "Failed to create default category".to_string(),
                             StatusCode::INTERNAL_SERVER_ERROR,
                         )
-                    })?
-                }
-            };
+                    })?,
+                };
 
             let basket = basket_repository::create(
                 pool,
@@ -235,7 +236,9 @@ pub async fn update_basket(
     // Check ownership first
     let existing = basket_repository::find_by_id(pool, basket_id)
         .await
-        .map_err(|_| CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND))?;
+        .map_err(|_| {
+            CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND)
+        })?;
 
     if existing.user_id != user_id {
         return Err(CommonErrorResponse::new(
@@ -291,7 +294,9 @@ pub async fn delete_basket(
 ) -> Result<(), CommonErrorResponse> {
     let basket = basket_repository::find_by_id_with_balance(pool, basket_id)
         .await
-        .map_err(|_| CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND))?;
+        .map_err(|_| {
+            CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND)
+        })?;
 
     if basket.user_id != user_id {
         return Err(CommonErrorResponse::new(
@@ -351,10 +356,10 @@ pub async fn deposit_to_main_basket(
     }
 
     // Get or create deposit transaction type
-    let deposit_type = match crate::repositories::transaction_type_repository::find_by_id(pool, 1).await {
-        Ok(t) => t,
-        Err(_) => {
-            crate::repositories::transaction_type_repository::create(
+    let deposit_type =
+        match crate::repositories::transaction_type_repository::find_by_id(pool, 1).await {
+            Ok(t) => t,
+            Err(_) => crate::repositories::transaction_type_repository::create(
                 pool,
                 "Deposit".to_string(),
                 Some("External deposit to main basket".to_string()),
@@ -366,9 +371,8 @@ pub async fn deposit_to_main_basket(
                     "Failed to create deposit type".to_string(),
                     StatusCode::INTERNAL_SERVER_ERROR,
                 )
-            })?
-        }
-    };
+            })?,
+        };
 
     // Create transaction (from_basket_id = None indicates external deposit)
     let transaction = transaction_repository::create(

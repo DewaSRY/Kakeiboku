@@ -1,13 +1,15 @@
 use crate::models::user::User;
-use sqlx::PgPool;
 
-pub async fn create(
-    pool: &PgPool,
+pub async fn create<'e, E>(
+    executor: E,
     first_name: String,
     last_name: String,
     hashed_password: String,
     email: String,
-) -> anyhow::Result<User> {
+) -> anyhow::Result<User>
+where
+    E: sqlx::Executor<'e, Database = sqlx::Postgres>  + 'e,
+{
     let user = sqlx::query_as::<_, User>(
         r#"
         INSERT INTO users (first_name, last_name, email, password)
@@ -19,20 +21,34 @@ pub async fn create(
     .bind(last_name)
     .bind(email)
     .bind(hashed_password)
-    .fetch_one(pool)
+    .fetch_one(executor)
     .await?;
 
     Ok(user)
 }
 
-pub async fn find_by_email(pool: &PgPool, email: &str) -> Result<i64, sqlx::Error> {
-    sqlx::query_scalar("SELECT id FROM users WHERE email = $1")
-        .bind(email)
-        .fetch_one(pool)
-        .await
+pub async fn find_user_by_email<'e, E>(executor: E, email: &str) -> Result<User, sqlx::Error>
+where
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
+{
+    sqlx::query_as::<_, User>(
+        r#"
+        SELECT id, first_name, last_name, email, created_at, updated_at, password
+        FROM users
+        WHERE email = $1
+        "#,
+    )
+    .bind(email)
+    .fetch_one(executor)
+    .await
 }
 
-pub async fn find_by_id(pool: &PgPool, id: i64) -> Result<User, sqlx::Error> {
+
+
+pub async fn find_by_id<'e, E>(executor: E, id: i64) -> Result<User, sqlx::Error>
+where
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
+{
     sqlx::query_as::<_, User>(
         r#"
         SELECT id, first_name, last_name, email, created_at, updated_at, password
@@ -41,25 +57,7 @@ pub async fn find_by_id(pool: &PgPool, id: i64) -> Result<User, sqlx::Error> {
         "#,
     )
     .bind(id)
-    .fetch_one(pool)
+    .fetch_one(executor)
     .await
 }
 
-pub async fn find_all(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {
-    sqlx::query_as::<_, User>(
-        r#"
-        SELECT id, first_name, last_name, email, created_at, updated_at 
-        FROM users"#,
-    )
-    .fetch_all(pool)
-    .await
-}
-
-pub async fn delete(pool: &PgPool, id: i32) -> Result<u64, sqlx::Error> {
-    let result = sqlx::query("DELETE FROM users WHERE id = $1")
-        .bind(id)
-        .execute(pool)
-        .await?;
-
-    Ok(result.rows_affected())
-}

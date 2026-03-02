@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   if (!token) {
     throw createError({
       statusCode: 401,
-      message: 'Unauthorized'
+      statusMessage: 'Unauthorized'
     })
   }
 
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     const err = error as AxiosError<any>
     throw createError({
       statusCode: err.response?.status || 500,
-      message: err.response?.data?.message || err.response?.data?.error || 'Failed to fetch baskets'
+      statusMessage: err.response?.data?.message || 'Failed to fetch baskets'
     })
   }
 })

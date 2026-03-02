@@ -3,25 +3,25 @@ import type { RefreshTokenRequest, AuthResponse } from '../../shared'
 import type { AxiosResponse, AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Unauthorized'
+    })
+  }
+
+  const [_, tokenString] = token.split(' ')
+
+  if (!tokenString) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: 'Invalid token format'
+    })
+  }
+
   try {
-    const token = getCookie(event, 'auth_token') ?? ''
-
-    if (!token) {
-      throw createError({
-        statusCode: 401,
-        message: 'Unauthorized'
-      })
-    }
-
-    const [_, tokenString] = token.split(' ')
-
-    if (!tokenString) {
-      throw createError({
-        statusCode: 401,
-        message: 'Invalid token format'
-      })
-    }
-
     const { data } = await apiClient.post<RefreshTokenRequest, AuthResponse>(
       API_AUTH_REFRESH,
       { token: tokenString }
@@ -41,7 +41,7 @@ export default defineEventHandler(async (event) => {
     const err = error as AxiosError<any>
     throw createError({
       statusCode: err.response?.status || 500,
-      message: err.response?.data?.message || err.response?.data?.error || 'Refresh failed'
+      statusMessage: err.response?.data?.message || 'Refresh failed'
     })
   }
 })

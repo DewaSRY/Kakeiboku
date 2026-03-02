@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
   if (!validation.success) {
     throw createError({
       statusCode: 400,
-      message: validation.error.issues[0]?.message
+      statusMessage: validation.error.issues[0]?.message
     })
   }
 
@@ -34,7 +34,7 @@ export default defineEventHandler(async (event) => {
     const err = error as AxiosError<any>
     throw createError({
       statusCode: err.response?.status || 500,
-      message: err.response?.data?.message || err.response?.data?.error || 'Login failed'
+      statusMessage: err.response?.data?.message || 'Login failed'
     })
   }
 })

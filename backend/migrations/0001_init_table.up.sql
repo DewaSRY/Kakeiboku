@@ -18,6 +18,7 @@ CREATE TABLE baskets(
     basket_category_id BIGINT NOT NULL, 
     type varchar(20) not null check (type in ('main', 'branch')),
     status varchar(20) not null check (status in('active', 'frozen', 'archived')),
+    created_by_id BIGINT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -73,6 +74,7 @@ ALTER TABLE transactions_detail
 CREATE INDEX idx_users_email ON users(email);
 
 CREATE INDEX idx_basket_user_id ON baskets(user_id);
+CREATE INDEX idx_basket_created_by ON baskets(created_by_id);
 CREATE INDEX idx_basket_category_id ON baskets(basket_category_id);
 CREATE INDEX idx_basket_status ON baskets(status);
 
@@ -81,7 +83,6 @@ CREATE INDEX idx_transactions_to_basket_history ON transactions(to_basket_id, cr
 
 CREATE UNIQUE INDEX idx_unique_main_basket_per_user ON baskets(user_id) WHERE type = 'main';
 
-CREATE UNIQUE INDEX idx_basket_category_name ON basket_category(name);
 
 CREATE INDEX idx_transactions_from_basket ON transactions(from_basket_id);
 CREATE INDEX idx_transactions_to_basket ON transactions(to_basket_id);

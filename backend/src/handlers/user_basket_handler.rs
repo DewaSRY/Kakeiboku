@@ -6,7 +6,7 @@ use axum::{
 
 use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse, PaginationQuery};
 use crate::dtos::{
-    basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload},
+    basket_dto::{BasketDetailResponse, BasketResponse, CreateBasketPayload, UpdateBasketPayload},
     common_dto::CommonResponse,
 };
 use crate::services::basket_service;
@@ -64,6 +64,38 @@ pub async fn get_all_baskets(
         .map(Json)
         .map_err(|err| err.to_response())
 }
+
+
+#[utoipa::path(
+    get,
+    path = "/user/baskets/{basket_id}",
+    summary = "Get a basket by ID for the authenticated user",
+    params(
+        ("basket_id" = i64, Path, description = "Basket ID")
+    ),
+    responses(
+        (status = 200, description = "Basket retrieved successfully", body = BasketDetailResponse),
+        (status = 400, description = "Bad request", body = CommonErrorResponse),
+        (status = 401, description = "Unauthorized", body = CommonErrorResponse),
+        (status = 403, description = "Forbidden", body = CommonErrorResponse),
+        (status = 404, description = "Not found", body = CommonErrorResponse),
+        (status = 500, description = "Internal server error", body = CommonErrorResponse)
+    ),
+    security(("bearer_auth" = [])),
+    tag = "baskets"
+)]
+pub async fn get_by_id(
+    State(state): State<AppState>,
+    AuthUser(user_id): AuthUser,
+    Path(basket_id): Path<i64>,
+) -> Result<Json<BasketDetailResponse>, (StatusCode, Json<CommonErrorResponse>)> {
+    basket_service::get_by_id(&state.pool, basket_id, user_id)
+        .await
+        .map(Json)
+        .map_err(|err| err.to_response())
+}
+
+
 
 #[utoipa::path(
     put,

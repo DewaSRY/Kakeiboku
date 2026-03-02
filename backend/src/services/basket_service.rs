@@ -1,9 +1,9 @@
 use axum::http::StatusCode;
 use sqlx::PgPool;
 
-use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
+use crate::dtos::basket_dto::{BasketDetailResponse, BasketResponse, CreateBasketPayload, UpdateBasketPayload};
 use crate::dtos::common_dto::{CommonErrorResponse, CommonResponse, PaginatedResponse};
-use crate::repositories::basket_repository;
+use crate::repositories::{basket_repository, basket_category_repository};
 
 pub async fn create_basket<'e, E>(
     executor: E,
@@ -120,4 +120,36 @@ pub async fn update_basket(
         "Basket updated successfully".to_string(),
         StatusCode::OK,
     ))
+}
+
+
+pub  async fn get_by_id(
+    executor: &sqlx::PgPool,
+    basket_id: i64,
+    user_id: i64,
+) -> Result<BasketDetailResponse, CommonErrorResponse> {
+
+    let basket = basket_repository::find_by_id_with_balance(executor, basket_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND)
+        })?;
+
+    if basket.user_id != user_id {
+        return Err(CommonErrorResponse::new(
+            "You don't have permission to view this basket".to_string(),
+            StatusCode::FORBIDDEN,
+        ));
+    }
+
+    let basket_category = basket_category_repository::find_by_id(executor, basket.basket_category_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Basket category not found".to_string(),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )
+        })?;
+
+    Ok(BasketDetailResponse::from_model(basket, basket_category))
 }

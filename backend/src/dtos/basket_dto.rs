@@ -2,7 +2,7 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
-use crate::models::baskets::BasketWithBalance;
+use crate::models::{baskets::BasketWithBalance, baskets_category::BasketCategory};
 
 // #[derive(Debug, Serialize, Deserialize, ToSchema)]
 // pub struct BasketTransaction {
@@ -63,25 +63,52 @@ impl BasketResponse {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct BasketWithCategory {
+pub struct BasketDetailResponse {
     pub id: i64,
     pub user_id: i64,
     pub name: String,
     pub description: Option<String>,
-    pub basket_category: BasketCategoryResponse,
-
     pub basket_type: String,
     pub status: String,
     pub balance: f64,
-
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
+
+    pub basket_category: BasketCategoryResponse,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
+impl BasketDetailResponse {
+    pub fn from_model(b: BasketWithBalance, category: BasketCategory) -> Self {
+        Self {
+            id: b.id,
+            user_id: b.user_id,
+            name: b.name,
+            description: b.description,
+            basket_type: b.basket_type,
+            status: b.status,
+            balance: b.balance,
+            created_at: b.created_at,
+            updated_at: b.updated_at,
+            basket_category: BasketCategoryResponse::from(category),
+        }
+    }
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 pub struct BasketCategoryResponse {
     pub id: i64,
     pub name: String,
     pub description: Option<String>,
     pub created_at: NaiveDateTime,
+}
+
+impl From<BasketCategory> for BasketCategoryResponse {
+    fn from(category: BasketCategory) -> Self {
+        Self {
+            id: category.id,
+            name: category.name,
+            description: category.description,
+            created_at: category.created_at,
+        }
+    }
 }

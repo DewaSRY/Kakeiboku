@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "@nuxt/ui",
     "@artmizu/nuxt-prometheus",
+    "@nuxtjs/i18n",
   ],
 
   css: ["~/assets/css/main.css"],
@@ -24,5 +25,20 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "system",
     classSuffix: "",
+  },
+
+  i18n: {
+    locales: [
+      { code: "en", name: "English", file: "en.json" },
+      { code: "id", name: "Indonesia", file: "id.json" },
+    ],
+    defaultLocale: "en",
+    langDir: "locales",
+    strategy: "no_prefix",
+    detectBrowserLanguage: {
+      useCookie: true,
+      cookieKey: "i18n_redirected",
+      redirectOn: "root",
+    },
   },
 });

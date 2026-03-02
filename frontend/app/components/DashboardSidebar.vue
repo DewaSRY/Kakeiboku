@@ -15,21 +15,22 @@
 
     <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 dark:border-gray-700">
       <div class="text-xs text-gray-400 dark:text-gray-500 text-center">
-        Kakeibo v1.0.0
+        {{ $t('common.version') }}
       </div>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
+const { t } = useI18n()
 const route = useRoute()
 
-const navItems = [
-  { path: '/user/dashboard', label: 'Dashboard', icon: 'i-heroicons-home' },
-  { path: '/user/baskets', label: 'Baskets', icon: 'i-heroicons-archive-box' },
-  { path: '/user/transactions', label: 'Transactions', icon: 'i-heroicons-arrow-path' },
-  { path: '/admin/dashboard', label: 'Admin', icon: 'i-heroicons-shield-check' }
-]
+const navItems = computed(() => [
+  { path: '/user/dashboard', label: t('nav.dashboard'), icon: 'i-heroicons-home' },
+  { path: '/user/baskets', label: t('nav.baskets'), icon: 'i-heroicons-archive-box' },
+  { path: '/user/transactions', label: t('nav.transactions'), icon: 'i-heroicons-arrow-path' },
+  { path: '/admin/dashboard', label: t('nav.admin'), icon: 'i-heroicons-shield-check' }
+])
 
 const isActive = (path: string) => {
   return route.path === path || route.path.startsWith(path + '/')

@@ -6,14 +6,14 @@
       variant="ghost" 
       @click="$emit('cancel')"
     >
-      {{ cancelText }}
+      {{ cancelText || $t('common.cancel') }}
     </UButton>
     <UButton 
       type="submit" 
       :color="submitColor" 
       :loading="loading"
     >
-      {{ submitText }}
+      {{ submitText || $t('common.submit') }}
     </UButton>
   </div>
 </template>
@@ -28,8 +28,6 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  submitText: 'Submit',
-  cancelText: 'Cancel',
   submitColor: 'primary',
   loading: false,
   showCancel: true

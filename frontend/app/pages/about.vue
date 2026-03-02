@@ -7,12 +7,13 @@
           <div class="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
             <span class="text-white font-bold">K</span>
           </div>
-          <span class="text-xl font-bold text-gray-900 dark:text-white">Kakeibo</span>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">{{ $t('common.appName') }}</span>
         </NuxtLink>
         <div class="flex items-center space-x-4">
           <ColorModeToggle />
+          <LanguageSwitcher />
           <NuxtLink to="/signin">
-            <UButton color="primary">Sign In</UButton>
+            <UButton color="primary">{{ $t('common.signIn') }}</UButton>
           </NuxtLink>
         </div>
       </nav>
@@ -20,53 +21,48 @@
 
     <!-- About Content -->
     <main class="max-w-4xl mx-auto px-4 py-16">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">About Kakeibo</h1>
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-8">{{ $t('about.title') }}</h1>
       
       <div class="prose prose-lg dark:prose-invert max-w-none">
         <p class="text-gray-600 dark:text-gray-300 mb-6">
-          <strong class="text-gray-900 dark:text-white">Kakeibo</strong> (家計簿) is the traditional Japanese budgeting method 
-          that has helped millions of people gain control of their finances since 1904.
+          <strong class="text-gray-900 dark:text-white">{{ $t('common.appName') }}</strong> {{ $t('about.intro', { appName: '' }) }}
         </p>
 
-        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-8 mb-4">How It Works</h2>
+        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mt-8 mb-4">{{ $t('about.howItWorks') }}</h2>
         
         <div class="space-y-6">
           <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-lg">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">1. Know Your Income</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{{ $t('about.steps.knowIncome.title') }}</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Start by depositing your income into the main basket. This is your 
-              starting point for all financial decisions.
+              {{ $t('about.steps.knowIncome.description') }}
             </p>
           </div>
 
           <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-lg">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">2. Allocate to Baskets</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{{ $t('about.steps.allocate.title') }}</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Divide your income into different baskets: needs (rent, utilities), 
-              wants (entertainment), savings, and extras.
+              {{ $t('about.steps.allocate.description') }}
             </p>
           </div>
 
           <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-lg">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">3. Track Every Transaction</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{{ $t('about.steps.track.title') }}</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              Log every expense with categories. This mindful approach helps you 
-              understand your spending habits.
+              {{ $t('about.steps.track.description') }}
             </p>
           </div>
 
           <div class="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-lg">
-            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">4. Review & Reflect</h3>
+            <h3 class="font-semibold text-gray-900 dark:text-white mb-2">{{ $t('about.steps.review.title') }}</h3>
             <p class="text-gray-600 dark:text-gray-300">
-              At the end of each period, review your spending and reflect on 
-              what you can improve.
+              {{ $t('about.steps.review.description') }}
             </p>
           </div>
         </div>
 
         <div class="mt-12 text-center">
           <NuxtLink to="/signup">
-            <UButton size="xl" color="primary">Start Your Journey</UButton>
+            <UButton size="xl" color="primary">{{ $t('about.startJourney') }}</UButton>
           </NuxtLink>
         </div>
       </div>

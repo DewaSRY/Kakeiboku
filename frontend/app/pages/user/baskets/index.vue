@@ -1,9 +1,9 @@
 <template>
   <div>
     <PageHeader
-      title="Baskets"
-      description="Manage your money baskets."
-      action-label="New Basket"
+      :title="$t('baskets.title')"
+      :description="$t('baskets.description')"
+      :action-label="$t('baskets.createBasket')"
       action-icon="i-heroicons-plus"
       @action="showCreateBasket = true"
     />
@@ -12,7 +12,7 @@
     <UCard v-if="mainBasket" class="mb-6 bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-amber-700 dark:text-amber-400 font-medium">Main Wallet</p>
+          <p class="text-sm text-amber-700 dark:text-amber-400 font-medium">{{ $t('dashboard.mainWallet') }}</p>
           <h2 class="text-3xl font-bold text-gray-900 dark:text-white mt-1">
             {{ formatCurrency(mainBasket.balance) }}
           </h2>
@@ -34,7 +34,7 @@
         <div class="flex items-start justify-between">
           <div>
             <h3 class="font-semibold text-gray-900 dark:text-white">{{ basket.name }}</h3>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ basket.description || 'No description' }}</p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ basket.description || $t('common.noDescription') }}</p>
           </div>
           <UBadge :color="getStatusColor(basket.status)">
             {{ basket.status }}
@@ -49,7 +49,7 @@
     <EmptyState 
       v-if="branchBaskets.length === 0"
       icon="i-heroicons-archive-box"
-      message="No branch baskets yet. Create one to start organizing your money!"
+      :message="$t('baskets.noBaskets')"
     />
 
     <!-- Create Basket Modal -->
@@ -72,6 +72,7 @@ definePageMeta({
   layout: 'dashboard',
 })
 
+const { t } = useI18n()
 const basketService = useBasketService()
 const toast = useToast()
 
@@ -101,14 +102,14 @@ async function loadBaskets() {
     mainBasket.value = response.data.find(b => b.basket_type === 'main') || null
     branchBaskets.value = response.data.filter(b => b.basket_type !== 'main')
   } catch (error) {
-    toast.add({ title: 'Failed to load baskets', color: 'error' })
+    toast.add({ title: t('baskets.loadFailed'), color: 'error' })
   }
 }
 
 function handleBasketCreated() {
   showCreateBasket.value = false
   loadBaskets()
-  toast.add({ title: 'Basket created successfully!', color: 'success' })
+  toast.add({ title: t('baskets.basketCreated'), color: 'success' })
 }
 
 onMounted(() => {

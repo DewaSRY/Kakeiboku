@@ -1,0 +1,198 @@
+{
+  "common": {
+    "appName": "Kakeibo",
+    "about": "Tentang",
+    "signIn": "Masuk",
+    "signUp": "Daftar",
+    "signOut": "Keluar",
+    "getStarted": "Mulai",
+    "learnMore": "Pelajari Lebih Lanjut",
+    "submit": "Kirim",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "create": "Buat",
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "success": "Berhasil",
+    "email": "Email",
+    "password": "Kata Sandi",
+    "name": "Nama",
+    "description": "Deskripsi",
+    "amount": "Jumlah",
+    "date": "Tanggal",
+    "category": "Kategori",
+    "type": "Tipe",
+    "actions": "Aksi",
+    "noData": "Tidak ada data",
+    "search": "Cari",
+    "filter": "Filter",
+    "all": "Semua",
+    "viewAll": "Lihat Semua",
+    "profile": "Profil",
+    "settings": "Pengaturan",
+    "copyright": "© 2026 Kakeibo. Hak cipta dilindungi.",
+    "version": "Kakeibo v1.0.0",
+    "noDescription": "Tidak ada deskripsi",
+    "title": "Judul",
+    "optional": "Opsional"
+  },
+  "home": {
+    "heroTitle": "Kuasai Keuangan Anda dengan",
+    "heroSubtitle": "Sistem penganggaran tradisional Jepang untuk pengeluaran yang bijak. Lacak pendapatan, alokasikan ke keranjang, dan capai tujuan keuangan Anda.",
+    "startFreeTrial": "Mulai Uji Coba Gratis",
+    "features": {
+      "mainWallet": {
+        "title": "Dompet Utama",
+        "description": "Setor pendapatan Anda ke dompet pusat dan alokasikan ke berbagai kategori pengeluaran."
+      },
+      "branchBaskets": {
+        "title": "Keranjang Cabang",
+        "description": "Buat keranjang terpisah untuk makanan, sewa, tabungan, dan lainnya. Anggarkan dengan sengaja."
+      },
+      "trackSpending": {
+        "title": "Lacak Pengeluaran",
+        "description": "Pantau semua transaksi dengan kategori detail dan ringkasan visual."
+      }
+    }
+  },
+  "about": {
+    "title": "Tentang Kakeibo",
+    "intro": "{appName} (家計簿) adalah metode penganggaran tradisional Jepang yang telah membantu jutaan orang mengendalikan keuangan mereka sejak 1904.",
+    "howItWorks": "Cara Kerjanya",
+    "steps": {
+      "knowIncome": {
+        "title": "1. Ketahui Pendapatan Anda",
+        "description": "Mulailah dengan menyetor pendapatan Anda ke keranjang utama. Ini adalah titik awal untuk semua keputusan keuangan."
+      },
+      "allocate": {
+        "title": "2. Alokasikan ke Keranjang",
+        "description": "Bagi pendapatan Anda ke keranjang berbeda: kebutuhan (sewa, utilitas), keinginan (hiburan), tabungan, dan ekstra."
+      },
+      "track": {
+        "title": "3. Lacak Setiap Transaksi",
+        "description": "Catat setiap pengeluaran dengan kategori. Pendekatan mindful ini membantu Anda memahami kebiasaan belanja."
+      },
+      "review": {
+        "title": "4. Tinjau & Refleksi",
+        "description": "Di akhir setiap periode, tinjau pengeluaran Anda dan refleksikan apa yang bisa diperbaiki."
+      }
+    },
+    "startJourney": "Mulai Perjalanan Anda"
+  },
+  "auth": {
+    "welcomeBack": "Selamat Datang Kembali",
+    "signInSubtitle": "Masuk ke akun Kakeibo Anda",
+    "emailPlaceholder": "anda{'@'}contoh.com",
+    "passwordPlaceholder": "••••••••",
+    "noAccount": "Belum punya akun?",
+    "hasAccount": "Sudah punya akun?",
+    "createAccount": "Buat Akun",
+    "createAccountSubtitle": "Mulai perjalanan Kakeibo Anda hari ini",
+    "loginSuccess": "Selamat datang kembali!",
+    "loginFailed": "Login gagal. Silakan coba lagi.",
+    "registerSuccess": "Akun berhasil dibuat!",
+    "registerFailed": "Pendaftaran gagal. Silakan coba lagi.",
+    "firstName": "Nama Depan",
+    "lastName": "Nama Belakang",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "minPasswordLength": "Min. 6 karakter"
+  },
+  "dashboard": {
+    "title": "Dasbor",
+    "subtitle": "Selamat datang kembali! Berikut gambaran keuangan Anda.",
+    "totalBalance": "Total Saldo",
+    "mainWallet": "Dompet Utama",
+    "branchBasketsCount": "Keranjang Cabang",
+    "branchBaskets": "Keranjang Cabang",
+    "recentTransactions": "Transaksi Terbaru",
+    "newBasket": "Keranjang Baru",
+    "noBranchBaskets": "Belum ada keranjang cabang. Buat satu untuk memulai!",
+    "noTransactions": "Belum ada transaksi.",
+    "totalIncome": "Total Pendapatan",
+    "totalExpense": "Total Pengeluaran",
+    "baskets": "Keranjang",
+    "transactions": "Transaksi"
+  },
+  "transactions": {
+    "title": "Transaksi",
+    "description": "Lihat dan kelola semua transaksi Anda.",
+    "createTransaction": "Transaksi Baru",
+    "editTransaction": "Ubah Transaksi",
+    "deleteTransaction": "Hapus Transaksi",
+    "transactionCreated": "Transaksi berhasil dibuat!",
+    "transactionUpdated": "Transaksi berhasil diperbarui!",
+    "transactionDeleted": "Transaksi berhasil dihapus!",
+    "noTransactions": "Tidak ada transaksi ditemukan.",
+    "noTransactionsDesc": "Buat transaksi pertama Anda untuk mulai melacak keuangan.",
+    "loadFailed": "Gagal memuat transaksi",
+    "id": "ID",
+    "fromBasket": "Dari Keranjang",
+    "toBasket": "Ke Keranjang",
+    "selectSource": "Pilih sumber",
+    "selectDestination": "Pilih tujuan",
+    "selectType": "Pilih tipe",
+    "transactionType": "Tipe Transaksi",
+    "optionalNotes": "Catatan opsional..."
+  },
+  "baskets": {
+    "title": "Keranjang",
+    "description": "Kelola keranjang uang Anda.",
+    "createBasket": "Keranjang Baru",
+    "editBasket": "Ubah Keranjang",
+    "deleteBasket": "Hapus Keranjang",
+    "basketCreated": "Keranjang berhasil dibuat!",
+    "basketUpdated": "Keranjang berhasil diperbarui!",
+    "basketDeleted": "Keranjang berhasil dihapus!",
+    "noBaskets": "Belum ada keranjang cabang. Buat satu untuk mulai mengatur uang Anda!",
+    "noBasketsDesc": "Buat keranjang pertama Anda untuk mengatur anggaran.",
+    "loadFailed": "Gagal memuat keranjang",
+    "createNewBasket": "Buat Keranjang Baru",
+    "basketName": "Nama Keranjang",
+    "basketNamePlaceholder": "cth., Makanan, Tabungan, Hiburan",
+    "selectCategory": "Pilih kategori",
+    "optionalDescription": "Deskripsi opsional...",
+    "loadCategoriesFailed": "Gagal memuat kategori",
+    "createFailed": "Gagal membuat keranjang"
+  },
+  "admin": {
+    "title": "Dasbor Admin",
+    "subtitle": "Gambaran sistem dan statistik pengguna.",
+    "totalUsers": "Total Pengguna",
+    "activeUsers": "Pengguna Aktif",
+    "totalTransactions": "Total Transaksi",
+    "totalVolume": "Total Volume",
+    "userStatistics": "Statistik Pengguna",
+    "transactionMetrics": "Metrik Transaksi",
+    "newUsersThisMonth": "Pengguna Baru (Bulan Ini)",
+    "avgBasketsPerUser": "Rata-rata Keranjang per Pengguna",
+    "usersWithTransactions": "Pengguna dengan Transaksi",
+    "transactionsToday": "Transaksi Hari Ini",
+    "avgTransactionAmount": "Rata-rata Jumlah Transaksi",
+    "peakTransactionHour": "Jam Puncak Transaksi",
+    "admin": "Admin"
+  },
+  "nav": {
+    "dashboard": "Dasbor",
+    "baskets": "Keranjang",
+    "transactions": "Transaksi",
+    "admin": "Admin"
+  },
+  "form": {
+    "loadDataFailed": "Gagal memuat data formulir",
+    "createTransactionFailed": "Gagal membuat transaksi"
+  },
+  "validation": {
+    "required": "Bidang ini wajib diisi",
+    "invalidEmail": "Masukkan alamat email yang valid",
+    "minLength": "Minimal {min} karakter",
+    "maxLength": "Maksimal {max} karakter"
+  },
+  "language": {
+    "title": "Bahasa",
+    "english": "English",
+    "indonesian": "Indonesia"
+  }
+}

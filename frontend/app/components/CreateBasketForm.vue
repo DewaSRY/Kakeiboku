@@ -1,35 +1,35 @@
 <template>
-  <FormContainer title="Create New Basket">
+  <FormContainer :title="$t('baskets.createNewBasket')">
     <UForm :schema="CreateBasketPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Basket Name" name="name">
+      <UFormField :label="$t('baskets.basketName')" name="name">
         <UInput 
           v-model="formState.name" 
-          placeholder="e.g., Food, Savings, Entertainment"
+          :placeholder="$t('baskets.basketNamePlaceholder')"
           size="lg"
         />
       </UFormField>
 
-      <UFormField label="Category" name="basket_category_id">
+      <UFormField :label="$t('common.category')" name="basket_category_id">
         <USelect
           v-model="formState.basket_category_id"
           :items="categories"
           value-key="id"
           label-key="name"
-          placeholder="Select a category"
+          :placeholder="$t('baskets.selectCategory')"
           size="lg"
         />
       </UFormField>
 
-      <UFormField label="Description" name="description">
+      <UFormField :label="$t('common.description')" name="description">
         <UTextarea 
           v-model="formState.description" 
-          placeholder="Optional description..."
+          :placeholder="$t('baskets.optionalDescription')"
           :rows="3"
         />
       </UFormField>
 
       <FormActions 
-        submit-text="Create Basket" 
+        :submit-text="$t('baskets.createBasket')" 
         :loading="isLoading"
         @cancel="$emit('cancel')"
       />
@@ -48,6 +48,7 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+const { t } = useI18n()
 const basketService = useBasketService()
 const commonService = useCommonService()
 
@@ -66,7 +67,7 @@ async function loadCategories() {
     const response = await commonService.getBasketCategories()
     categories.value = response.data
   } catch (e) {
-    error.value = 'Failed to load categories'
+    error.value = t('baskets.loadCategoriesFailed')
   }
 }
 
@@ -78,7 +79,7 @@ async function handleSubmit() {
     await basketService.createBasket(formState)
     emit('success')
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Failed to create basket'
+    error.value = e.response?.data?.message || t('baskets.createFailed')
   } finally {
     isLoading.value = false
   }

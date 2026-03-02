@@ -1,26 +1,26 @@
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">Welcome back! Here's your financial overview.</p>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $t('dashboard.title') }}</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $t('dashboard.subtitle') }}</p>
     </div>
 
     <!-- Balance Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
       <DashboardStatCard
-        title="Total Balance"
+        :title="$t('dashboard.totalBalance')"
         :value="formatCurrency(totalBalance)"
         icon="i-heroicons-banknotes"
         color="amber"
       />
       <DashboardStatCard
-        title="Main Wallet"
+        :title="$t('dashboard.mainWallet')"
         :value="formatCurrency(mainBasket?.balance || 0)"
         icon="i-heroicons-wallet"
         color="green"
       />
       <DashboardStatCard
-        title="Branch Baskets"
+        :title="$t('dashboard.branchBasketsCount')"
         :value="branchBaskets.length.toString()"
         icon="i-heroicons-archive-box"
         color="blue"
@@ -30,7 +30,7 @@
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Branch Baskets -->
-      <ContentCard title="Branch Baskets">
+      <ContentCard :title="$t('dashboard.branchBaskets')">
         <template #header-action>
           <UButton 
             color="primary" 
@@ -38,14 +38,14 @@
             icon="i-heroicons-plus"
             @click="showCreateBasket = true"
           >
-            New Basket
+            {{ $t('dashboard.newBasket') }}
           </UButton>
         </template>
 
         <EmptyState 
           v-if="branchBaskets.length === 0"
           icon="i-heroicons-archive-box"
-          message="No branch baskets yet. Create one to get started!"
+          :message="$t('dashboard.noBranchBaskets')"
           padding="sm"
         />
 
@@ -60,7 +60,7 @@
       </ContentCard>
 
       <!-- Recent Transactions -->
-      <ContentCard title="Recent Transactions">
+      <ContentCard :title="$t('dashboard.recentTransactions')">
         <template #header-action>
           <UButton 
             color="neutral" 
@@ -68,14 +68,14 @@
             size="sm"
             @click="navigateTo('/user/transactions')"
           >
-            View All
+            {{ $t('common.viewAll') }}
           </UButton>
         </template>
 
         <EmptyState 
           v-if="recentTransactions.length === 0"
           icon="i-heroicons-arrow-path"
-          message="No transactions yet."
+          :message="$t('dashboard.noTransactions')"
           padding="sm"
         />
 
@@ -109,6 +109,7 @@ definePageMeta({
   layout: 'dashboard',
 })
 
+const { t } = useI18n()
 const basketService = useBasketService()
 const transactionService = useTransactionService()
 const toast = useToast()
@@ -139,14 +140,14 @@ async function loadDashboardData() {
     totalBalance.value = allBaskets.reduce((acc, b) => acc + b.balance, 0)
     recentTransactions.value = transactions
   } catch (error) {
-    toast.add({ title: 'Failed to load dashboard data', color: 'error' })
+    toast.add({ title: t('common.error'), color: 'error' })
   }
 }
 
 function handleBasketCreated() {
   showCreateBasket.value = false
   loadDashboardData()
-  toast.add({ title: 'Basket created successfully!', color: 'success' })
+    toast.add({ title: t('baskets.basketCreated'), color: 'success' })
 }
 
 onMounted(() => {

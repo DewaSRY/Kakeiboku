@@ -1,9 +1,9 @@
 <template>
   <div>
     <PageHeader
-      title="Transactions"
-      description="View and manage all your transactions."
-      action-label="New Transaction"
+      :title="$t('transactions.title')"
+      :description="$t('transactions.description')"
+      :action-label="$t('transactions.createTransaction')"
       action-icon="i-heroicons-plus"
       @action="showCreateTransaction = true"
     />
@@ -13,7 +13,7 @@
         :columns="columns" 
         :data="transactions"
         empty-icon="i-heroicons-document-text"
-        empty-message="No transactions found."
+        :empty-message="$t('transactions.noTransactions')"
       >
         <template #amount-data="{ row }">
           <span :class="row.original.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
@@ -47,18 +47,19 @@ definePageMeta({
   layout: 'dashboard',
 })
 
+const { t } = useI18n()
 const transactionService = useTransactionService()
 const toast = useToast()
 
 const transactions = ref<TransactionResponse[]>([])
 const showCreateTransaction = ref(false)
 
-const columns: TableColumn<TransactionResponse>[] = [
-  { accessorKey: 'id', header: 'ID' },
-  { accessorKey: 'amount', header: 'Amount' },
-  { accessorKey: 'transaction_type_id', header: 'Type' },
-  { accessorKey: 'created_at', header: 'Date' }
-]
+const columns = computed<TableColumn<TransactionResponse>[]>(() => [
+  { accessorKey: 'id', header: t('transactions.id') },
+  { accessorKey: 'amount', header: t('common.amount') },
+  { accessorKey: 'transaction_type_id', header: t('common.type') },
+  { accessorKey: 'created_at', header: t('common.date') }
+])
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('en-US', {
@@ -80,14 +81,14 @@ async function loadTransactions() {
     const response = await transactionService.getAllUserTransactions({ limit: 50, page: 1 })
     transactions.value = response.data
   } catch (error) {
-    toast.add({ title: 'Failed to load transactions', color: 'error' })
+    toast.add({ title: t('transactions.loadFailed'), color: 'error' })
   }
 }
 
 function handleTransactionCreated() {
   showCreateTransaction.value = false
   loadTransactions()
-  toast.add({ title: 'Transaction created successfully!', color: 'success' })
+  toast.add({ title: t('transactions.transactionCreated'), color: 'success' })
 }
 
 onMounted(() => {

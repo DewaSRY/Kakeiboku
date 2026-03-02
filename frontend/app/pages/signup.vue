@@ -4,43 +4,43 @@
       <div class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center mx-auto mb-4">
         <span class="text-white font-bold text-xl">K</span>
       </div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Create Account</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Start your Kakeibo journey today</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('auth.createAccount') }}</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">{{ $t('auth.createAccountSubtitle') }}</p>
     </div>
 
     <UForm :schema="RegisterPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
       <div class="grid grid-cols-2 gap-4">
-        <UFormField label="First Name" name="first_name">
+        <UFormField :label="$t('auth.firstName')" name="first_name">
           <UInput 
             v-model="formState.first_name" 
-            placeholder="John"
+            :placeholder="$t('auth.firstNamePlaceholder')"
             size="lg"
           />
         </UFormField>
 
-        <UFormField label="Last Name" name="last_name">
+        <UFormField :label="$t('auth.lastName')" name="last_name">
           <UInput 
             v-model="formState.last_name" 
-            placeholder="Doe"
+            :placeholder="$t('auth.lastNamePlaceholder')"
             size="lg"
           />
         </UFormField>
       </div>
 
-      <UFormField label="Email" name="email">
+      <UFormField :label="$t('common.email')" name="email">
         <UInput 
           v-model="formState.email" 
           type="email" 
-          placeholder="you@example.com"
+          :placeholder="$t('auth.emailPlaceholder')"
           size="lg"
         />
       </UFormField>
 
-      <UFormField label="Password" name="password">
+      <UFormField :label="$t('common.password')" name="password">
         <UInput 
           v-model="formState.password" 
           type="password" 
-          placeholder="Min. 6 characters"
+          :placeholder="$t('auth.minPasswordLength')"
           size="lg"
         />
       </UFormField>
@@ -52,15 +52,15 @@
         block 
         :loading="isLoading"
       >
-        Create Account
+        {{ $t('auth.createAccount') }}
       </UButton>
     </UForm>
 
     <div class="mt-6 text-center">
       <p class="text-gray-600 dark:text-gray-400">
-        Already have an account?
+        {{ $t('auth.hasAccount') }}
         <NuxtLink to="/signin" class="text-amber-500 hover:text-amber-600 font-medium">
-          Sign in
+          {{ $t('common.signIn') }}
         </NuxtLink>
       </p>
     </div>
@@ -83,6 +83,7 @@ definePageMeta({
   layout: 'auth'
 })
 
+const { t } = useI18n()
 const authService = useAuthService()
 const toast = useToast()
 
@@ -102,10 +103,10 @@ async function handleSubmit() {
   
   try {
     await authService.register(formState)
-    toast.add({ title: 'Account created successfully!', color: 'success' })
+    toast.add({ title: t('auth.registerSuccess'), color: 'success' })
     navigateTo('/user/dashboard')
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Registration failed. Please try again.'
+    error.value = e.response?.data?.message || t('auth.registerFailed')
   } finally {
     isLoading.value = false
   }

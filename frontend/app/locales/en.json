@@ -1,0 +1,198 @@
+{
+  "common": {
+    "appName": "Kakeibo",
+    "about": "About",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signOut": "Sign Out",
+    "getStarted": "Get Started",
+    "learnMore": "Learn More",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "description": "Description",
+    "amount": "Amount",
+    "date": "Date",
+    "category": "Category",
+    "type": "Type",
+    "actions": "Actions",
+    "noData": "No data available",
+    "search": "Search",
+    "filter": "Filter",
+    "all": "All",
+    "viewAll": "View All",
+    "profile": "Profile",
+    "settings": "Settings",
+    "copyright": "© 2026 Kakeibo. All rights reserved.",
+    "version": "Kakeibo v1.0.0",
+    "noDescription": "No description",
+    "title": "Title",
+    "optional": "Optional"
+  },
+  "home": {
+    "heroTitle": "Master Your Finances with",
+    "heroSubtitle": "A traditional Japanese budgeting system for mindful spending. Track your income, allocate to baskets, and achieve your financial goals.",
+    "startFreeTrial": "Start Free Trial",
+    "features": {
+      "mainWallet": {
+        "title": "Main Wallet",
+        "description": "Deposit your income into a central wallet and allocate to different spending categories."
+      },
+      "branchBaskets": {
+        "title": "Branch Baskets",
+        "description": "Create separate baskets for food, rent, savings, and more. Budget intentionally."
+      },
+      "trackSpending": {
+        "title": "Track Spending",
+        "description": "Monitor all transactions with detailed categories and visual summaries."
+      }
+    }
+  },
+  "about": {
+    "title": "About Kakeibo",
+    "intro": "{appName} (家計簿) is the traditional Japanese budgeting method that has helped millions of people gain control of their finances since 1904.",
+    "howItWorks": "How It Works",
+    "steps": {
+      "knowIncome": {
+        "title": "1. Know Your Income",
+        "description": "Start by depositing your income into the main basket. This is your starting point for all financial decisions."
+      },
+      "allocate": {
+        "title": "2. Allocate to Baskets",
+        "description": "Divide your income into different baskets: needs (rent, utilities), wants (entertainment), savings, and extras."
+      },
+      "track": {
+        "title": "3. Track Every Transaction",
+        "description": "Log every expense with categories. This mindful approach helps you understand your spending habits."
+      },
+      "review": {
+        "title": "4. Review & Reflect",
+        "description": "At the end of each period, review your spending and reflect on what you can improve."
+      }
+    },
+    "startJourney": "Start Your Journey"
+  },
+  "auth": {
+    "welcomeBack": "Welcome Back",
+    "signInSubtitle": "Sign in to your Kakeibo account",
+    "emailPlaceholder": "you{'@'}example.com",
+    "passwordPlaceholder": "••••••••",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "createAccount": "Create Account",
+    "createAccountSubtitle": "Start your Kakeibo journey today",
+    "loginSuccess": "Welcome back!",
+    "loginFailed": "Login failed. Please try again.",
+    "registerSuccess": "Account created successfully!",
+    "registerFailed": "Registration failed. Please try again.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "minPasswordLength": "Min. 6 characters"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Welcome back! Here's your financial overview.",
+    "totalBalance": "Total Balance",
+    "mainWallet": "Main Wallet",
+    "branchBasketsCount": "Branch Baskets",
+    "branchBaskets": "Branch Baskets",
+    "recentTransactions": "Recent Transactions",
+    "newBasket": "New Basket",
+    "noBranchBaskets": "No branch baskets yet. Create one to get started!",
+    "noTransactions": "No transactions yet.",
+    "totalIncome": "Total Income",
+    "totalExpense": "Total Expense",
+    "baskets": "Baskets",
+    "transactions": "Transactions"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "description": "View and manage all your transactions.",
+    "createTransaction": "New Transaction",
+    "editTransaction": "Edit Transaction",
+    "deleteTransaction": "Delete Transaction",
+    "transactionCreated": "Transaction created successfully!",
+    "transactionUpdated": "Transaction updated successfully!",
+    "transactionDeleted": "Transaction deleted successfully!",
+    "noTransactions": "No transactions found.",
+    "noTransactionsDesc": "Create your first transaction to start tracking your finances.",
+    "loadFailed": "Failed to load transactions",
+    "id": "ID",
+    "fromBasket": "From Basket",
+    "toBasket": "To Basket",
+    "selectSource": "Select source",
+    "selectDestination": "Select destination",
+    "selectType": "Select type",
+    "transactionType": "Transaction Type",
+    "optionalNotes": "Optional notes..."
+  },
+  "baskets": {
+    "title": "Baskets",
+    "description": "Manage your money baskets.",
+    "createBasket": "New Basket",
+    "editBasket": "Edit Basket",
+    "deleteBasket": "Delete Basket",
+    "basketCreated": "Basket created successfully!",
+    "basketUpdated": "Basket updated successfully!",
+    "basketDeleted": "Basket deleted successfully!",
+    "noBaskets": "No branch baskets yet. Create one to start organizing your money!",
+    "noBasketsDesc": "Create your first basket to organize your budget.",
+    "loadFailed": "Failed to load baskets",
+    "createNewBasket": "Create New Basket",
+    "basketName": "Basket Name",
+    "basketNamePlaceholder": "e.g., Food, Savings, Entertainment",
+    "selectCategory": "Select a category",
+    "optionalDescription": "Optional description...",
+    "loadCategoriesFailed": "Failed to load categories",
+    "createFailed": "Failed to create basket"
+  },
+  "admin": {
+    "title": "Admin Dashboard",
+    "subtitle": "System overview and user statistics.",
+    "totalUsers": "Total Users",
+    "activeUsers": "Active Users",
+    "totalTransactions": "Total Transactions",
+    "totalVolume": "Total Volume",
+    "userStatistics": "User Statistics",
+    "transactionMetrics": "Transaction Metrics",
+    "newUsersThisMonth": "New Users (This Month)",
+    "avgBasketsPerUser": "Average Baskets Per User",
+    "usersWithTransactions": "Users with Transactions",
+    "transactionsToday": "Transactions Today",
+    "avgTransactionAmount": "Average Transaction Amount",
+    "peakTransactionHour": "Peak Transaction Hour",
+    "admin": "Admin"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "baskets": "Baskets",
+    "transactions": "Transactions",
+    "admin": "Admin"
+  },
+  "form": {
+    "loadDataFailed": "Failed to load form data",
+    "createTransactionFailed": "Failed to create transaction"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Please enter a valid email address",
+    "minLength": "Must be at least {min} characters",
+    "maxLength": "Must be at most {max} characters"
+  },
+  "language": {
+    "title": "Language",
+    "english": "English",
+    "indonesian": "Indonesia"
+  }
+}

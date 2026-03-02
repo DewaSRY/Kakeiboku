@@ -6,12 +6,13 @@
           <div class="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
             <span class="text-white font-bold">K</span>
           </div>
-          <span class="text-xl font-bold text-gray-900 dark:text-white">Kakeibo</span>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">{{ $t('common.appName') }}</span>
         </NuxtLink>
       </div>
 
       <div class="flex items-center space-x-4">
         <ColorModeToggle />
+        <LanguageSwitcher />
         
         <UButton 
           color="neutral" 
@@ -42,17 +43,18 @@
 <script setup lang="ts">
 import { useAuthService } from '~/services'
 
+const { t } = useI18n()
 const authService = useAuthService()
 
 const userName = ref('User')
 
-const userMenuItems = [
+const userMenuItems = computed(() => [
   [
-    { label: 'Profile', icon: 'i-heroicons-user', click: () => navigateTo('/user/profile') },
-    { label: 'Settings', icon: 'i-heroicons-cog-6-tooth', click: () => navigateTo('/user/settings') }
+    { label: t('common.profile'), icon: 'i-heroicons-user', click: () => navigateTo('/user/profile') },
+    { label: t('common.settings'), icon: 'i-heroicons-cog-6-tooth', click: () => navigateTo('/user/settings') }
   ],
   [
-    { label: 'Sign Out', icon: 'i-heroicons-arrow-right-on-rectangle', click: () => authService.logout() }
+    { label: t('common.signOut'), icon: 'i-heroicons-arrow-right-on-rectangle', click: () => authService.logout() }
   ]
-]
+])
 </script>

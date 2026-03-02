@@ -1,7 +1,7 @@
 <template>
-  <FormContainer title="New Transaction">
+  <FormContainer :title="$t('transactions.createTransaction')">
     <UForm :schema="CreateTransactionPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Title" name="title">
+      <UFormField :label="$t('common.title')" name="title">
         <UInput 
           v-model="formState.title" 
           placeholder="e.g., Grocery shopping"
@@ -10,30 +10,30 @@
       </UFormField>
 
       <div class="grid grid-cols-2 gap-4">
-        <UFormField label="From Basket" name="from_basket_id">
+        <UFormField :label="$t('transactions.fromBasket')" name="from_basket_id">
           <USelect
             v-model="formState.from_basket_id"
             :items="baskets"
             value-key="id"
             label-key="name"
-            placeholder="Select source"
+            :placeholder="$t('transactions.selectSource')"
             size="lg"
           />
         </UFormField>
 
-        <UFormField label="To Basket" name="to_basket_id">
+        <UFormField :label="$t('transactions.toBasket')" name="to_basket_id">
           <USelect
             v-model="formState.to_basket_id"
             :items="baskets"
             value-key="id"
             label-key="name"
-            placeholder="Select destination"
+            :placeholder="$t('transactions.selectDestination')"
             size="lg"
           />
         </UFormField>
       </div>
 
-      <UFormField label="Amount" name="amount">
+      <UFormField :label="$t('common.amount')" name="amount">
         <UInput 
           v-model.number="formState.amount" 
           type="number"
@@ -48,27 +48,27 @@
         </UInput>
       </UFormField>
 
-      <UFormField label="Transaction Type" name="transaction_type_id">
+      <UFormField :label="$t('transactions.transactionType')" name="transaction_type_id">
         <USelect
           v-model="formState.transaction_type_id"
           :items="transactionTypes"
           value-key="id"
           label-key="name"
-          placeholder="Select type"
+          :placeholder="$t('transactions.selectType')"
           size="lg"
         />
       </UFormField>
 
-      <UFormField label="Description" name="description">
+      <UFormField :label="$t('common.description')" name="description">
         <UTextarea 
           v-model="formState.description" 
-          placeholder="Optional notes..."
+          :placeholder="$t('transactions.optionalNotes')"
           :rows="3"
         />
       </UFormField>
 
       <FormActions 
-        submit-text="Create Transaction" 
+        :submit-text="$t('transactions.createTransaction')" 
         :loading="isLoading"
         @cancel="$emit('cancel')"
       />
@@ -87,6 +87,7 @@ const emit = defineEmits<{
   cancel: []
 }>()
 
+const { t } = useI18n()
 const transactionService = useTransactionService()
 const commonService = useCommonService()
 const basketService = useBasketService()
@@ -114,7 +115,7 @@ async function loadData() {
     baskets.value = basketsRes.data
     transactionTypes.value = typesRes.data
   } catch (e) {
-    error.value = 'Failed to load form data'
+    error.value = t('form.loadDataFailed')
   }
 }
 
@@ -126,7 +127,7 @@ async function handleSubmit() {
     await transactionService.createTransaction(formState)
     emit('success')
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Failed to create transaction'
+    error.value = e.response?.data?.message || t('form.createTransactionFailed')
   } finally {
     isLoading.value = false
   }

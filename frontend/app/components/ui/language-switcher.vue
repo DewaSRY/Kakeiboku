@@ -1,25 +1,22 @@
 <template>
-  <v-menu>
-    <template v-slot:activator="{ props }">
-      <v-btn icon v-bind="props" class="ml-2">
-        <v-icon>mdi-translate</v-icon>
-      </v-btn>
-    </template>
-    <v-list>
-      <v-list-item @click="switchLocale('en')">
-        <v-list-item-title>English</v-list-item-title>
-      </v-list-item>
-      <v-list-item @click="switchLocale('id')">
-        <v-list-item-title>Indonesia</v-list-item-title>
-      </v-list-item>
-    </v-list>
-  </v-menu>
+  <UDropdownMenu :items="localeItems">
+    <UButton
+      icon="i-lucide-languages"
+      color="neutral"
+      variant="ghost"
+      :aria-label="$t('language.title')"
+    />
+  </UDropdownMenu>
 </template>
 
 <script setup lang="ts">
-import type { LocaleType } from "$types/common";
-const { locale } = useI18n();
-const switchLocale = (newLocale: LocaleType) => {
-  locale.value = newLocale;
-};
+const { locale, locales, setLocale } = useI18n()
+
+const localeItems = computed(() => [
+  (locales.value as Array<{ code: string; name: string }>).map((loc) => ({
+    label: loc.name,
+    icon: locale.value === loc.code ? 'i-lucide-check' : undefined,
+    onSelect: () => setLocale(loc.code),
+  })),
+])
 </script>

@@ -4,26 +4,26 @@
       <div class="w-12 h-12 bg-amber-400 rounded-xl flex items-center justify-center mx-auto mb-4">
         <span class="text-white font-bold text-xl">K</span>
       </div>
-      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Welcome Back</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-2">Sign in to your Kakeibo account</p>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">{{ $t('auth.welcomeBack') }}</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-2">{{ $t('auth.signInSubtitle') }}</p>
     </div>
 
     <UForm :schema="LoginPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField label="Email" name="email">
+      <UFormField :label="$t('common.email')" name="email">
         <UInput 
           v-model="formState.email" 
           type="email" 
-          placeholder="you@example.com"
+          :placeholder="$t('auth.emailPlaceholder')"
           size="lg"
           class="w-full"
         />
       </UFormField>
 
-      <UFormField label="Password" name="password">
+      <UFormField :label="$t('common.password')" name="password">
         <UInput 
           v-model="formState.password" 
           type="password" 
-          placeholder="••••••••"
+          :placeholder="$t('auth.passwordPlaceholder')"
           size="lg"
           class="w-full"
         />
@@ -36,15 +36,15 @@
         block 
         :loading="isLoading"
       >
-        Sign In
+        {{ $t('common.signIn') }}
       </UButton>
     </UForm>
 
     <div class="mt-6 text-center">
       <p class="text-gray-600 dark:text-gray-400">
-        Don't have an account?
+        {{ $t('auth.noAccount') }}
         <NuxtLink to="/signup" class="text-amber-500 hover:text-amber-600 font-medium">
-          Sign up
+          {{ $t('common.signUp') }}
         </NuxtLink>
       </p>
     </div>
@@ -67,6 +67,7 @@ definePageMeta({
   layout: 'auth'
 })
 
+const { t } = useI18n()
 const authService = useAuthService()
 const toast = useToast()
 
@@ -84,10 +85,10 @@ async function handleSubmit() {
   
   try {
     await authService.login(formState)
-    toast.add({ title: 'Welcome back!', color: 'success' })
+    toast.add({ title: t('auth.loginSuccess'), color: 'success' })
     navigateTo('/user/dashboard')
   } catch (e: any) {
-    error.value = e.response?.data?.message || 'Login failed. Please try again.'
+    error.value = e.response?.data?.message || t('auth.loginFailed')
   } finally {
     isLoading.value = false
   }

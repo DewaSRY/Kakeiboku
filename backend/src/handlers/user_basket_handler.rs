@@ -1,11 +1,14 @@
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
 };
 
-use crate::dtos::{basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload}, common_dto::CommonResponse};
-use crate::dtos::common_dto::{CommonErrorResponse, };
+use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse, PaginationQuery};
+use crate::dtos::{
+    basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload},
+    common_dto::CommonResponse,
+};
 use crate::services::basket_service;
 use crate::state::AppState;
 use crate::utils::jwt_util::AuthUser;
@@ -31,7 +34,7 @@ pub async fn create_basket(
 ) -> Result<(StatusCode, Json<CommonResponse>), (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::create_basket(&state.pool, user_id, payload)
         .await
-        .map(|basket| (StatusCode::CREATED, Json(basket)))
+        .map(|response| response.to_response())
         .map_err(|err| err.to_response())
 }
 
@@ -40,9 +43,13 @@ pub async fn create_basket(
     path = "/user/baskets",
     summary = "Get all baskets for the authenticated user",
     responses(
-        (status = 200, description = "List of user baskets", body = Vec<BasketResponse>),
+        (status = 200, description = "List of user baskets", body = CommonResponse),
         (status = 401, description = "Unauthorized", body = CommonErrorResponse),
         (status = 500, description = "Internal server error", body = CommonErrorResponse)
+    ),
+       params(
+        ("limit" = Option<i64>, Query, description = "Maximum number of results"),
+        ("page" = Option<i64>, Query, description = "Page number")
     ),
     security(("bearer_auth" = [])),
     tag = "baskets"
@@ -50,8 +57,9 @@ pub async fn create_basket(
 pub async fn get_all_baskets(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,
-) -> Result<Json<Vec<BasketResponse>>, (StatusCode, Json<CommonErrorResponse>)> {
-    basket_service::get_all_user_baskets(&state.pool, user_id)
+    Query(pagination): Query<PaginationQuery>,
+) -> Result<Json<PaginatedResponse<BasketResponse>>, (StatusCode, Json<CommonErrorResponse>)> {
+    basket_service::get_paginate_baskets(&state.pool, user_id, pagination.limit, pagination.page)
         .await
         .map(Json)
         .map_err(|err| err.to_response())
@@ -81,9 +89,9 @@ pub async fn update_basket(
     AuthUser(user_id): AuthUser,
     Path(basket_id): Path<i64>,
     Json(payload): Json<UpdateBasketPayload>,
-) -> Result<Json<CommonResponse>, (StatusCode, Json<CommonErrorResponse>)> {
+) -> Result<(StatusCode, Json<CommonResponse>), (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::update_basket(&state.pool, basket_id, user_id, payload)
         .await
-        .map(Json)
+        .map(|response| response.to_response())
         .map_err(|err| err.to_response())
 }

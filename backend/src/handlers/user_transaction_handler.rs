@@ -44,7 +44,7 @@ pub async fn create_transaction(
     params(
         ("basket_id" = i64, Path, description = "Basket ID"),
         ("limit" = Option<i64>, Query, description = "Maximum number of results"),
-        ("offset" = Option<i64>, Query, description = "Number of results to skip")
+        ("page" = Option<i64>, Query, description = "Page number")
     ),
     responses(
         (status = 200, description = "List of basket transactions", body = Vec<TransactionResponse>),
@@ -67,7 +67,7 @@ pub async fn get_basket_transactions(
         basket_id,
         user_id,
         pagination.limit,
-        pagination.offset,
+        pagination.page,
     )
     .await
     .map(Json)

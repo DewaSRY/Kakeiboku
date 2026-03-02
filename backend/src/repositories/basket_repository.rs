@@ -3,6 +3,7 @@ use sqlx::Row;
 
 pub async fn create<'e, E>(
     executor: E,
+    auth_user_id: i64,
     user_id: i64,
     name: String,
     description: Option<String>,
@@ -14,8 +15,8 @@ where
 {
     let basket = sqlx::query_as::<_, Basket>(
         r#"
-        INSERT INTO baskets (user_id, name, description, basket_category_id, type, status)
-        VALUES ($1, $2, $3, $4, $5, 'active')
+        INSERT INTO baskets (user_id, name, description, basket_category_id, type, created_by_id ,status)
+        VALUES ($1, $2, $3, $4, $5, $6, 'active')
         RETURNING id, user_id, name, description, basket_category_id, type, status, created_at, updated_at
         "#,
     )
@@ -24,6 +25,7 @@ where
     .bind(description)
     .bind(basket_category_id)
     .bind(basket_type)
+    .bind(auth_user_id)
     .fetch_one(executor)
     .await?;
 
@@ -73,74 +75,23 @@ where
     .await
 }
 
-pub async fn find_user_main_basket<'e, E>(executor: E, user_id: i64) -> Result<Basket, sqlx::Error>
+pub async fn count_user_baskets<'e, E>(executor: E, user_id: i64) -> Result<i64, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
-    sqlx::query_as::<_, Basket>(
-        r#"
-        SELECT id, user_id, name, description, basket_category_id, type, status, created_at, updated_at
-        FROM baskets
-        WHERE user_id = $1 AND type = 'main'
-        LIMIT 1
-        "#,
-    )
-    .bind(user_id)
-    .fetch_one(executor)
-    .await
-}
+    let row = sqlx::query("SELECT COUNT(*) as count FROM baskets WHERE user_id = $1")
+        .bind(user_id)
+        .fetch_one(executor)
+        .await?;
 
-pub async fn find_user_main_basket_with_balance<'e, E>(
-    executor: E,
-    user_id: i64,
-) -> Result<BasketWithBalance, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    sqlx::query_as::<_, BasketWithBalance>(
-        r#"
-        SELECT 
-            b.id, b.user_id, b.name, b.description, b.basket_category_id, 
-            b.type, b.status, b.created_at, b.updated_at,
-            COALESCE(
-                (SELECT SUM(CASE WHEN t.to_basket_id = b.id THEN t.amount ELSE 0 END) -
-                        SUM(CASE WHEN t.from_basket_id = b.id THEN t.amount ELSE 0 END)
-                 FROM transactions t
-                 WHERE t.from_basket_id = b.id OR t.to_basket_id = b.id), 0
-            )::float8 as balance
-        FROM baskets b
-        WHERE b.user_id = $1 AND b.type = 'main'
-        LIMIT 1
-        "#,
-    )
-    .bind(user_id)
-    .fetch_one(executor)
-    .await
-}
-
-pub async fn find_all_by_user_id<'e, E>(
-    executor: E,
-    user_id: i64,
-) -> Result<Vec<Basket>, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    sqlx::query_as::<_, Basket>(
-        r#"
-        SELECT id, user_id, name, description, basket_category_id, type, status, created_at, updated_at
-        FROM baskets
-        WHERE user_id = $1
-        ORDER BY type DESC, created_at ASC
-        "#,
-    )
-    .bind(user_id)
-    .fetch_all(executor)
-    .await
+    Ok(row.get("count"))
 }
 
 pub async fn find_all_by_user_id_with_balance<'e, E>(
     executor: E,
     user_id: i64,
+    limit: i64,
+    offset: i64,
 ) -> Result<Vec<BasketWithBalance>, sqlx::Error>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
@@ -159,37 +110,12 @@ where
         FROM baskets b
         WHERE b.user_id = $1
         ORDER BY b.type DESC, b.created_at ASC
+         LIMIT $2 OFFSET $3
         "#,
     )
     .bind(user_id)
-    .fetch_all(executor)
-    .await
-}
-
-pub async fn find_branch_baskets_by_user<'e, E>(
-    executor: E,
-    user_id: i64,
-) -> Result<Vec<BasketWithBalance>, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    sqlx::query_as::<_, BasketWithBalance>(
-        r#"
-        SELECT 
-            b.id, b.user_id, b.name, b.description, b.basket_category_id, 
-            b.type, b.status, b.created_at, b.updated_at,
-            COALESCE(
-                (SELECT SUM(CASE WHEN t.to_basket_id = b.id THEN t.amount ELSE 0 END) -
-                        SUM(CASE WHEN t.from_basket_id = b.id THEN t.amount ELSE 0 END)
-                 FROM transactions t
-                 WHERE t.from_basket_id = b.id OR t.to_basket_id = b.id), 0
-            )::float8 as balance
-        FROM baskets b
-        WHERE b.user_id = $1 AND b.type = 'branch'
-        ORDER BY b.created_at ASC
-        "#,
-    )
-    .bind(user_id)
+    .bind(limit)
+    .bind(offset)
     .fetch_all(executor)
     .await
 }
@@ -222,79 +148,4 @@ where
     .bind(status)
     .fetch_one(executor)
     .await
-}
-
-pub async fn update_status<'e, E>(
-    executor: E,
-    id: i64,
-    status: String,
-) -> Result<Basket, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    sqlx::query_as::<_, Basket>(
-        r#"
-        UPDATE baskets
-        SET status = $2, updated_at = CURRENT_TIMESTAMP
-        WHERE id = $1
-        RETURNING id, user_id, name, description, basket_category_id, type, status, created_at, updated_at
-        "#,
-    )
-    .bind(id)
-    .bind(status)
-    .fetch_one(executor)
-    .await
-}
-
-pub async fn delete<'e, E>(executor: E, id: i64) -> Result<(), sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    sqlx::query("DELETE FROM baskets WHERE id = $1")
-        .bind(id)
-        .execute(executor)
-        .await?;
-    Ok(())
-}
-
-pub async fn get_balance<'e, E>(executor: E, basket_id: i64) -> Result<f64, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    let row = sqlx::query(
-        r#"
-        SELECT COALESCE(
-            SUM(CASE WHEN to_basket_id = $1 THEN amount ELSE 0 END) -
-            SUM(CASE WHEN from_basket_id = $1 THEN amount ELSE 0 END), 0
-        )::float8 as balance
-        FROM transactions
-        WHERE from_basket_id = $1 OR to_basket_id = $1
-        "#,
-    )
-    .bind(basket_id)
-    .fetch_one(executor)
-    .await?;
-
-    Ok(row.get("balance"))
-}
-
-pub async fn check_ownership<'e, E>(
-    executor: E,
-    basket_id: i64,
-    user_id: i64,
-) -> Result<bool, sqlx::Error>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    let row = sqlx::query(
-        r#"
-        SELECT EXISTS(SELECT 1 FROM baskets WHERE id = $1 AND user_id = $2) as exists
-        "#,
-    )
-    .bind(basket_id)
-    .bind(user_id)
-    .fetch_one(executor)
-    .await?;
-
-    Ok(row.get("exists"))
 }

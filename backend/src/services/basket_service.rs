@@ -1,7 +1,8 @@
 use axum::http::StatusCode;
+use sqlx::PgPool;
 
 use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
-use crate::dtos::common_dto::{CommonErrorResponse, CommonResponse};
+use crate::dtos::common_dto::{CommonErrorResponse, CommonResponse, PaginatedResponse};
 use crate::repositories::basket_repository;
 
 pub async fn create_basket<'e, E>(
@@ -15,10 +16,11 @@ where
     basket_repository::create(
         executor,
         user_id,
+        user_id,
         payload.name,
         payload.description,
         payload.basket_category_id,
-        "branch".to_string(), 
+        "branch".to_string(),
     )
     .await
     .map_err(|_| {
@@ -34,64 +36,40 @@ where
     ))
 }
 
-pub async fn get_basket_by_id<'e, E>(
-    executor: E,
-    basket_id: i64,
+pub async fn get_paginate_baskets(
+    executor: &PgPool,
     user_id: i64,
-) -> Result<CommonResponse, CommonErrorResponse>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    let basket = basket_repository::find_by_id_with_balance(executor, basket_id)
-        .await
-        .map_err(|_| {
-            CommonErrorResponse::new("Basket not found".to_string(), StatusCode::NOT_FOUND)
-        })?;
+    limit: Option<i64>,
+    page: Option<i64>,
+) -> Result<PaginatedResponse<BasketResponse>, CommonErrorResponse> {
+    let limit = limit.unwrap_or(10);
+    let page = page.unwrap_or(1);
+    let offset = (page - 1) * limit;
 
-    if basket.user_id != user_id {
-        return Err(CommonErrorResponse::new(
-            "You don't have permission to access this basket".to_string(),
-            StatusCode::FORBIDDEN,
-        ));
-    }
+    let baskets =
+        basket_repository::find_all_by_user_id_with_balance(executor, user_id, limit, offset)
+            .await
+            .map_err(|_| {
+                CommonErrorResponse::new(
+                    "Failed to retrieve baskets".to_string(),
+                    StatusCode::INTERNAL_SERVER_ERROR,
+                )
+            })?;
 
-    Ok(CommonResponse::new(
-        "Basket retrieved successfully".to_string(),
-        StatusCode::OK,
-    ))
-}
-
-pub async fn get_all_user_baskets<'e, E>(
-    executor: E,
-    user_id: i64,
-) -> Result<Vec<BasketResponse>, CommonErrorResponse>
-where
-    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
-{
-    let baskets = basket_repository::find_all_by_user_id_with_balance(executor, user_id)
+    let total = basket_repository::count_user_baskets(executor, user_id)
         .await
         .map_err(|_| {
             CommonErrorResponse::new(
-                "Failed to retrieve baskets".to_string(),
+                "Failed to count baskets".to_string(),
                 StatusCode::INTERNAL_SERVER_ERROR,
             )
         })?;
 
-    Ok(baskets
+    let basket_list = baskets
         .into_iter()
-        .map(|b| BasketResponse {
-            id: b.id,
-            user_id: b.user_id,
-            name: b.name,
-            description: b.description,
-            basket_category_id: b.basket_category_id,
-            basket_type: b.basket_type,
-            status: b.status,
-            balance: b.balance,
-            created_at: b.created_at,
-            updated_at: b.updated_at,
-        })
-        .collect())
+        .map(BasketResponse::from_model)
+        .collect();
+    Ok(PaginatedResponse::new(basket_list, page, limit, total))
 }
 
 pub async fn update_basket(
@@ -123,7 +101,7 @@ pub async fn update_basket(
         }
     }
 
-     basket_repository::update(
+    basket_repository::update(
         pool,
         basket_id,
         payload.name,
@@ -143,6 +121,3 @@ pub async fn update_basket(
         StatusCode::OK,
     ))
 }
-
-
-

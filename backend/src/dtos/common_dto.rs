@@ -45,5 +45,31 @@ impl CommonResponse {
 #[derive(Debug, Deserialize)]
 pub struct PaginationQuery {
     pub limit: Option<i64>,
-    pub offset: Option<i64>,
+    pub page: Option<i64>,
+}
+
+#[derive(Serialize, Clone)]
+pub struct PaginatedResponse<T> {
+    pub data: Vec<T>,
+    pub page: i64,
+    pub limit: i64,
+    pub total: i64,
+}
+
+impl<T> PaginatedResponse<T>
+where
+    T: Serialize + Clone,
+{
+    pub fn new(data: Vec<T>, page: i64, limit: i64, total: i64) -> Self {
+        Self {
+            data,
+            page,
+            limit,
+            total,
+        }
+    }
+
+    pub fn to_response(&self) -> (StatusCode, Json<Self>) {
+        (StatusCode::OK, Json(self.clone()))
+    }
 }

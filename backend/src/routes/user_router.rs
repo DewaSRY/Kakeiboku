@@ -15,8 +15,8 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(user_transaction_handler::get_basket_transactions),
         );
 
-    let transaction_routes = Router::new()
-        .route("/", post(user_transaction_handler::create_transaction));
+    let transaction_routes =
+        Router::new().route("/", post(user_transaction_handler::create_transaction));
 
     Router::new()
         .nest("/user/baskets", basket_routes)

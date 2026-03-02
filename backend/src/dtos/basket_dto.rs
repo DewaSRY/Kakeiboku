@@ -2,6 +2,7 @@ use chrono::NaiveDateTime;
 use serde::{Deserialize, Serialize};
 use utoipa::ToSchema;
 
+use crate::models::baskets::BasketWithBalance;
 
 // #[derive(Debug, Serialize, Deserialize, ToSchema)]
 // pub struct BasketTransaction {
@@ -13,7 +14,6 @@ use utoipa::ToSchema;
 //     pub transaction_title: Option<String>,
 //     pub created_at: NaiveDateTime,
 // }
-
 
 // ============ Basket DTOs ============
 
@@ -31,7 +31,7 @@ pub struct UpdateBasketPayload {
     pub status: Option<String>, // "active", "frozen", "archived"
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 pub struct BasketResponse {
     pub id: i64,
     pub user_id: i64,
@@ -45,6 +45,23 @@ pub struct BasketResponse {
     pub updated_at: NaiveDateTime,
 }
 
+impl BasketResponse {
+    pub fn from_model(b: BasketWithBalance) -> Self {
+        Self {
+            id: b.id,
+            user_id: b.user_id,
+            name: b.name,
+            description: b.description,
+            basket_category_id: b.basket_category_id,
+            basket_type: b.basket_type,
+            status: b.status,
+            balance: b.balance,
+            created_at: b.created_at,
+            updated_at: b.updated_at,
+        }
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BasketWithCategory {
     pub id: i64,
@@ -56,13 +73,10 @@ pub struct BasketWithCategory {
     pub basket_type: String,
     pub status: String,
     pub balance: f64,
-    
+
     pub created_at: NaiveDateTime,
     pub updated_at: NaiveDateTime,
 }
-
-
-
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct BasketCategoryResponse {

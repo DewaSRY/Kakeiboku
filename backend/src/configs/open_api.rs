@@ -1,6 +1,6 @@
 use utoipa::OpenApi;
 
-use crate::handlers::{auth_handler, basket_handler, transaction_handler};
+use crate::handlers::{auth_handler,};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -9,37 +9,10 @@ use crate::handlers::{auth_handler, basket_handler, transaction_handler};
         auth_handler::register,
         auth_handler::login,
         // Baskets
-        basket_handler::create_basket,
-        basket_handler::get_all_baskets,
-        basket_handler::get_main_basket,
-        basket_handler::get_branch_baskets,
-        basket_handler::get_basket_by_id,
-        basket_handler::update_basket,
-        basket_handler::delete_basket,
-        basket_handler::deposit_to_main_basket,
-        basket_handler::transfer_to_branch,
-        basket_handler::create_basket_category,
-        basket_handler::get_all_basket_categories,
-        basket_handler::delete_basket_category,
-        // Transactions
-        transaction_handler::create_transaction,
-        transaction_handler::get_transaction_by_id,
-        transaction_handler::get_user_transactions,
-        transaction_handler::get_basket_transactions,
-        transaction_handler::create_transaction_type,
-        transaction_handler::get_all_transaction_types,
-        transaction_handler::get_flat_transaction_types,
-        transaction_handler::update_transaction_type,
-        transaction_handler::delete_transaction_type,
+
     ),
     components(
         schemas(
-            crate::models::users::User,
-            crate::models::baskets::Basket,
-            crate::models::baskets_category::BasketCategory,
-            crate::models::transactions::Transaction,
-            crate::models::transactions_type::TransactionType,
-            crate::models::transactions_detail::TransactionDetail,
             crate::dtos::basket_dto::BasketResponse,
             crate::dtos::basket_dto::BasketCategoryResponse,
             crate::dtos::basket_dto::CreateBasketPayload,
@@ -55,7 +28,6 @@ use crate::handlers::{auth_handler, basket_handler, transaction_handler};
             crate::dtos::transaction_dto::TransactionBasketInfo,
             crate::dtos::transaction_dto::TransactionTypeInfo,
             crate::dtos::transaction_dto::TransactionDetailResponse,
-            crate::dtos::common_dto::CommonResponse,
             crate::dtos::common_dto::CommonErrorResponse,
         )
     ),

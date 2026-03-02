@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: kekaiboku-postgres
+    environment:
+      POSTGRES_DB: kekaiboku
+      POSTGRES_USER: kekaiboku
+      POSTGRES_PASSWORD: kekaiboku
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - kekaiboku-network
+
+volumes:
+  postgres_data:
+
+networks:
+  kekaiboku-network:
+    driver: bridge 

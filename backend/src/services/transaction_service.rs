@@ -3,8 +3,9 @@ use axum::http::StatusCode;
 use crate::dtos::common_dto::CommonErrorResponse;
 use crate::dtos::transaction_dto::{
     CreateTransactionPayload, CreateTransactionTypePayload, TransactionBasketInfo,
-    TransactionDetailResponse, TransactionResponse, TransactionTypeInfo, TransactionTypeResponse,
-    TransactionWithDetails, UpdateTransactionTypePayload,
+    TransactionDetailResponse, TransactionResponse, TransactionTypeChildrenResponse,
+    TransactionTypeInfo, TransactionTypeResponse, TransactionWithDetails,
+    UpdateTransactionTypePayload,
 };
 use crate::repositories::{
     basket_repository, transaction_detail_repository, transaction_repository,
@@ -329,7 +330,7 @@ where
         parent_id: transaction_type.parent_id,
         name: transaction_type.name,
         description: transaction_type.description,
-        children: None,
+        children: vec![],
         created_at: transaction_type.created_at,
     })
 }
@@ -355,14 +356,13 @@ pub async fn get_all_transaction_types(
             .await
             .unwrap_or_default();
 
-        let children_response: Vec<TransactionTypeResponse> = children
+        let children_response: Vec<TransactionTypeChildrenResponse> = children
             .into_iter()
-            .map(|c| TransactionTypeResponse {
+            .map(|c| TransactionTypeChildrenResponse {
                 id: c.id,
                 parent_id: c.parent_id,
                 name: c.name,
                 description: c.description,
-                children: None,
                 created_at: c.created_at,
             })
             .collect();
@@ -372,11 +372,7 @@ pub async fn get_all_transaction_types(
             parent_id: root.parent_id,
             name: root.name,
             description: root.description,
-            children: if children_response.is_empty() {
-                None
-            } else {
-                Some(children_response)
-            },
+            children: children_response,
             created_at: root.created_at,
         });
     }
@@ -406,7 +402,7 @@ where
             parent_id: t.parent_id,
             name: t.name,
             description: t.description,
-            children: None,
+            children: vec![],
             created_at: t.created_at,
         })
         .collect())
@@ -440,7 +436,7 @@ where
         parent_id: transaction_type.parent_id,
         name: transaction_type.name,
         description: transaction_type.description,
-        children: None,
+        children: vec![],
         created_at: transaction_type.created_at,
     })
 }

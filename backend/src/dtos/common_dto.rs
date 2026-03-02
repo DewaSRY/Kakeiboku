@@ -28,8 +28,6 @@ impl CommonErrorResponse {
 //     pub code: u16,
 // }
 
-
-
 // impl CommonResponse {
 //     pub fn new(message: String, code: StatusCode) -> Self {
 //         Self {
@@ -43,7 +41,6 @@ impl CommonErrorResponse {
 //         (status, Json(self.clone()))
 //     }
 // }
-
 
 #[derive(Debug, Deserialize)]
 pub struct PaginationQuery {

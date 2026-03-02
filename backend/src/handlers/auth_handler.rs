@@ -11,13 +11,14 @@ use crate::utils::jwt_util::AuthUser;
 #[utoipa::path(
     post,
     path = "/auth/register",
+    summary = "Register a new user",
     request_body = RegisterPayload,
     responses(
         (status = 200, description = "User registered successfully", body = AuthResponse),
         (status = 400, description = "Bad request",body = CommonErrorResponse),
         (status = 500, description = "Internal server error", body = CommonErrorResponse)
     ),
-    tag = "auth"
+    tag = "auth",
 )]
 pub async fn register(
     State(state): State<AppState>,
@@ -32,6 +33,8 @@ pub async fn register(
 #[utoipa::path(
     post,
     path = "/auth/login",
+    summary = "Login user",
+     request_body = LoginPayload,
     request_body = LoginPayload,
     responses(
         (status = 200, description = "User logged in successfully", body = AuthResponse),
@@ -53,6 +56,7 @@ pub async fn login(
 #[utoipa::path(
     get,
     path = "/auth/profile",
+    summary = "Get user profile",
     responses(
         (status = 200, description = "User profile retrieved successfully", body = UserProfile),
         (status = 400, description = "Bad request", body= CommonErrorResponse),

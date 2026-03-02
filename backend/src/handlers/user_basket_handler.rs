@@ -4,19 +4,16 @@ use axum::{
     http::StatusCode,
 };
 
-use crate::dtos::basket_dto::{
-     BasketResponse, CreateBasketPayload,
-      UpdateBasketPayload,
-};
-use crate::dtos::common_dto::{CommonErrorResponse};
+use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
+use crate::dtos::common_dto::CommonErrorResponse;
 use crate::services::basket_service;
 use crate::state::AppState;
 use crate::utils::jwt_util::AuthUser;
 
-
 #[utoipa::path(
     post,
     path = "/user/baskets",
+    summary = "Create a new basket for the user",
     request_body = CreateBasketPayload,
     responses(
         (status = 201, description = "Basket created successfully", body = BasketResponse),
@@ -41,6 +38,7 @@ pub async fn create_basket(
 #[utoipa::path(
     get,
     path = "/user/baskets",
+    summary = "Get all baskets for the authenticated user",
     responses(
         (status = 200, description = "List of user baskets", body = Vec<BasketResponse>),
         (status = 401, description = "Unauthorized", body = CommonErrorResponse),
@@ -62,6 +60,7 @@ pub async fn get_all_baskets(
 #[utoipa::path(
     put,
     path = "/user/baskets/{basket_id}",
+    summary = "Update a basket for the authenticated user",
     params(
         ("basket_id" = i64, Path, description = "Basket ID")
     ),
@@ -88,4 +87,3 @@ pub async fn update_basket(
         .map(Json)
         .map_err(|err| err.to_response())
 }
-

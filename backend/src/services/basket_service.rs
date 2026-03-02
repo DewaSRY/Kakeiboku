@@ -1,13 +1,8 @@
 use axum::http::StatusCode;
 
-use crate::dtos::basket_dto::{
-   BasketResponse, CreateBasketPayload,
-   UpdateBasketPayload,
-};
+use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
 use crate::dtos::common_dto::CommonErrorResponse;
-use crate::repositories::{
-   basket_repository
-};
+use crate::repositories::basket_repository;
 
 pub async fn create_basket<'e, E>(
     executor: E,
@@ -54,7 +49,6 @@ where
         updated_at: basket.updated_at,
     })
 }
-
 
 pub async fn get_basket_by_id<'e, E>(
     executor: E,
@@ -124,7 +118,6 @@ where
         .collect())
 }
 
-
 pub async fn update_basket(
     pool: &sqlx::PgPool,
     basket_id: i64,
@@ -184,4 +177,3 @@ pub async fn update_basket(
         updated_at: basket.updated_at,
     })
 }
-

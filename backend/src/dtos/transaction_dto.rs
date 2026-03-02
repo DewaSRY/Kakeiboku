@@ -78,12 +78,21 @@ pub struct UpdateTransactionTypePayload {
 }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct TransactionTypeChildrenResponse {
+    pub id: i64,
+    pub parent_id: Option<i64>,
+    pub name: String,
+    pub description: Option<String>,
+    pub created_at: NaiveDateTime,
+}
+
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TransactionTypeResponse {
     pub id: i64,
     pub parent_id: Option<i64>,
     pub name: String,
     pub description: Option<String>,
-    pub children: Option<Vec<TransactionTypeResponse>>,
+    pub children: Vec<TransactionTypeChildrenResponse>,
     pub created_at: NaiveDateTime,
 }
 

@@ -16,19 +16,19 @@ pub struct CreateTransactionPayload {
     pub description: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema,Clone)]
+#[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
 pub struct TransactionResponse {
     pub id: i64,
     pub created_by_id: i64,
     pub from_basket_id: Option<i64>,
-    pub to_basket_id:i64,
+    pub to_basket_id: i64,
     pub amount: f64,
     pub transaction_type_id: i64,
     pub created_at: NaiveDateTime,
 }
 
 impl TransactionResponse {
-   pub fn from_model(t: Transaction) -> Self {
+    pub fn from_model(t: Transaction) -> Self {
         Self {
             id: t.id,
             created_by_id: t.created_by_id,
@@ -36,7 +36,7 @@ impl TransactionResponse {
             to_basket_id: t.to_basket_id,
             amount: t.amount,
             transaction_type_id: t.transaction_type_id,
-            created_at: t.created_at,       
+            created_at: t.created_at,
         }
     }
 }

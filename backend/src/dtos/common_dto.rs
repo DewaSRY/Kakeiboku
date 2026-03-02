@@ -73,3 +73,10 @@ where
         (StatusCode::OK, Json(self.clone()))
     }
 }
+
+/// Simple response with only id and name for common listing endpoints
+#[derive(Debug, Serialize, Deserialize, ToSchema, Clone)]
+pub struct IdNameResponse {
+    pub id: i64,
+    pub name: String,
+}

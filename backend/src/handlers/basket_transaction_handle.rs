@@ -5,7 +5,7 @@ use axum::{
 };
 
 use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse, PaginationQuery};
-use crate::dtos::transaction_dto::{ TransactionResponse};
+use crate::dtos::transaction_dto::TransactionResponse;
 use crate::services::transaction_service;
 use crate::state::AppState;
 use crate::utils::jwt_util::AuthUser;

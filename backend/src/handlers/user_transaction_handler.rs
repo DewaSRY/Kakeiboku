@@ -1,10 +1,6 @@
-use axum::{
-    Json,
-    extract::{ State},
-    http::StatusCode,
-};
+use axum::{Json, extract::State, http::StatusCode};
 
-use crate::dtos::common_dto::{CommonErrorResponse};
+use crate::dtos::common_dto::CommonErrorResponse;
 use crate::dtos::transaction_dto::{CreateTransactionPayload, TransactionResponse};
 use crate::services::transaction_service;
 use crate::state::AppState;
@@ -36,4 +32,3 @@ pub async fn create_transaction(
         .map(|transaction| (StatusCode::CREATED, Json(transaction)))
         .map_err(|err| err.to_response())
 }
-

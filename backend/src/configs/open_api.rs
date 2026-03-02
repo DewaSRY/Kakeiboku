@@ -1,6 +1,9 @@
 use utoipa::OpenApi;
 
-use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handler, basket_transaction_handle};
+use crate::handlers::{
+    auth_handler, basket_transaction_handle, common_handler, user_basket_handler,
+    user_transaction_handler,
+};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -15,11 +18,14 @@ use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handle
         // Transactions
         user_transaction_handler::create_transaction,
         basket_transaction_handle::get_basket_transactions,
-        
+        // Common
+        common_handler::get_basket_categories,
+        common_handler::get_transaction_types,
     ),
     components(
         schemas(
             crate::dtos::common_dto::CommonErrorResponse,
+            crate::dtos::common_dto::IdNameResponse,
             crate::dtos::basket_dto::BasketResponse,
             crate::dtos::basket_dto::BasketCategoryResponse,
             crate::dtos::basket_dto::CreateBasketPayload,
@@ -39,6 +45,7 @@ use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handle
         (name = "auth", description = "Authentication management"),
         (name = "baskets", description = "Basket management for storing money"),
         (name = "transactions", description = "Transaction management"),
+        (name = "common", description = "Common data endpoints"),
         (name = "admin", description = "Admin operations")
     ),
     info(

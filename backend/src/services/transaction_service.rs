@@ -1,10 +1,7 @@
 use axum::http::StatusCode;
 
 use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse};
-use crate::dtos::transaction_dto::{
-    CreateTransactionPayload,
-    TransactionResponse,
-};
+use crate::dtos::transaction_dto::{CreateTransactionPayload, TransactionResponse};
 use crate::repositories::{
     basket_repository, transaction_detail_repository, transaction_repository,
     transaction_type_repository,
@@ -131,7 +128,6 @@ pub async fn get_basket_transactions(
     limit: Option<i64>,
     offset: Option<i64>,
 ) -> Result<PaginatedResponse<TransactionResponse>, CommonErrorResponse> {
-
     let basket = basket_repository::find_by_id(pool, basket_id)
         .await
         .map_err(|_| {
@@ -143,7 +139,7 @@ pub async fn get_basket_transactions(
             "Basket does not belong to you".to_string(),
             StatusCode::FORBIDDEN,
         ));
-    }   
+    }
 
     let limit = limit.unwrap_or(50);
     let offset = offset.unwrap_or(0);
@@ -157,21 +153,24 @@ pub async fn get_basket_transactions(
             )
         })?;
 
-        let total = transaction_repository::count_by_basket_id(pool, basket_id)
+    let total = transaction_repository::count_by_basket_id(pool, basket_id)
         .await
         .map_err(|_| {
             CommonErrorResponse::new(
                 "Failed to count transactions".to_string(),
-                StatusCode::INTERNAL_SERVER_ERROR,  )
-            })?;
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )
+        })?;
 
-    let transaction_list = transactions.into_iter().map(TransactionResponse::from_model).collect();
+    let transaction_list = transactions
+        .into_iter()
+        .map(TransactionResponse::from_model)
+        .collect();
 
     Ok(PaginatedResponse::new(
         transaction_list,
         offset / limit + 1,
         limit,
         total, // Use the total count of transactions
-     ))
-
+    ))
 }

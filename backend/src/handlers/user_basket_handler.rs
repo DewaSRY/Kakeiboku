@@ -65,7 +65,6 @@ pub async fn get_all_baskets(
         .map_err(|err| err.to_response())
 }
 
-
 #[utoipa::path(
     get,
     path = "/user/baskets/{basket_id}",
@@ -94,8 +93,6 @@ pub async fn get_by_id(
         .map(Json)
         .map_err(|err| err.to_response())
 }
-
-
 
 #[utoipa::path(
     put,

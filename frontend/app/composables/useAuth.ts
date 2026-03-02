@@ -16,6 +16,7 @@ export function useAuth() {
       })
 
       user.value = data
+      await navigateTo('/user/dashboard')
       return data
     } catch (err: any) {
       error.value = err?.data?.message || 'Login failed'
@@ -36,6 +37,7 @@ export function useAuth() {
       })
 
       user.value = data
+      await navigateTo('/user/dashboard')
       return data
     } catch (err: any) {
       error.value = err?.data?.message || 'Registration failed'

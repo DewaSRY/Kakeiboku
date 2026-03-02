@@ -109,7 +109,6 @@ import { useBasketService, useTransactionService } from '~/services'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
 })
 
 const basketService = useBasketService()

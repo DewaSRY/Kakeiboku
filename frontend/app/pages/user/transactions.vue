@@ -15,14 +15,14 @@
     </div>
 
     <UCard>
-      <UTable :columns="columns" :rows="transactions">
+      <UTable :columns="columns" :data="transactions">
         <template #amount-data="{ row }">
-          <span :class="row.amount >= 0 ? 'text-green-600' : 'text-red-600'">
-            {{ formatCurrency(row.amount) }}
+          <span :class="row.original.amount >= 0 ? 'text-green-600' : 'text-red-600'">
+            {{ formatCurrency(row.original.amount) }}
           </span>
         </template>
         <template #created_at-data="{ row }">
-          {{ formatDate(row.created_at) }}
+          {{ formatDate(row.original.created_at) }}
         </template>
       </UTable>
 
@@ -46,11 +46,11 @@
 
 <script setup lang="ts">
 import type { TransactionResponse } from '~/dtos'
+import type { TableColumn } from '@nuxt/ui'
 import { useTransactionService } from '~/services'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
 })
 
 const transactionService = useTransactionService()
@@ -59,11 +59,11 @@ const toast = useToast()
 const transactions = ref<TransactionResponse[]>([])
 const showCreateTransaction = ref(false)
 
-const columns = [
-  { key: 'id', label: 'ID' },
-  { key: 'amount', label: 'Amount' },
-  { key: 'transaction_type_id', label: 'Type' },
-  { key: 'created_at', label: 'Date' }
+const columns: TableColumn<TransactionResponse>[] = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'amount', header: 'Amount' },
+  { accessorKey: 'transaction_type_id', header: 'Type' },
+  { accessorKey: 'created_at', header: 'Date' }
 ]
 
 const formatCurrency = (amount: number) => {

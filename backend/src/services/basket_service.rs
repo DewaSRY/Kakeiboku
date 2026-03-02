@@ -1,32 +1,24 @@
 use axum::http::StatusCode;
 
 use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
-use crate::dtos::common_dto::CommonErrorResponse;
+use crate::dtos::common_dto::{CommonErrorResponse, CommonResponse};
 use crate::repositories::basket_repository;
 
 pub async fn create_basket<'e, E>(
     executor: E,
     user_id: i64,
     payload: CreateBasketPayload,
-) -> Result<BasketResponse, CommonErrorResponse>
+) -> Result<CommonResponse, CommonErrorResponse>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
-    // For main basket, check if user already has one
-    if payload.basket_type == "main" {
-        return Err(CommonErrorResponse::new(
-            "Cannot manually create main basket. Main basket is created automatically.".to_string(),
-            StatusCode::BAD_REQUEST,
-        ));
-    }
-
-    let basket = basket_repository::create(
+    basket_repository::create(
         executor,
         user_id,
         payload.name,
         payload.description,
         payload.basket_category_id,
-        payload.basket_type,
+        "branch".to_string(), 
     )
     .await
     .map_err(|_| {
@@ -36,25 +28,17 @@ where
         )
     })?;
 
-    Ok(BasketResponse {
-        id: basket.id,
-        user_id: basket.user_id,
-        name: basket.name,
-        description: basket.description,
-        basket_category_id: basket.basket_category_id,
-        basket_type: basket.basket_type,
-        status: basket.status,
-        balance: 0.0,
-        created_at: basket.created_at,
-        updated_at: basket.updated_at,
-    })
+    Ok(CommonResponse::new(
+        "Basket created successfully".to_string(),
+        StatusCode::CREATED,
+    ))
 }
 
 pub async fn get_basket_by_id<'e, E>(
     executor: E,
     basket_id: i64,
     user_id: i64,
-) -> Result<BasketResponse, CommonErrorResponse>
+) -> Result<CommonResponse, CommonErrorResponse>
 where
     E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
 {
@@ -71,18 +55,10 @@ where
         ));
     }
 
-    Ok(BasketResponse {
-        id: basket.id,
-        user_id: basket.user_id,
-        name: basket.name,
-        description: basket.description,
-        basket_category_id: basket.basket_category_id,
-        basket_type: basket.basket_type,
-        status: basket.status,
-        balance: basket.balance,
-        created_at: basket.created_at,
-        updated_at: basket.updated_at,
-    })
+    Ok(CommonResponse::new(
+        "Basket retrieved successfully".to_string(),
+        StatusCode::OK,
+    ))
 }
 
 pub async fn get_all_user_baskets<'e, E>(
@@ -123,7 +99,7 @@ pub async fn update_basket(
     basket_id: i64,
     user_id: i64,
     payload: UpdateBasketPayload,
-) -> Result<BasketResponse, CommonErrorResponse> {
+) -> Result<CommonResponse, CommonErrorResponse> {
     // Check ownership first
     let existing = basket_repository::find_by_id(pool, basket_id)
         .await
@@ -138,7 +114,6 @@ pub async fn update_basket(
         ));
     }
 
-    // Validate status if provided
     if let Some(ref status) = payload.status {
         if !["active", "frozen", "archived"].contains(&status.as_str()) {
             return Err(CommonErrorResponse::new(
@@ -148,12 +123,11 @@ pub async fn update_basket(
         }
     }
 
-    let basket = basket_repository::update(
+     basket_repository::update(
         pool,
         basket_id,
         payload.name,
         payload.description,
-        payload.basket_category_id,
         payload.status,
     )
     .await
@@ -164,16 +138,11 @@ pub async fn update_basket(
         )
     })?;
 
-    Ok(BasketResponse {
-        id: basket.id,
-        user_id: basket.user_id,
-        name: basket.name,
-        description: basket.description,
-        basket_category_id: basket.basket_category_id,
-        basket_type: basket.basket_type,
-        status: basket.status,
-        balance: 0.0, // Balance needs to be calculated separately
-        created_at: basket.created_at,
-        updated_at: basket.updated_at,
-    })
+    Ok(CommonResponse::new(
+        "Basket updated successfully".to_string(),
+        StatusCode::OK,
+    ))
 }
+
+
+

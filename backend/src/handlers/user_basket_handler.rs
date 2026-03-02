@@ -4,8 +4,8 @@ use axum::{
     http::StatusCode,
 };
 
-use crate::dtos::basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload};
-use crate::dtos::common_dto::CommonErrorResponse;
+use crate::dtos::{basket_dto::{BasketResponse, CreateBasketPayload, UpdateBasketPayload}, common_dto::CommonResponse};
+use crate::dtos::common_dto::{CommonErrorResponse, };
 use crate::services::basket_service;
 use crate::state::AppState;
 use crate::utils::jwt_util::AuthUser;
@@ -16,7 +16,7 @@ use crate::utils::jwt_util::AuthUser;
     summary = "Create a new basket for the user",
     request_body = CreateBasketPayload,
     responses(
-        (status = 201, description = "Basket created successfully", body = BasketResponse),
+        (status = 201, description = "Basket created successfully", body = CommonResponse),
         (status = 400, description = "Bad request", body = CommonErrorResponse),
         (status = 401, description = "Unauthorized", body = CommonErrorResponse),
         (status = 500, description = "Internal server error", body = CommonErrorResponse)
@@ -28,7 +28,7 @@ pub async fn create_basket(
     State(state): State<AppState>,
     AuthUser(user_id): AuthUser,
     Json(payload): Json<CreateBasketPayload>,
-) -> Result<(StatusCode, Json<BasketResponse>), (StatusCode, Json<CommonErrorResponse>)> {
+) -> Result<(StatusCode, Json<CommonResponse>), (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::create_basket(&state.pool, user_id, payload)
         .await
         .map(|basket| (StatusCode::CREATED, Json(basket)))
@@ -66,7 +66,7 @@ pub async fn get_all_baskets(
     ),
     request_body = UpdateBasketPayload,
     responses(
-        (status = 200, description = "Basket updated successfully", body = BasketResponse),
+        (status = 200, description = "Basket updated successfully", body = CommonResponse),
         (status = 400, description = "Bad request", body = CommonErrorResponse),
         (status = 401, description = "Unauthorized", body = CommonErrorResponse),
         (status = 403, description = "Forbidden", body = CommonErrorResponse),
@@ -81,7 +81,7 @@ pub async fn update_basket(
     AuthUser(user_id): AuthUser,
     Path(basket_id): Path<i64>,
     Json(payload): Json<UpdateBasketPayload>,
-) -> Result<Json<BasketResponse>, (StatusCode, Json<CommonErrorResponse>)> {
+) -> Result<Json<CommonResponse>, (StatusCode, Json<CommonErrorResponse>)> {
     basket_service::update_basket(&state.pool, basket_id, user_id, payload)
         .await
         .map(Json)

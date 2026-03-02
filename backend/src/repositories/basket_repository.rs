@@ -199,7 +199,6 @@ pub async fn update<'e, E>(
     id: i64,
     name: Option<String>,
     description: Option<String>,
-    basket_category_id: Option<i64>,
     status: Option<String>,
 ) -> Result<Basket, sqlx::Error>
 where
@@ -211,7 +210,6 @@ where
         SET 
             name = COALESCE($2, name),
             description = COALESCE($3, description),
-            basket_category_id = COALESCE($4, basket_category_id),
             status = COALESCE($5, status),
             updated_at = CURRENT_TIMESTAMP
         WHERE id = $1
@@ -221,7 +219,6 @@ where
     .bind(id)
     .bind(name)
     .bind(description)
-    .bind(basket_category_id)
     .bind(status)
     .fetch_one(executor)
     .await

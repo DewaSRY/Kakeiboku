@@ -64,10 +64,10 @@ SELECT setval('transactions_type_id_seq', (SELECT MAX(id) FROM transactions_type
 -- Argon2id hash generated for "password123"
 -- ============================================
 INSERT INTO users (id, first_name, last_name, email, password, role) VALUES
-    (1, 'Admin', 'User', 'admin@kakeiboku.com', '$argon2id$v=19$m=19456,t=2,p=1$YWJjZGVmZ2hpamtsbW5vcA$0Z8+ePVRFobM7VKK3sUqQqY1y9LjP4d8nQmZ6G5NjAE', 'admin'),
-    (2, 'John', 'Doe', 'john@example.com', '$argon2id$v=19$m=19456,t=2,p=1$YWJjZGVmZ2hpamtsbW5vcA$0Z8+ePVRFobM7VKK3sUqQqY1y9LjP4d8nQmZ6G5NjAE', 'user'),
-    (3, 'Jane', 'Smith', 'jane@example.com', '$argon2id$v=19$m=19456,t=2,p=1$YWJjZGVmZ2hpamtsbW5vcA$0Z8+ePVRFobM7VKK3sUqQqY1y9LjP4d8nQmZ6G5NjAE', 'user'),
-    (4, 'Demo', 'Account', 'demo@kakeiboku.com', '$argon2id$v=19$m=19456,t=2,p=1$YWJjZGVmZ2hpamtsbW5vcA$0Z8+ePVRFobM7VKK3sUqQqY1y9LjP4d8nQmZ6G5NjAE', 'user')
+    (1, 'Admin', 'User', 'admin@kakeiboku.com', '$argon2id$v=19$m=19456,t=2,p=1$zGllLWq5CmMtB5/mjnwvyQ$GWNho8vAfBfbcYBt8Meshf5zGserGxj0AIa3V7G5pC4', 'admin'),
+    (2, 'John', 'Doe', 'john@example.com', '$argon2id$v=19$m=19456,t=2,p=1$zGllLWq5CmMtB5/mjnwvyQ$GWNho8vAfBfbcYBt8Meshf5zGserGxj0AIa3V7G5pC4', 'user'),
+    (3, 'Jane', 'Smith', 'jane@example.com', '$argon2id$v=19$m=19456,t=2,p=1$zGllLWq5CmMtB5/mjnwvyQ$GWNho8vAfBfbcYBt8Meshf5zGserGxj0AIa3V7G5pC4', 'user'),
+    (4, 'Demo', 'Account', 'demo@kakeiboku.com', '$argon2id$v=19$m=19456,t=2,p=1$zGllLWq5CmMtB5/mjnwvyQ$GWNho8vAfBfbcYBt8Meshf5zGserGxj0AIa3V7G5pC4', 'user')
 ON CONFLICT (email) DO NOTHING;
 
 SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));

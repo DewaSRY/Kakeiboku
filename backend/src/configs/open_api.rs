@@ -19,12 +19,12 @@ use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handle
     ),
     components(
         schemas(
+            crate::dtos::common_dto::CommonErrorResponse,
             crate::dtos::basket_dto::BasketResponse,
             crate::dtos::basket_dto::BasketCategoryResponse,
             crate::dtos::basket_dto::CreateBasketPayload,
             crate::dtos::basket_dto::UpdateBasketPayload,
-            crate::dtos::basket_dto::DepositToMainBasketPayload,
-            crate::dtos::basket_dto::TransferToBranchPayload,
+            
             crate::dtos::transaction_dto::TransactionResponse,
             crate::dtos::transaction_dto::TransactionWithDetails,
             crate::dtos::transaction_dto::TransactionTypeResponse,
@@ -34,7 +34,6 @@ use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handle
             crate::dtos::transaction_dto::TransactionBasketInfo,
             crate::dtos::transaction_dto::TransactionTypeInfo,
             crate::dtos::transaction_dto::TransactionDetailResponse,
-            crate::dtos::common_dto::CommonErrorResponse,
         )
     ),
     tags(

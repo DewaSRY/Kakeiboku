@@ -1,6 +1,6 @@
 use utoipa::OpenApi;
 
-use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handler};
+use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handler, basket_transaction_handle};
 
 #[derive(OpenApi)]
 #[openapi(
@@ -14,8 +14,8 @@ use crate::handlers::{auth_handler, user_basket_handler, user_transaction_handle
         user_basket_handler::update_basket,
         // Transactions
         user_transaction_handler::create_transaction,
-        user_transaction_handler::get_basket_transactions,
-
+        basket_transaction_handle::get_basket_transactions,
+        
     ),
     components(
         schemas(

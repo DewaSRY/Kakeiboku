@@ -3,7 +3,7 @@ use axum::{
     routing::{get, post, put},
 };
 
-use crate::handlers::{user_basket_handler, user_transaction_handler};
+use crate::handlers::{user_basket_handler, user_transaction_handler, basket_transaction_handle};
 
 pub fn user_routes() -> Router<crate::state::AppState> {
     let basket_routes = Router::new()
@@ -13,7 +13,7 @@ pub fn user_routes() -> Router<crate::state::AppState> {
         .route("/{basket_id}", put(user_basket_handler::update_basket))
         .route(
             "/{basket_id}/transactions",
-            get(user_transaction_handler::get_basket_transactions),
+            get(basket_transaction_handle::get_basket_transactions),
         );
 
     let transaction_routes =

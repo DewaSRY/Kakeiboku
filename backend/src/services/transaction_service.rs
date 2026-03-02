@@ -1,6 +1,6 @@
 use axum::http::StatusCode;
 
-use crate::dtos::common_dto::CommonErrorResponse;
+use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse};
 use crate::dtos::transaction_dto::{
     CreateTransactionPayload,
     TransactionResponse,
@@ -130,8 +130,8 @@ pub async fn get_basket_transactions(
     user_id: i64,
     limit: Option<i64>,
     offset: Option<i64>,
-) -> Result<Vec<TransactionResponse>, CommonErrorResponse> {
-    // Verify basket ownership
+) -> Result<PaginatedResponse<TransactionResponse>, CommonErrorResponse> {
+
     let basket = basket_repository::find_by_id(pool, basket_id)
         .await
         .map_err(|_| {
@@ -140,10 +140,10 @@ pub async fn get_basket_transactions(
 
     if basket.user_id != user_id {
         return Err(CommonErrorResponse::new(
-            "You don't have access to this basket".to_string(),
+            "Basket does not belong to you".to_string(),
             StatusCode::FORBIDDEN,
         ));
-    }
+    }   
 
     let limit = limit.unwrap_or(50);
     let offset = offset.unwrap_or(0);
@@ -157,16 +157,21 @@ pub async fn get_basket_transactions(
             )
         })?;
 
-    Ok(transactions
-        .into_iter()
-        .map(|t| TransactionResponse {
-            id: t.id,
-            created_by_id: t.created_by_id,
-            from_basket_id: t.from_basket_id,
-            to_basket_id: t.to_basket_id,
-            amount: t.amount,
-            transaction_type_id: t.transaction_type_id,
-            created_at: t.created_at,
-        })
-        .collect())
+        let total = transaction_repository::count_by_basket_id(pool, basket_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Failed to count transactions".to_string(),
+                StatusCode::INTERNAL_SERVER_ERROR,  )
+            })?;
+
+    let transaction_list = transactions.into_iter().map(TransactionResponse::from_model).collect();
+
+    Ok(PaginatedResponse::new(
+        transaction_list,
+        offset / limit + 1,
+        limit,
+        total, // Use the total count of transactions
+     ))
+
 }

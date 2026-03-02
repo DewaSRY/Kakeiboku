@@ -18,15 +18,19 @@ export const useBasketService = () => {
   const api = useApiClient()
 
   const getAllBaskets = async (params?: PaginationParams): Promise<PaginatedBasketResponse> => {
-    return await api.get<PaginatedBasketResponse>('/user/baskets', { params })
+    return await api.get<PaginatedBasketResponse>('/api/baskets', params)
   }
 
   const createBasket = async (payload: CreateBasketPayload): Promise<CommonResponse> => {
-    return await api.post<CommonResponse>('/user/baskets', payload)
+    return await api.post<CommonResponse>('/api/baskets', payload)
   }
 
   const updateBasket = async (basketId: number, payload: UpdateBasketPayload): Promise<CommonResponse> => {
-    return await api.put<CommonResponse>(`/user/baskets/${basketId}`, payload)
+    return await api.put<CommonResponse>(`/api/baskets/${basketId}`, payload)
+  }
+
+  const getBasketTransactions = async (basketId: number, params?: PaginationParams) => {
+    return await api.get(`/api/baskets/${basketId}/transactions`, params)
   }
 
   const getMainBasket = async (): Promise<BasketResponse | null> => {
@@ -48,6 +52,7 @@ export const useBasketService = () => {
     getAllBaskets,
     createBasket,
     updateBasket,
+    getBasketTransactions,
     getMainBasket,
     getBranchBaskets,
     getTotalBalance

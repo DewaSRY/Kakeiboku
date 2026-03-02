@@ -1,13 +1,13 @@
-import axios from 'axios'
-import { UpdateBasketPayloadSchema } from '~/dtos'
+import { apiClient, API_USER_BASKET_BY_ID, UpdateBasketPayloadSchema } from '../../shared'
+import type { UpdateBasketPayload, CommonResponse } from '../../shared'
+import type { AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   const basketId = getRouterParam(event, 'id')
-  const body = await readBody(event)
-  const authHeader = getHeader(event, 'authorization')
-  
-  if (!authHeader) {
+  const body = await readBody<UpdateBasketPayload>(event)
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
     throw createError({
       statusCode: 401,
       message: 'Unauthorized'
@@ -24,16 +24,17 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await axios.put(
-      `${config.public.apiBaseUrl}/user/baskets/${basketId}`,
+    const { data } = await apiClient.put<UpdateBasketPayload, CommonResponse>(
+      API_USER_BASKET_BY_ID(basketId!),
       validation.data,
-      { headers: { Authorization: authHeader } }
+      { headers: { Authorization: token } }
     )
-    return response.data
+    return data
   } catch (error: any) {
+    const err = error as AxiosError<any>
     throw createError({
-      statusCode: error.response?.status || 500,
-      message: error.response?.data?.error || 'Failed to update basket'
+      statusCode: err.response?.status || 500,
+      message: err.response?.data?.message || err.response?.data?.error || 'Failed to update basket'
     })
   }
 })

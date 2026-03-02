@@ -1,11 +1,12 @@
-import axios from 'axios'
+import { apiClient, API_USER_COMMON_BASKET_CATEGORY } from '../../shared'
+import type { PaginatedIdNameResponse } from '../../shared'
+import type { AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   const query = getQuery(event)
-  const authHeader = getHeader(event, 'authorization')
-  
-  if (!authHeader) {
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
     throw createError({
       statusCode: 401,
       message: 'Unauthorized'
@@ -13,18 +14,19 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await axios.get(
-      `${config.public.apiBaseUrl}/user/common/basket_category`,
+    const { data } = await apiClient.get<PaginatedIdNameResponse>(
+      API_USER_COMMON_BASKET_CATEGORY,
       {
         params: query,
-        headers: { Authorization: authHeader }
+        headers: { Authorization: token }
       }
     )
-    return response.data
+    return data
   } catch (error: any) {
+    const err = error as AxiosError<any>
     throw createError({
-      statusCode: error.response?.status || 500,
-      message: error.response?.data?.error || 'Failed to fetch basket categories'
+      statusCode: err.response?.status || 500,
+      message: err.response?.data?.message || err.response?.data?.error || 'Failed to fetch basket categories'
     })
   }
 })

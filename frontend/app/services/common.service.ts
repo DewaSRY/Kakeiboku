@@ -8,11 +8,11 @@ export const useCommonService = () => {
   const api = useApiClient()
 
   const getBasketCategories = async (params?: PaginationParams): Promise<PaginatedIdNameResponse> => {
-    return await api.get<PaginatedIdNameResponse>('/user/common/basket_category', { params })
+    return await api.get<PaginatedIdNameResponse>('/api/common/basket-categories', params)
   }
 
   const getTransactionTypes = async (params?: PaginationParams): Promise<PaginatedIdNameResponse> => {
-    return await api.get<PaginatedIdNameResponse>('/user/common/transaction_type', { params })
+    return await api.get<PaginatedIdNameResponse>('/api/common/transaction-types', params)
   }
 
   return {

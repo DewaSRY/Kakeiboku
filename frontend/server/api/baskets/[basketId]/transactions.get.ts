@@ -1,12 +1,13 @@
-import axios from 'axios'
+import { apiClient, API_USER_BASKET_TRANSACTIONS } from '../../../shared'
+import type { TransactionResponse, PaginatedResponse } from '../../../shared'
+import type { AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
   const basketId = getRouterParam(event, 'basketId')
   const query = getQuery(event)
-  const authHeader = getHeader(event, 'authorization')
-  
-  if (!authHeader) {
+  const token = getCookie(event, 'auth_token')
+
+  if (!token) {
     throw createError({
       statusCode: 401,
       message: 'Unauthorized'
@@ -14,18 +15,19 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await axios.get(
-      `${config.public.apiBaseUrl}/user/baskets/${basketId}/transactions`,
+    const { data } = await apiClient.get<PaginatedResponse<TransactionResponse>>(
+      API_USER_BASKET_TRANSACTIONS(basketId!),
       {
         params: query,
-        headers: { Authorization: authHeader }
+        headers: { Authorization: token }
       }
     )
-    return response.data
+    return data
   } catch (error: any) {
+    const err = error as AxiosError<any>
     throw createError({
-      statusCode: error.response?.status || 500,
-      message: error.response?.data?.error || 'Failed to fetch transactions'
+      statusCode: err.response?.status || 500,
+      message: err.response?.data?.message || err.response?.data?.error || 'Failed to fetch transactions'
     })
   }
 })

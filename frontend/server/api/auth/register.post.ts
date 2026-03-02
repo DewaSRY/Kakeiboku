@@ -1,10 +1,10 @@
-import axios from 'axios'
-import { RegisterPayloadSchema } from '~/dtos'
+import { apiClient, API_AUTH_REGISTER, RegisterPayloadSchema } from '../../shared'
+import type { RegisterPayload, AuthResponse } from '../../shared'
+import type { AxiosResponse, AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const body = await readBody(event)
-  
+  const body = await readBody<RegisterPayload>(event)
+
   // Validate request body
   const validation = RegisterPayloadSchema.safeParse(body)
   if (!validation.success) {
@@ -15,15 +15,26 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await axios.post(
-      `${config.public.apiBaseUrl}/auth/register`,
+    const { data } = await apiClient.post<RegisterPayload, AuthResponse>(
+      API_AUTH_REGISTER,
       validation.data
     )
-    return response.data
+
+    // Set httpOnly cookie for secure token storage
+    setCookie(event, 'auth_token', `Bearer ${data.token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
+
+    return data.user
   } catch (error: any) {
+    const err = error as AxiosError<any>
     throw createError({
-      statusCode: error.response?.status || 500,
-      message: error.response?.data?.error || 'Registration failed'
+      statusCode: err.response?.status || 500,
+      message: err.response?.data?.message || err.response?.data?.error || 'Registration failed'
     })
   }
 })

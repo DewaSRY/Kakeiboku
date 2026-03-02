@@ -27,19 +27,19 @@ export const useTransactionService = () => {
     basketId: number, 
     params?: PaginationParams
   ): Promise<PaginatedTransactionResponse> => {
-    return await api.get<PaginatedTransactionResponse>(`/user/baskets/${basketId}/transactions`, { params })
+    return await api.get<PaginatedTransactionResponse>(`/api/baskets/${basketId}/transactions`, params)
   }
 
   const createTransaction = async (payload: CreateTransactionPayload): Promise<TransactionResponse> => {
-    return await api.post<TransactionResponse>('/user/transactions', payload)
+    return await api.post<TransactionResponse>('/api/transactions', payload)
   }
 
   const getAllUserTransactions = async (params?: PaginationParams): Promise<PaginatedTransactionResponse> => {
-    return await api.get<PaginatedTransactionResponse>('/user/transactions', { params })
+    return await api.get<PaginatedTransactionResponse>('/api/transactions', params)
   }
 
   const getTransactionDetails = async (transactionId: number): Promise<TransactionWithDetails> => {
-    return await api.get<TransactionWithDetails>(`/user/transactions/${transactionId}`)
+    return await api.get<TransactionWithDetails>(`/api/transactions/${transactionId}`)
   }
 
   const getRecentTransactions = async (limit: number = 5): Promise<TransactionResponse[]> => {

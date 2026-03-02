@@ -1,11 +1,10 @@
-import { z } from 'zod'
-import axios from 'axios'
-import { LoginPayloadSchema } from '~/dtos'
+import { apiClient, API_AUTH_LOGIN, LoginPayloadSchema } from '../../shared'
+import type { LoginPayload, AuthResponse } from '../../shared'
+import type { AxiosResponse, AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
-  const config = useRuntimeConfig()
-  const body = await readBody(event)
-  
+  const body = await readBody<LoginPayload>(event)
+
   // Validate request body
   const validation = LoginPayloadSchema.safeParse(body)
   if (!validation.success) {
@@ -16,15 +15,26 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const response = await axios.post(
-      `${config.public.apiBaseUrl}/auth/login`,
+    const { data } = await apiClient.post<LoginPayload, AuthResponse>(
+      API_AUTH_LOGIN,
       validation.data
     )
-    return response.data
+
+    // Set httpOnly cookie for secure token storage
+    setCookie(event, 'auth_token', `Bearer ${data.token}`, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7 // 7 days
+    })
+
+    return data.user
   } catch (error: any) {
+    const err = error as AxiosError<any>
     throw createError({
-      statusCode: error.response?.status || 500,
-      message: error.response?.data?.error || 'Login failed'
+      statusCode: err.response?.status || 500,
+      message: err.response?.data?.message || err.response?.data?.error || 'Login failed'
     })
   }
 })

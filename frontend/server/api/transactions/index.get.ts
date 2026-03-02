@@ -1,5 +1,5 @@
-import { apiClient, API_USER_COMMON_TRANSACTION_TYPE } from '../../shared'
-import type { PaginatedIdNameResponse } from '../../shared'
+import { apiClient, API_USER_TRANSACTIONS } from '../../shared'
+import type { TransactionResponse, PaginatedResponse } from '../../shared'
 import type { AxiosError } from 'axios'
 
 export default defineEventHandler(async (event) => {
@@ -14,8 +14,8 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const { data } = await apiClient.get<PaginatedIdNameResponse>(
-      API_USER_COMMON_TRANSACTION_TYPE,
+    const { data } = await apiClient.get<PaginatedResponse<TransactionResponse>>(
+      API_USER_TRANSACTIONS,
       {
         params: query,
         headers: { Authorization: token }
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     const err = error as AxiosError<any>
     throw createError({
       statusCode: err.response?.status || 500,
-      message: err.response?.data?.message || err.response?.data?.error || 'Failed to fetch transaction types'
+      message: err.response?.data?.message || err.response?.data?.error || 'Failed to fetch transactions'
     })
   }
 })

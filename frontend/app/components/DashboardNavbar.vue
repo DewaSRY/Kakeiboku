@@ -1,16 +1,18 @@
 <template>
-  <header class="fixed top-0 left-0 right-0 h-16 bg-white border-b border-gray-200 z-40">
+  <header class="fixed top-0 left-0 right-0 h-16 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 z-40">
     <div class="h-full px-6 flex items-center justify-between">
       <div class="flex items-center space-x-4">
         <NuxtLink to="/" class="flex items-center space-x-2">
           <div class="w-8 h-8 bg-amber-400 rounded-lg flex items-center justify-center">
             <span class="text-white font-bold">K</span>
           </div>
-          <span class="text-xl font-bold text-gray-900">Kakeibo</span>
+          <span class="text-xl font-bold text-gray-900 dark:text-white">Kakeibo</span>
         </NuxtLink>
       </div>
 
       <div class="flex items-center space-x-4">
+        <ColorModeToggle />
+        
         <UButton 
           color="neutral" 
           variant="ghost" 

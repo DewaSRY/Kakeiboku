@@ -1,7 +1,5 @@
 <template>
-  <div class="p-6">
-    <h2 class="text-xl font-bold text-gray-900 mb-6">New Transaction</h2>
-    
+  <FormContainer title="New Transaction">
     <UForm :schema="CreateTransactionPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
       <UFormField label="Title" name="title">
         <UInput 
@@ -69,32 +67,15 @@
         />
       </UFormField>
 
-      <div class="flex justify-end space-x-3 pt-4">
-        <UButton 
-          color="neutral" 
-          variant="ghost" 
-          @click="$emit('cancel')"
-        >
-          Cancel
-        </UButton>
-        <UButton 
-          type="submit" 
-          color="primary" 
-          :loading="isLoading"
-        >
-          Create Transaction
-        </UButton>
-      </div>
+      <FormActions 
+        submit-text="Create Transaction" 
+        :loading="isLoading"
+        @cancel="$emit('cancel')"
+      />
     </UForm>
 
-    <UAlert 
-      v-if="error" 
-      color="error" 
-      variant="soft" 
-      :title="error"
-      class="mt-4"
-    />
-  </div>
+    <FormError :error="error" />
+  </FormContainer>
 </template>
 
 <script setup lang="ts">

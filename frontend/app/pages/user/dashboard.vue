@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-      <p class="text-gray-600 mt-1">Welcome back! Here's your financial overview.</p>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-1">Welcome back! Here's your financial overview.</p>
     </div>
 
     <!-- Balance Cards -->
@@ -30,25 +30,24 @@
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       <!-- Branch Baskets -->
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900">Branch Baskets</h2>
-            <UButton 
-              color="primary" 
-              size="sm" 
-              icon="i-heroicons-plus"
-              @click="showCreateBasket = true"
-            >
-              New Basket
-            </UButton>
-          </div>
+      <ContentCard title="Branch Baskets">
+        <template #header-action>
+          <UButton 
+            color="primary" 
+            size="sm" 
+            icon="i-heroicons-plus"
+            @click="showCreateBasket = true"
+          >
+            New Basket
+          </UButton>
         </template>
 
-        <div v-if="branchBaskets.length === 0" class="text-center py-8">
-          <UIcon name="i-heroicons-archive-box" class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p class="text-gray-500">No branch baskets yet. Create one to get started!</p>
-        </div>
+        <EmptyState 
+          v-if="branchBaskets.length === 0"
+          icon="i-heroicons-archive-box"
+          message="No branch baskets yet. Create one to get started!"
+          padding="sm"
+        />
 
         <div v-else class="space-y-4">
           <BasketItem
@@ -58,28 +57,27 @@
             @click="navigateTo(`/user/baskets/${basket.id}`)"
           />
         </div>
-      </UCard>
+      </ContentCard>
 
       <!-- Recent Transactions -->
-      <UCard>
-        <template #header>
-          <div class="flex items-center justify-between">
-            <h2 class="text-lg font-semibold text-gray-900">Recent Transactions</h2>
-            <UButton 
-              color="neutral" 
-              variant="ghost" 
-              size="sm"
-              @click="navigateTo('/user/transactions')"
-            >
-              View All
-            </UButton>
-          </div>
+      <ContentCard title="Recent Transactions">
+        <template #header-action>
+          <UButton 
+            color="neutral" 
+            variant="ghost" 
+            size="sm"
+            @click="navigateTo('/user/transactions')"
+          >
+            View All
+          </UButton>
         </template>
 
-        <div v-if="recentTransactions.length === 0" class="text-center py-8">
-          <UIcon name="i-heroicons-arrow-path" class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <p class="text-gray-500">No transactions yet.</p>
-        </div>
+        <EmptyState 
+          v-if="recentTransactions.length === 0"
+          icon="i-heroicons-arrow-path"
+          message="No transactions yet."
+          padding="sm"
+        />
 
         <div v-else class="space-y-4">
           <TransactionItem
@@ -88,7 +86,7 @@
             :transaction="transaction"
           />
         </div>
-      </UCard>
+      </ContentCard>
     </div>
 
     <!-- Create Basket Modal -->

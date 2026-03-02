@@ -1,6 +1,6 @@
 <template>
   <div 
-    class="flex items-center justify-between p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
+    class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
     @click="$emit('click')"
   >
     <div class="flex items-center space-x-3">
@@ -8,12 +8,12 @@
         <UIcon name="i-heroicons-archive-box" class="w-5 h-5 text-white" />
       </div>
       <div>
-        <h4 class="font-medium text-gray-900">{{ basket.name }}</h4>
-        <p class="text-sm text-gray-500">{{ basket.description || 'No description' }}</p>
+        <h4 class="font-medium text-gray-900 dark:text-white">{{ basket.name }}</h4>
+        <p class="text-sm text-gray-500 dark:text-gray-400">{{ basket.description || 'No description' }}</p>
       </div>
     </div>
     <div class="text-right">
-      <p class="font-semibold text-gray-900">{{ formatCurrency(basket.balance) }}</p>
+      <p class="font-semibold text-gray-900 dark:text-white">{{ formatCurrency(basket.balance) }}</p>
       <UBadge size="xs" :color="statusColor">{{ basket.status }}</UBadge>
     </div>
   </div>

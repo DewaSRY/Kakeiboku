@@ -1,25 +1,19 @@
 <template>
   <div>
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Baskets</h1>
-        <p class="text-gray-600 mt-1">Manage your money baskets.</p>
-      </div>
-      <UButton 
-        color="primary" 
-        icon="i-heroicons-plus"
-        @click="showCreateBasket = true"
-      >
-        New Basket
-      </UButton>
-    </div>
+    <PageHeader
+      title="Baskets"
+      description="Manage your money baskets."
+      action-label="New Basket"
+      action-icon="i-heroicons-plus"
+      @action="showCreateBasket = true"
+    />
 
     <!-- Main Basket Card -->
-    <UCard v-if="mainBasket" class="mb-6 bg-gradient-to-r from-amber-50 to-amber-100">
+    <UCard v-if="mainBasket" class="mb-6 bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/30 dark:to-amber-800/30">
       <div class="flex items-center justify-between">
         <div>
-          <p class="text-sm text-amber-700 font-medium">Main Wallet</p>
-          <h2 class="text-3xl font-bold text-gray-900 mt-1">
+          <p class="text-sm text-amber-700 dark:text-amber-400 font-medium">Main Wallet</p>
+          <h2 class="text-3xl font-bold text-gray-900 dark:text-white mt-1">
             {{ formatCurrency(mainBasket.balance) }}
           </h2>
         </div>
@@ -39,23 +33,24 @@
       >
         <div class="flex items-start justify-between">
           <div>
-            <h3 class="font-semibold text-gray-900">{{ basket.name }}</h3>
-            <p class="text-sm text-gray-500 mt-1">{{ basket.description || 'No description' }}</p>
+            <h3 class="font-semibold text-gray-900 dark:text-white">{{ basket.name }}</h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ basket.description || 'No description' }}</p>
           </div>
           <UBadge :color="getStatusColor(basket.status)">
             {{ basket.status }}
           </UBadge>
         </div>
         <div class="mt-4">
-          <p class="text-2xl font-bold text-gray-900">{{ formatCurrency(basket.balance) }}</p>
+          <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ formatCurrency(basket.balance) }}</p>
         </div>
       </UCard>
     </div>
 
-    <div v-if="branchBaskets.length === 0" class="text-center py-12">
-      <UIcon name="i-heroicons-archive-box" class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-      <p class="text-gray-500">No branch baskets yet. Create one to start organizing your money!</p>
-    </div>
+    <EmptyState 
+      v-if="branchBaskets.length === 0"
+      icon="i-heroicons-archive-box"
+      message="No branch baskets yet. Create one to start organizing your money!"
+    />
 
     <!-- Create Basket Modal -->
     <UModal v-model:open="showCreateBasket">
@@ -75,7 +70,6 @@ import { useBasketService } from '~/services'
 
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
 })
 
 const basketService = useBasketService()

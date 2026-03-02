@@ -1,8 +1,8 @@
 <template>
   <div>
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-      <p class="text-gray-600 mt-1">System overview and user statistics.</p>
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Admin Dashboard</h1>
+      <p class="text-gray-600 dark:text-gray-400 mt-1">System overview and user statistics.</p>
     </div>
 
     <!-- Stats Grid -->
@@ -35,45 +35,39 @@
 
     <!-- Admin Content -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      <UCard>
-        <template #header>
-          <h2 class="text-lg font-semibold text-gray-900">User Statistics</h2>
-        </template>
+      <ContentCard title="User Statistics">
         <div class="space-y-4">
-          <div class="flex justify-between items-center py-2 border-b">
-            <span class="text-gray-600">New Users (This Month)</span>
-            <span class="font-semibold">{{ stats.newUsersThisMonth }}</span>
+          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">New Users (This Month)</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ stats.newUsersThisMonth }}</span>
           </div>
-          <div class="flex justify-between items-center py-2 border-b">
-            <span class="text-gray-600">Average Baskets Per User</span>
-            <span class="font-semibold">{{ stats.avgBasketsPerUser }}</span>
+          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">Average Baskets Per User</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ stats.avgBasketsPerUser }}</span>
           </div>
           <div class="flex justify-between items-center py-2">
-            <span class="text-gray-600">Users with Transactions</span>
-            <span class="font-semibold">{{ stats.usersWithTransactions }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Users with Transactions</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ stats.usersWithTransactions }}</span>
           </div>
         </div>
-      </UCard>
+      </ContentCard>
 
-      <UCard>
-        <template #header>
-          <h2 class="text-lg font-semibold text-gray-900">Transaction Metrics</h2>
-        </template>
+      <ContentCard title="Transaction Metrics">
         <div class="space-y-4">
-          <div class="flex justify-between items-center py-2 border-b">
-            <span class="text-gray-600">Transactions Today</span>
-            <span class="font-semibold">{{ stats.transactionsToday }}</span>
+          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">Transactions Today</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ stats.transactionsToday }}</span>
           </div>
-          <div class="flex justify-between items-center py-2 border-b">
-            <span class="text-gray-600">Average Transaction Amount</span>
-            <span class="font-semibold">{{ formatCurrency(stats.avgTransactionAmount) }}</span>
+          <div class="flex justify-between items-center py-2 border-b border-gray-200 dark:border-gray-700">
+            <span class="text-gray-600 dark:text-gray-400">Average Transaction Amount</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ formatCurrency(stats.avgTransactionAmount) }}</span>
           </div>
           <div class="flex justify-between items-center py-2">
-            <span class="text-gray-600">Peak Transaction Hour</span>
-            <span class="font-semibold">{{ stats.peakHour }}</span>
+            <span class="text-gray-600 dark:text-gray-400">Peak Transaction Hour</span>
+            <span class="font-semibold text-gray-900 dark:text-white">{{ stats.peakHour }}</span>
           </div>
         </div>
-      </UCard>
+      </ContentCard>
     </div>
   </div>
 </template>
@@ -81,7 +75,6 @@
 <script setup lang="ts">
 definePageMeta({
   layout: 'dashboard',
-  middleware: 'auth'
 })
 
 // Mock admin stats - in production these would come from an API

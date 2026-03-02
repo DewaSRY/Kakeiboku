@@ -1,35 +1,29 @@
 <template>
   <div>
-    <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-3xl font-bold text-gray-900">Transactions</h1>
-        <p class="text-gray-600 mt-1">View and manage all your transactions.</p>
-      </div>
-      <UButton 
-        color="primary" 
-        icon="i-heroicons-plus"
-        @click="showCreateTransaction = true"
-      >
-        New Transaction
-      </UButton>
-    </div>
+    <PageHeader
+      title="Transactions"
+      description="View and manage all your transactions."
+      action-label="New Transaction"
+      action-icon="i-heroicons-plus"
+      @action="showCreateTransaction = true"
+    />
 
     <UCard>
-      <UTable :columns="columns" :data="transactions">
+      <DataTable 
+        :columns="columns" 
+        :data="transactions"
+        empty-icon="i-heroicons-document-text"
+        empty-message="No transactions found."
+      >
         <template #amount-data="{ row }">
-          <span :class="row.original.amount >= 0 ? 'text-green-600' : 'text-red-600'">
+          <span :class="row.original.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
             {{ formatCurrency(row.original.amount) }}
           </span>
         </template>
         <template #created_at-data="{ row }">
           {{ formatDate(row.original.created_at) }}
         </template>
-      </UTable>
-
-      <div v-if="transactions.length === 0" class="text-center py-12">
-        <UIcon name="i-heroicons-document-text" class="w-12 h-12 text-gray-300 mx-auto mb-4" />
-        <p class="text-gray-500">No transactions found.</p>
-      </div>
+      </DataTable>
     </UCard>
 
     <!-- Create Transaction Modal -->

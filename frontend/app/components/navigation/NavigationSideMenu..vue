@@ -1,34 +1,38 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from "@nuxt/ui";
-const { t } = useI18n();
+
 const open = ref(false);
 
 const links = [
-  {
-    label: t("nav.dashboard"),
-    icon: "i-heroicons-home",
-    to: "/user/dashboard",
-    onSelect: () => {
-      open.value = false;
+    {
+      label: "Home",
+      icon: "i-lucide-house",
+      to: "/",
+      onSelect: () => {
+        open.value = false;
+      },
     },
-  },
-  {
-    label: t("nav.baskets"),
-    icon: "i-heroicons-archive-box",
-    to: "/user/baskets",
-    onSelect: () => {
-      open.value = false;
+    {
+      label: "Inbox",
+      icon: "i-lucide-inbox",
+      to: "/inbox",
+      badge: "4",
+      onSelect: () => {
+        open.value = false;
+      },
     },
-  },
-  {
-    label: t("nav.transactions"),
-    icon: "i-heroicons-arrow-path",
-    to: "/user/transactions",
-    onSelect: () => {
-      open.value = false;
+    {
+      label: "Customers",
+      icon: "i-lucide-users",
+      to: "/customers",
+      onSelect: () => {
+        open.value = false;
+      },
     },
-  },
+ 
 ] satisfies NavigationMenuItem[];
+
+
 </script>
 
 <template>
@@ -58,13 +62,19 @@ const links = [
           tooltip
           popover
         />
+
+   
       </template>
 
+      <!-- <template #footer="{ collapsed }">
+        <UserMenu :collapsed="collapsed" />
+      </template> -->
     </UDashboardSidebar>
 
     <!-- <UDashboardSearch :groups="groups" /> -->
 
     <slot />
 
+    <!-- <NotificationsSlideover /> -->
   </UDashboardGroup>
 </template>

@@ -1,7 +1,9 @@
 <template>
-  <div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </div>
+  <UApp>
+    <div class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen">
+      <NuxtLayout>
+        <NuxtPage />
+      </NuxtLayout>
+    </div>
+  </UApp>
 </template>

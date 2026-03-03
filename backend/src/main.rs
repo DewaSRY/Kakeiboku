@@ -23,6 +23,7 @@ use tracing_subscriber::{
 
 use routes::{auth_routes, swagger_router, user_router};
 use state::AppState;
+use middlewares::logger_middleware::logging_layer;
 
 use crate::configs::app_config;
 
@@ -32,7 +33,7 @@ async fn main() -> Result<()> {
         .with(fmt::layer().with_ansi(true))
         .with(
             EnvFilter::try_from_default_env()
-                .unwrap_or_else(|_| EnvFilter::new("info,sqlx=warn,tower_http=warn")),
+                .unwrap_or_else(|_| EnvFilter::new("info,sqlx=warn,tower_http=debug,http_log=info")),
         )
         .init();
 
@@ -63,6 +64,7 @@ async fn main() -> Result<()> {
         .merge(swagger_router::swagger_routes())
         .merge(auth_routes::auth_routes())
         .merge(user_router::user_routes())
+        .layer(logging_layer())
         .with_state(AppState {
             pool,
             jwt_secret: app_config.jwt_secret.clone(),

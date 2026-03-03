@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-// Basket Response
 export const BasketResponseSchema = z.object({
   id: z.number(),
   user_id: z.number(),
@@ -16,7 +15,6 @@ export const BasketResponseSchema = z.object({
 
 export type BasketResponse = z.infer<typeof BasketResponseSchema>
 
-// Basket Category Response
 export const BasketCategoryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -26,7 +24,6 @@ export const BasketCategoryResponseSchema = z.object({
 
 export type BasketCategoryResponse = z.infer<typeof BasketCategoryResponseSchema>
 
-// Create Basket Payload
 export const CreateBasketPayloadSchema = z.object({
   name: z.string().min(1, 'Basket name is required'),
   basket_category_id: z.number().min(1, 'Category is required'),
@@ -35,7 +32,6 @@ export const CreateBasketPayloadSchema = z.object({
 
 export type CreateBasketPayload = z.infer<typeof CreateBasketPayloadSchema>
 
-// Update Basket Payload
 export const UpdateBasketPayloadSchema = z.object({
   name: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
@@ -44,7 +40,6 @@ export const UpdateBasketPayloadSchema = z.object({
 
 export type UpdateBasketPayload = z.infer<typeof UpdateBasketPayloadSchema>
 
-// Transaction Basket Info
 export const TransactionBasketInfoSchema = z.object({
   id: z.number(),
   name: z.string(),

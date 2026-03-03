@@ -1,6 +1,5 @@
 import { z } from 'zod'
 
-// Login Payload
 export const LoginPayloadSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required')
@@ -8,7 +7,6 @@ export const LoginPayloadSchema = z.object({
 
 export type LoginPayload = z.infer<typeof LoginPayloadSchema>
 
-// Register Payload
 export const RegisterPayloadSchema = z.object({
   first_name: z.string().min(1, 'First name is required'),
   last_name: z.string().min(1, 'Last name is required'),
@@ -18,7 +16,6 @@ export const RegisterPayloadSchema = z.object({
 
 export type RegisterPayload = z.infer<typeof RegisterPayloadSchema>
 
-// User Profile
 export const UserProfileSchema = z.object({
   id: z.number(),
   first_name: z.string(),
@@ -28,7 +25,6 @@ export const UserProfileSchema = z.object({
 
 export type UserProfile = z.infer<typeof UserProfileSchema>
 
-// Auth Response
 export const AuthResponseSchema = z.object({
   token: z.string(),
   user: UserProfileSchema

@@ -41,16 +41,15 @@
 
 <script setup lang="ts">
 import { CreateBasketPayloadSchema, type CreateBasketPayload, type IdNameResponse } from '~/dtos'
-import { useBasketService, useCommonService } from '~/services'
-
+import { useBaskets, useCommonData } from '#imports';
 const emit = defineEmits<{
   success: []
   cancel: []
 }>()
 
 const { t } = useI18n()
-const basketService = useBasketService()
-const commonService = useCommonService()
+const basketService = useBaskets()
+const commonService = useCommonData()
 
 const formState = reactive<CreateBasketPayload>({
   name: '',
@@ -64,7 +63,7 @@ const error = ref<string | null>(null)
 
 async function loadCategories() {
   try {
-    const response = await commonService.getBasketCategories()
+    const response = await commonService.fetchBasketCategories()
     categories.value = response.data
   } catch (e) {
     error.value = t('baskets.loadCategoriesFailed')

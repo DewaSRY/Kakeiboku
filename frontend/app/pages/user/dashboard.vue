@@ -103,15 +103,15 @@
 
 <script setup lang="ts">
 import type { BasketResponse, TransactionResponse } from '~/dtos'
-import { useBasketService, useTransactionService } from '~/services'
+import { useBaskets, useTransactions } from '#imports'
 
 definePageMeta({
   layout: 'dashboard',
 })
 
 const { t } = useI18n()
-const basketService = useBasketService()
-const transactionService = useTransactionService()
+const basketService = useBaskets()
+const transactionService = useTransactions()
 const toast = useToast()
 
 const totalBalance = ref(0)
@@ -130,7 +130,7 @@ const formatCurrency = (amount: number) => {
 async function loadDashboardData() {
   try {
     const [basketsResponse, transactions] = await Promise.all([
-      basketService.getAllBaskets(),
+      basketService.fetchBaskets(),
       transactionService.getRecentTransactions(5)
     ])
     

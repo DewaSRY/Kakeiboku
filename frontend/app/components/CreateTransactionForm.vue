@@ -13,9 +13,7 @@
         <UFormField :label="$t('transactions.fromBasket')" name="from_basket_id">
           <USelect
             v-model="formState.from_basket_id"
-            :items="baskets"
-            value-key="id"
-            label-key="name"
+            :items="basketOptions"
             :placeholder="$t('transactions.selectSource')"
             size="lg"
           />
@@ -24,9 +22,7 @@
         <UFormField :label="$t('transactions.toBasket')" name="to_basket_id">
           <USelect
             v-model="formState.to_basket_id"
-            :items="baskets"
-            value-key="id"
-            label-key="name"
+            :items="basketOptions"
             :placeholder="$t('transactions.selectDestination')"
             size="lg"
           />
@@ -51,9 +47,7 @@
       <UFormField :label="$t('transactions.transactionType')" name="transaction_type_id">
         <USelect
           v-model="formState.transaction_type_id"
-          :items="transactionTypes"
-          value-key="id"
-          label-key="name"
+          :items="transactionTypeOptions"
           :placeholder="$t('transactions.selectType')"
           size="lg"
         />
@@ -80,7 +74,8 @@
 
 <script setup lang="ts">
 import { CreateTransactionPayloadSchema, type CreateTransactionPayload, type IdNameResponse, type BasketResponse } from '~/dtos'
-import { useTransactionService, useCommonService, useBasketService } from '~/services'
+import { useTransactions, useCommonData, useBaskets } from '#imports'
+
 
 const emit = defineEmits<{
   success: []
@@ -88,9 +83,9 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const transactionService = useTransactionService()
-const commonService = useCommonService()
-const basketService = useBasketService()
+const transactionService = useTransactions()
+const commonService = useCommonData()
+const basketService = useBaskets()
 
 const formState = reactive<CreateTransactionPayload>({
   title: '',
@@ -106,11 +101,19 @@ const transactionTypes = ref<IdNameResponse[]>([])
 const isLoading = ref(false)
 const error = ref<string | null>(null)
 
+const basketOptions = computed(() => 
+  baskets.value.map(b => ({ value: b.id, label: b.name }))
+)
+
+const transactionTypeOptions = computed(() => 
+  transactionTypes.value.map(t => ({ value: t.id, label: t.name }))
+)
+
 async function loadData() {
   try {
     const [basketsRes, typesRes] = await Promise.all([
-      basketService.getAllBaskets(),
-      commonService.getTransactionTypes()
+      basketService.fetchBaskets(),
+      commonService.fetchTransactionTypes()
     ])
     baskets.value = basketsRes.data
     transactionTypes.value = typesRes.data

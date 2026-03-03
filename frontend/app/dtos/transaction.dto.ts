@@ -1,7 +1,6 @@
 import { z } from 'zod'
 import { TransactionBasketInfoSchema } from './basket.dto'
 
-// Transaction Type Children Response
 export const TransactionTypeChildrenResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -12,7 +11,6 @@ export const TransactionTypeChildrenResponseSchema = z.object({
 
 export type TransactionTypeChildrenResponse = z.infer<typeof TransactionTypeChildrenResponseSchema>
 
-// Transaction Type Info
 export const TransactionTypeInfoSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -21,7 +19,6 @@ export const TransactionTypeInfoSchema = z.object({
 
 export type TransactionTypeInfo = z.infer<typeof TransactionTypeInfoSchema>
 
-// Transaction Type Response
 export const TransactionTypeResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -33,7 +30,6 @@ export const TransactionTypeResponseSchema = z.object({
 
 export type TransactionTypeResponse = z.infer<typeof TransactionTypeResponseSchema>
 
-// Transaction Response
 export const TransactionResponseSchema = z.object({
   id: z.number(),
   created_by_id: z.number(),
@@ -46,7 +42,6 @@ export const TransactionResponseSchema = z.object({
 
 export type TransactionResponse = z.infer<typeof TransactionResponseSchema>
 
-// Transaction Detail Response
 export const TransactionDetailResponseSchema = z.object({
   id: z.number(),
   transaction_id: z.number(),

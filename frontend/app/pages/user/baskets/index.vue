@@ -66,14 +66,14 @@
 
 <script setup lang="ts">
 import type { BasketResponse } from '~/dtos'
-import { useBasketService } from '~/services'
+import { useBaskets } from '#imports'
 
 definePageMeta({
   layout: 'dashboard',
 })
 
 const { t } = useI18n()
-const basketService = useBasketService()
+const basketService = useBaskets()
 const toast = useToast()
 
 const mainBasket = ref<BasketResponse | null>(null)
@@ -98,7 +98,7 @@ const getStatusColor = (status: string) => {
 
 async function loadBaskets() {
   try {
-    const response = await basketService.getAllBaskets()
+    const response = await basketService.fetchBaskets()
     mainBasket.value = response.data.find(b => b.basket_type === 'main') || null
     branchBaskets.value = response.data.filter(b => b.basket_type !== 'main')
   } catch (error) {

@@ -23,3 +23,7 @@ target
 Makefile
 .env
 temp
+
+/node_modules
+/dist
+.nuxt

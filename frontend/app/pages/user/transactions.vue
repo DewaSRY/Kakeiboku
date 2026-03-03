@@ -41,14 +41,14 @@
 <script setup lang="ts">
 import type { TransactionResponse } from '~/dtos'
 import type { TableColumn } from '@nuxt/ui'
-import { useTransactionService } from '~/services'
+import { useTransactions } from '#imports'
 
 definePageMeta({
   layout: 'dashboard',
 })
 
 const { t } = useI18n()
-const transactionService = useTransactionService()
+const transactionService = useTransactions()
 const toast = useToast()
 
 const transactions = ref<TransactionResponse[]>([])
@@ -78,7 +78,7 @@ const formatDate = (dateStr: string) => {
 
 async function loadTransactions() {
   try {
-    const response = await transactionService.getAllUserTransactions({ limit: 50, page: 1 })
+    const response = await transactionService.fetchTransactions({ limit: 50, page: 1 })
     transactions.value = response.data
   } catch (error) {
     toast.add({ title: t('transactions.loadFailed'), color: 'error' })

@@ -41,10 +41,10 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthService } from '~/services'
+import { useAuth } from '#imports'
 
 const { t } = useI18n()
-const authService = useAuthService()
+const authService = useAuth()
 
 const userName = ref('User')
 

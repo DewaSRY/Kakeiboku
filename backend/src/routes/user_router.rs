@@ -4,7 +4,8 @@ use axum::{
 };
 
 use crate::handlers::{
-    basket_transaction_handle, common_handler, user_basket_handler, user_transaction_handler,
+    basket_transaction_handle, common_handler, dashboard_handler, user_basket_handler,
+    user_transaction_handler,
 };
 
 pub fn user_routes() -> Router<crate::state::AppState> {
@@ -31,8 +32,11 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(common_handler::get_transaction_types),
         );
 
+    let dashboard_routes = Router::new().route("/money-stash", get(dashboard_handler::get_money_stash));
+
     Router::new()
         .nest("/user/baskets", basket_routes)
         .nest("/user/transactions", transaction_routes)
         .nest("/user/common", common_routes)
+        .nest("/user/dashboard", dashboard_routes)
 }

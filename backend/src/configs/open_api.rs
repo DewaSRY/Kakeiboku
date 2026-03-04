@@ -23,6 +23,7 @@ use crate::handlers::{
         common_handler::get_transaction_types,
         // Dashboard
         dashboard_handler::get_money_stash,
+        dashboard_handler::get_branch_summary,
     ),
     components(
         schemas(
@@ -44,6 +45,8 @@ use crate::handlers::{
             crate::dtos::dashboard_dto::UserMoneyStash,
             crate::dtos::dashboard_dto::UserBranchPercent,
             crate::dtos::dashboard_dto::UserMoneyStashResponse,
+            crate::dtos::dashboard_dto::BranchStats,
+            crate::dtos::dashboard_dto::BranchSummaryResponse,
         )
     ),
     tags(

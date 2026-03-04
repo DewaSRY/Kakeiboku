@@ -32,7 +32,9 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(common_handler::get_transaction_types),
         );
 
-    let dashboard_routes = Router::new().route("/money-stash", get(dashboard_handler::get_money_stash));
+    let dashboard_routes = Router::new()
+        .route("/money-stash", get(dashboard_handler::get_money_stash))
+        .route("/branch-summary", get(dashboard_handler::get_branch_summary));
 
     Router::new()
         .nest("/user/baskets", basket_routes)

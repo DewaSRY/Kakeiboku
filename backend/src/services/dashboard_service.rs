@@ -1,8 +1,9 @@
 use axum::http::StatusCode;
+use chrono::NaiveDate;
 use sqlx::PgPool;
 
 use crate::dtos::common_dto::CommonErrorResponse;
-use crate::dtos::dashboard_dto::{UserMoneyStash, UserMoneyStashResponse};
+use crate::dtos::dashboard_dto::{BranchSummaryResponse, UserMoneyStash, UserMoneyStashResponse};
 use crate::repositories::dashboard_repository;
 
 pub async fn get_user_money_stash(
@@ -54,4 +55,22 @@ pub async fn get_user_money_stash(
         },
         branch_category_percentages: branch_percentages,
     })
+}
+
+pub async fn get_branch_summary(
+    pool: &PgPool,
+    user_id: i64,
+    start_date: Option<NaiveDate>,
+    end_date: Option<NaiveDate>,
+) -> Result<BranchSummaryResponse, CommonErrorResponse> {
+    let data = dashboard_repository::get_branch_summary(pool, user_id, start_date, end_date)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Failed to fetch branch summary".to_string(),
+                StatusCode::INTERNAL_SERVER_ERROR,
+            )
+        })?;
+
+    Ok(BranchSummaryResponse { data })
 }

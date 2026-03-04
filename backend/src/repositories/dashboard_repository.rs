@@ -1,4 +1,6 @@
-use crate::dtos::dashboard_dto::UserBranchPercent;
+use chrono::NaiveDate;
+
+use crate::dtos::dashboard_dto::{BranchStats, UserBranchPercent};
 
 pub async fn get_main_branch_balance<'e, E>(executor: E, user_id: i64) -> Result<Option<f64>, sqlx::Error>
 where
@@ -102,6 +104,40 @@ where
         "#,
     )
     .bind(user_id)
+    .fetch_all(executor)
+    .await
+}
+
+pub async fn get_branch_summary<'e, E>(
+    executor: E,
+    user_id: i64,
+    start_date: Option<NaiveDate>,
+    end_date: Option<NaiveDate>,
+) -> Result<Vec<BranchStats>, sqlx::Error>
+where
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
+{
+    sqlx::query_as::<_, BranchStats>(
+        r#"
+        SELECT 
+            b.name,
+            COALESCE(
+                (SELECT SUM(CASE WHEN t.to_basket_id = b.id THEN t.amount ELSE 0 END) -
+                        SUM(CASE WHEN t.from_basket_id = b.id THEN t.amount ELSE 0 END)
+                 FROM transactions t
+                 WHERE (t.from_basket_id = b.id OR t.to_basket_id = b.id)
+                   AND ($3::date IS NULL OR t.created_at >= $3::date)
+                   AND ($4::date IS NULL OR t.created_at < ($4::date + interval '1 day'))
+                ), 0
+            )::float8 as total
+        FROM baskets b
+        WHERE b.user_id = $1 AND b.type = 'branch'
+        ORDER BY b.name
+        "#,
+    )
+    .bind(user_id)
+    .bind(start_date)
+    .bind(end_date)
     .fetch_all(executor)
     .await
 }

@@ -16,3 +16,7 @@ export const API_USER_TRANSACTION_BY_ID = (id: string | number) => `/user/transa
 // Common API paths
 export const API_USER_COMMON_BASKET_CATEGORY = '/user/common/basket_category'
 export const API_USER_COMMON_TRANSACTION_TYPE = '/user/common/transaction_type'
+
+// Dashboard API paths
+export const API_USER_DASHBOARD_MONEY_STASH = '/user/dashboard/money-stash'
+export const API_USER_DASHBOARD_BRANCH_SUMMARY = '/user/dashboard/branch-summary'

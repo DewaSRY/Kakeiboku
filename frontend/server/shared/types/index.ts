@@ -25,8 +25,15 @@ export type {
   CommonResponse,
   IdNameResponse,
   PaginatedIdNameResponse,
-  PaginationParams
-} from '~/dtos'
+  PaginationParams,
+  // Dashboard types
+  UserMoneyStash,
+  UserBranchPercent,
+  UserMoneyStashResponse,
+  BranchStats,
+  BranchSummaryResponse,
+  DateRangeQuery,
+} from "~/dtos";
 
 // Re-export schemas for validation
 export {

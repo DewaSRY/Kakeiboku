@@ -36,7 +36,8 @@
     "version": "Kakeibo v1.0.0",
     "noDescription": "Tidak ada deskripsi",
     "title": "Judul",
-    "optional": "Opsional"
+    "optional": "Opsional",
+    "apply": "Terapkan"
   },
   "home": {
     "heroTitle": "Kuasai Keuangan Anda dengan",
@@ -114,7 +115,20 @@
     "totalIncome": "Total Pendapatan",
     "totalExpense": "Total Pengeluaran",
     "baskets": "Keranjang",
-    "transactions": "Transaksi"
+    "transactions": "Transaksi",
+    "moneyStash": "Simpanan Uang",
+    "totalSave": "Total Simpanan",
+    "totalSpend": "Total Pengeluaran",
+    "mainBranch": "Cabang utama",
+    "deposite": "Setor",
+    "alocated": "Alokasi",
+    "spend": "Belanja",
+    "createBranchBasket": "Buat Keranjang Cabang",
+    "alocatedMoney": "Uang teralokasi",
+    "thisMonth": "Bulan Ini",
+    "filterByDate": "Filter berdasarkan tanggal",
+    "startDate": "Tanggal Mulai",
+    "endDate": "Tanggal Akhir"
   },
   "transactions": {
     "title": "Transaksi",

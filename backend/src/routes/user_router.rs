@@ -19,8 +19,11 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(basket_transaction_handle::get_basket_transactions),
         );
 
-    let transaction_routes =
-        Router::new().route("/", post(user_transaction_handler::create_transaction));
+    let transaction_routes = Router::new()
+        .route("/", post(user_transaction_handler::create_transaction))
+        .route("/deposit", post(user_transaction_handler::deposit))
+        .route("/allocate", post(user_transaction_handler::allocate))
+        .route("/spend", post(user_transaction_handler::spend));
 
     let common_routes = Router::new()
         .route(

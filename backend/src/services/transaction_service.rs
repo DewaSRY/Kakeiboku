@@ -1,7 +1,9 @@
 use axum::http::StatusCode;
 
 use crate::dtos::common_dto::{CommonErrorResponse, PaginatedResponse};
-use crate::dtos::transaction_dto::{CreateTransactionPayload, TransactionResponse};
+use crate::dtos::transaction_dto::{
+    AllocatePayload, CreateTransactionPayload, DepositPayload, SpendPayload, TransactionResponse,
+};
 use crate::repositories::{
     basket_repository, transaction_detail_repository, transaction_repository,
     transaction_type_repository,
@@ -82,7 +84,7 @@ pub async fn create_transaction(
         pool,
         user_id,
         Some(payload.from_basket_id),
-        payload.to_basket_id,
+        Some(payload.to_basket_id),
         payload.amount,
         payload.transaction_type_id,
     )
@@ -159,6 +161,265 @@ pub async fn get_basket_transactions(
         limit,
         total, 
     ))
+}
+
+/// Deposit: external money → user's main basket
+pub async fn deposit_transaction(
+    pool: &sqlx::PgPool,
+    user_id: i64,
+    payload: DepositPayload,
+) -> Result<TransactionResponse, CommonErrorResponse> {
+    if payload.amount <= 0.0 {
+        return Err(CommonErrorResponse::new(
+            "Amount must be positive".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    let main_basket = basket_repository::find_main_basket_by_user_id(pool, user_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Main basket not found. Please create a main basket first.".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    if main_basket.status != "active" {
+        return Err(CommonErrorResponse::new(
+            "Main basket is not active".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    transaction_type_repository::find_by_id(pool, payload.transaction_type_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Transaction type not found".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    let transaction = transaction_repository::create(
+        pool,
+        user_id,
+        None,
+        Some(main_basket.id),
+        payload.amount,
+        payload.transaction_type_id,
+    )
+    .await
+    .map_err(|_| {
+        CommonErrorResponse::new(
+            "Failed to create deposit transaction".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
+
+    let _ = transaction_detail_repository::create(
+        pool,
+        transaction.id,
+        payload.title,
+        payload.description,
+    )
+    .await;
+
+    Ok(TransactionResponse::from_model(transaction))
+}
+
+/// Allocate: main basket → branch basket
+pub async fn allocate_transaction(
+    pool: &sqlx::PgPool,
+    user_id: i64,
+    payload: AllocatePayload,
+) -> Result<TransactionResponse, CommonErrorResponse> {
+    if payload.amount <= 0.0 {
+        return Err(CommonErrorResponse::new(
+            "Amount must be positive".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    let main_basket = basket_repository::find_main_basket_by_user_id(pool, user_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Main basket not found. Please create a main basket first.".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    if main_basket.status != "active" {
+        return Err(CommonErrorResponse::new(
+            "Main basket is not active".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    if main_basket.balance < payload.amount {
+        return Err(CommonErrorResponse::new(
+            format!(
+                "Insufficient balance in main basket. Available: {}, Required: {}",
+                main_basket.balance, payload.amount
+            ),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    let to_basket = basket_repository::find_by_id_with_balance(pool, payload.to_basket_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Target branch basket not found".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    if to_basket.user_id != user_id {
+        return Err(CommonErrorResponse::new(
+            "Target basket does not belong to you".to_string(),
+            StatusCode::FORBIDDEN,
+        ));
+    }
+
+    if to_basket.basket_type != "branch" {
+        return Err(CommonErrorResponse::new(
+            "Target basket must be a branch basket".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    if to_basket.status != "active" {
+        return Err(CommonErrorResponse::new(
+            "Target basket is not active".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    transaction_type_repository::find_by_id(pool, payload.transaction_type_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Transaction type not found".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    let transaction = transaction_repository::create(
+        pool,
+        user_id,
+        Some(main_basket.id),
+        Some(payload.to_basket_id),
+        payload.amount,
+        payload.transaction_type_id,
+    )
+    .await
+    .map_err(|_| {
+        CommonErrorResponse::new(
+            "Failed to create allocate transaction".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
+
+    let _ = transaction_detail_repository::create(
+        pool,
+        transaction.id,
+        payload.title,
+        payload.description,
+    )
+    .await;
+
+    Ok(TransactionResponse::from_model(transaction))
+}
+
+/// Spend: branch basket → external (money leaves the system)
+pub async fn spend_transaction(
+    pool: &sqlx::PgPool,
+    user_id: i64,
+    payload: SpendPayload,
+) -> Result<TransactionResponse, CommonErrorResponse> {
+    if payload.amount <= 0.0 {
+        return Err(CommonErrorResponse::new(
+            "Amount must be positive".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    let from_basket = basket_repository::find_by_id_with_balance(pool, payload.from_basket_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Source branch basket not found".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    if from_basket.user_id != user_id {
+        return Err(CommonErrorResponse::new(
+            "Source basket does not belong to you".to_string(),
+            StatusCode::FORBIDDEN,
+        ));
+    }
+
+    if from_basket.basket_type != "branch" {
+        return Err(CommonErrorResponse::new(
+            "Source basket must be a branch basket".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    if from_basket.status != "active" {
+        return Err(CommonErrorResponse::new(
+            "Source basket is not active".to_string(),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    if from_basket.balance < payload.amount {
+        return Err(CommonErrorResponse::new(
+            format!(
+                "Insufficient balance. Available: {}, Required: {}",
+                from_basket.balance, payload.amount
+            ),
+            StatusCode::BAD_REQUEST,
+        ));
+    }
+
+    transaction_type_repository::find_by_id(pool, payload.transaction_type_id)
+        .await
+        .map_err(|_| {
+            CommonErrorResponse::new(
+                "Transaction type not found".to_string(),
+                StatusCode::NOT_FOUND,
+            )
+        })?;
+
+    let transaction = transaction_repository::create(
+        pool,
+        user_id,
+        Some(payload.from_basket_id),
+        None,
+        payload.amount,
+        payload.transaction_type_id,
+    )
+    .await
+    .map_err(|_| {
+        CommonErrorResponse::new(
+            "Failed to create spend transaction".to_string(),
+            StatusCode::INTERNAL_SERVER_ERROR,
+        )
+    })?;
+
+    let _ = transaction_detail_repository::create(
+        pool,
+        transaction.id,
+        payload.title,
+        payload.description,
+    )
+    .await;
+
+    Ok(TransactionResponse::from_model(transaction))
 }
 
 #[cfg(test)]

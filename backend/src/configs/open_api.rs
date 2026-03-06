@@ -17,6 +17,9 @@ use crate::handlers::{
         user_basket_handler::update_basket,
         // Transactions
         user_transaction_handler::create_transaction,
+        user_transaction_handler::deposit,
+        user_transaction_handler::allocate,
+        user_transaction_handler::spend,
         basket_transaction_handle::get_basket_transactions,
         // Common
         common_handler::get_basket_categories,
@@ -37,6 +40,9 @@ use crate::handlers::{
             crate::dtos::transaction_dto::TransactionWithDetails,
             crate::dtos::transaction_dto::TransactionTypeResponse,
             crate::dtos::transaction_dto::CreateTransactionPayload,
+            crate::dtos::transaction_dto::DepositPayload,
+            crate::dtos::transaction_dto::AllocatePayload,
+            crate::dtos::transaction_dto::SpendPayload,
             crate::dtos::transaction_dto::CreateTransactionTypePayload,
             crate::dtos::transaction_dto::UpdateTransactionTypePayload,
             crate::dtos::transaction_dto::TransactionBasketInfo,

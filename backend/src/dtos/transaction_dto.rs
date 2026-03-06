@@ -20,7 +20,7 @@ pub struct TransactionResponse {
     pub id: i64,
     pub created_by_id: i64,
     pub from_basket_id: Option<i64>,
-    pub to_basket_id: i64,
+    pub to_basket_id: Option<i64>,
     pub amount: f64,
     pub transaction_type_id: i64,
     pub created_at: NaiveDateTime,
@@ -131,4 +131,35 @@ pub struct TransactionDetailResponse {
     pub title: String,
     pub description: Option<String>,
     pub created_at: NaiveDateTime,
+}
+
+// ============ Transaction Action Payloads ============
+
+/// Deposit money from external source into user's main basket
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct DepositPayload {
+    pub amount: f64,
+    pub transaction_type_id: i64,
+    pub title: String,
+    pub description: Option<String>,
+}
+
+/// Allocate money from user's main basket to a branch basket
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct AllocatePayload {
+    pub to_basket_id: i64,
+    pub amount: f64,
+    pub transaction_type_id: i64,
+    pub title: String,
+    pub description: Option<String>,
+}
+
+/// Spend money from a branch basket (money leaves the system)
+#[derive(Debug, Serialize, Deserialize, ToSchema)]
+pub struct SpendPayload {
+    pub from_basket_id: i64,
+    pub amount: f64,
+    pub transaction_type_id: i64,
+    pub title: String,
+    pub description: Option<String>,
 }

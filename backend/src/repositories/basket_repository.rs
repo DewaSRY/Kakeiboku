@@ -48,6 +48,33 @@ where
     .await
 }
 
+pub async fn find_main_basket_by_user_id<'e, E>(
+    executor: E,
+    user_id: i64,
+) -> Result<BasketWithBalance, sqlx::Error>
+where
+    E: sqlx::Executor<'e, Database = sqlx::Postgres> + 'e,
+{
+    sqlx::query_as::<_, BasketWithBalance>(
+        r#"
+        SELECT 
+            b.id, b.user_id, b.name, b.description, b.basket_category_id, 
+            b.type, b.status, b.created_at, b.updated_at,
+            COALESCE(
+                (SELECT SUM(CASE WHEN t.to_basket_id = b.id THEN t.amount ELSE 0 END) -
+                        SUM(CASE WHEN t.from_basket_id = b.id THEN t.amount ELSE 0 END)
+                 FROM transactions t
+                 WHERE t.from_basket_id = b.id OR t.to_basket_id = b.id), 0
+            )::float8 as balance
+        FROM baskets b
+        WHERE b.user_id = $1 AND b.type = 'main'
+        "#,
+    )
+    .bind(user_id)
+    .fetch_one(executor)
+    .await
+}
+
 pub async fn find_by_id_with_balance<'e, E>(
     executor: E,
     id: i64,

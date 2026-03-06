@@ -41,7 +41,7 @@ where
 {
     sqlx::query_as::<_, Transaction>(
         r#"
-        SELECT id, created_by_id, from_basket_id, to_basket_id, amount, transaction_type_id, created_at
+        SELECT id, created_by_id, from_basket_id, to_basket_id, amount::FLOAT8 as amount, transaction_type_id, created_at
         FROM transactions
         WHERE from_basket_id = $1 OR to_basket_id = $1
         ORDER BY created_at DESC

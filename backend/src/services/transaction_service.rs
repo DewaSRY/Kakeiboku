@@ -7,8 +7,6 @@ use crate::repositories::{
     transaction_type_repository,
 };
 
-// ============ Transaction Operations ============
-
 pub async fn create_transaction(
     pool: &sqlx::PgPool,
     user_id: i64,
@@ -21,7 +19,6 @@ pub async fn create_transaction(
         ));
     }
 
-    // Verify from_basket ownership and status
     let from_basket = basket_repository::find_by_id_with_balance(pool, payload.from_basket_id)
         .await
         .map_err(|_| {
@@ -42,7 +39,6 @@ pub async fn create_transaction(
         ));
     }
 
-    // Check sufficient balance
     if from_basket.balance < payload.amount {
         return Err(CommonErrorResponse::new(
             format!(
@@ -53,7 +49,6 @@ pub async fn create_transaction(
         ));
     }
 
-    // Verify to_basket ownership and status
     let to_basket = basket_repository::find_by_id_with_balance(pool, payload.to_basket_id)
         .await
         .map_err(|_| {
@@ -74,7 +69,6 @@ pub async fn create_transaction(
         ));
     }
 
-    // Verify transaction type exists
     transaction_type_repository::find_by_id(pool, payload.transaction_type_id)
         .await
         .map_err(|_| {
@@ -84,7 +78,6 @@ pub async fn create_transaction(
             )
         })?;
 
-    // Create the transaction
     let transaction = transaction_repository::create(
         pool,
         user_id,
@@ -101,7 +94,6 @@ pub async fn create_transaction(
         )
     })?;
 
-    // Create transaction detail
     let _ = transaction_detail_repository::create(
         pool,
         transaction.id,
@@ -110,15 +102,7 @@ pub async fn create_transaction(
     )
     .await;
 
-    Ok(TransactionResponse {
-        id: transaction.id,
-        created_by_id: transaction.created_by_id,
-        from_basket_id: transaction.from_basket_id,
-        to_basket_id: transaction.to_basket_id,
-        amount: transaction.amount,
-        transaction_type_id: transaction.transaction_type_id,
-        created_at: transaction.created_at,
-    })
+    Ok(TransactionResponse::from_model(transaction))
 }
 
 pub async fn get_basket_transactions(
@@ -126,7 +110,7 @@ pub async fn get_basket_transactions(
     basket_id: i64,
     user_id: i64,
     limit: Option<i64>,
-    offset: Option<i64>,
+    page: Option<i64>,
 ) -> Result<PaginatedResponse<TransactionResponse>, CommonErrorResponse> {
     let basket = basket_repository::find_by_id(pool, basket_id)
         .await
@@ -142,11 +126,13 @@ pub async fn get_basket_transactions(
     }
 
     let limit = limit.unwrap_or(50);
-    let offset = offset.unwrap_or(0);
+    let page = page.unwrap_or(0);
+    let offset = (page - 1) * limit;
 
     let transactions = transaction_repository::find_by_basket_id(pool, basket_id, limit, offset)
         .await
-        .map_err(|_| {
+        .map_err(|e| {
+            println!("Database error: {e:?}");
             CommonErrorResponse::new(
                 "Failed to retrieve transactions".to_string(),
                 StatusCode::INTERNAL_SERVER_ERROR,
@@ -169,9 +155,9 @@ pub async fn get_basket_transactions(
 
     Ok(PaginatedResponse::new(
         transaction_list,
-        offset / limit + 1,
+        page,
         limit,
-        total, // Use the total count of transactions
+        total, 
     ))
 }
 
@@ -258,8 +244,8 @@ mod tests {
         let state = setup().await;
         let basket_id = 1;
         let user_id = 1;
-        let result = get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
-        // Only assert Ok if seeded, otherwise print
+        let result =
+            get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
         if let Err(e) = &result {
             println!("Error: {e:?}");
         }
@@ -271,7 +257,8 @@ mod tests {
         let state = setup().await;
         let basket_id = 1;
         let user_id = -9999; // Not the owner
-        let result = get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
+        let result =
+            get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
         assert!(result.is_err());
         let err = result.err().unwrap();
         assert_eq!(err.error, "Basket does not belong to you");

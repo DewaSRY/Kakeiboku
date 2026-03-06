@@ -3,7 +3,7 @@ use serde::Serialize;
 use sqlx::FromRow;
 use utoipa::ToSchema;
 
-#[derive(Serialize, FromRow, ToSchema)]
+#[derive(Debug, Serialize, FromRow, ToSchema)]
 pub struct Transaction {
     pub id: i64,
     pub created_by_id: i64,

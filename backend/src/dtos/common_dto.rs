@@ -48,7 +48,7 @@ pub struct PaginationQuery {
     pub page: Option<i64>,
 }
 
-#[derive(Serialize, Clone, ToSchema)]
+#[derive(Debug,Serialize, Clone, ToSchema)]
 pub struct PaginatedResponse<T> {
     pub data: Vec<T>,
     pub page: i64,

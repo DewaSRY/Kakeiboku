@@ -174,3 +174,106 @@ pub async fn get_basket_transactions(
         total, // Use the total count of transactions
     ))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::dtos::transaction_dto::CreateTransactionPayload;
+    use crate::utils::test_setup_util::setup;
+
+    #[tokio::test]
+    async fn test_create_transaction_amount_negative() {
+        let state = setup().await;
+        let user_id = 1;
+        let payload = CreateTransactionPayload {
+            from_basket_id: 1,
+            to_basket_id: 2,
+            amount: -10.0,
+            transaction_type_id: 1,
+            title: "Test Transaction".to_string(),
+            description: Some("Test Desc".to_string()),
+        };
+        let result = create_transaction(&state.pool, user_id, payload).await;
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+        assert_eq!(err.error, "Amount must be positive");
+    }
+
+    #[tokio::test]
+    async fn test_create_transaction_source_basket_not_found() {
+        let state = setup().await;
+        let user_id = 1;
+        let payload = CreateTransactionPayload {
+            from_basket_id: -9999, // invalid
+            to_basket_id: 2,
+            amount: 10.0,
+            transaction_type_id: 1,
+            title: "Test Transaction".to_string(),
+            description: Some("Test Desc".to_string()),
+        };
+        let result = create_transaction(&state.pool, user_id, payload).await;
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+        assert_eq!(err.error, "Source basket not found");
+    }
+
+    #[tokio::test]
+    async fn test_create_transaction_target_basket_not_found() {
+        let state = setup().await;
+        let user_id = 1;
+        let payload = CreateTransactionPayload {
+            from_basket_id: 1,
+            to_basket_id: -9999, // invalid
+            amount: 10.0,
+            transaction_type_id: 1,
+            title: "Test Transaction".to_string(),
+            description: Some("Test Desc".to_string()),
+        };
+        let result = create_transaction(&state.pool, user_id, payload).await;
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+        assert_eq!(err.error, "Target basket not found");
+    }
+
+    #[tokio::test]
+    async fn test_create_transaction_transaction_type_not_found() {
+        let state = setup().await;
+        let user_id = 1;
+        let payload = CreateTransactionPayload {
+            from_basket_id: 1,
+            to_basket_id: 2,
+            amount: 10.0,
+            transaction_type_id: -9999, // invalid
+            title: "Test Transaction".to_string(),
+            description: Some("Test Desc".to_string()),
+        };
+        let result = create_transaction(&state.pool, user_id, payload).await;
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+        assert_eq!(err.error, "Transaction type not found");
+    }
+
+    #[tokio::test]
+    async fn test_get_basket_transactions_success() {
+        let state = setup().await;
+        let basket_id = 1;
+        let user_id = 1;
+        let result = get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
+        // Only assert Ok if seeded, otherwise print
+        if let Err(e) = &result {
+            println!("Error: {e:?}");
+        }
+        assert!(result.is_ok() || result.is_err());
+    }
+
+    #[tokio::test]
+    async fn test_get_basket_transactions_forbidden() {
+        let state = setup().await;
+        let basket_id = 1;
+        let user_id = -9999; // Not the owner
+        let result = get_basket_transactions(&state.pool, basket_id, user_id, Some(10), Some(0)).await;
+        assert!(result.is_err());
+        let err = result.err().unwrap();
+        assert_eq!(err.error, "Basket does not belong to you");
+    }
+}

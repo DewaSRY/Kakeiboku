@@ -69,9 +69,6 @@ where
         }
     }
 
-    pub fn to_response(&self) -> (StatusCode, Json<Self>) {
-        (StatusCode::OK, Json(self.clone()))
-    }
 }
 
 /// Simple response with only id and name for common listing endpoints

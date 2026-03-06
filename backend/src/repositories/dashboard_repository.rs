@@ -126,8 +126,8 @@ where
                         SUM(CASE WHEN t.from_basket_id = b.id THEN t.amount ELSE 0 END)
                  FROM transactions t
                  WHERE (t.from_basket_id = b.id OR t.to_basket_id = b.id)
-                   AND ($3::date IS NULL OR t.created_at >= $3::date)
-                   AND ($4::date IS NULL OR t.created_at < ($4::date + interval '1 day'))
+                   AND ($2::date IS NULL OR t.created_at >= $2::date)
+                   AND ($3::date IS NULL OR t.created_at < ($3::date + interval '1 day'))
                 ), 0
             )::float8 as total
         FROM baskets b

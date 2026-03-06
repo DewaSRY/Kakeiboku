@@ -4,7 +4,6 @@ use utoipa::ToSchema;
 
 use crate::models::transactions::Transaction;
 
-// ============ Transaction DTOs ============
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct CreateTransactionPayload {
@@ -67,17 +66,16 @@ pub struct TransactionTypeInfo {
     pub parent_id: Option<i64>,
 }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct TransactionHistoryQuery {
-    pub basket_id: Option<i64>,
-    pub transaction_type_id: Option<i64>,
-    pub from_date: Option<NaiveDateTime>,
-    pub to_date: Option<NaiveDateTime>,
-    pub limit: Option<i64>,
-    pub offset: Option<i64>,
-}
+// #[derive(Debug, Serialize, Deserialize, ToSchema)]
+// pub struct TransactionHistoryQuery {
+//     pub basket_id: Option<i64>,
+//     pub transaction_type_id: Option<i64>,
+//     pub from_date: Option<NaiveDateTime>,
+//     pub to_date: Option<NaiveDateTime>,
+//     pub limit: Option<i64>,
+//     pub offset: Option<i64>,
+// }
 
-// ============ Transaction Type DTOs ============
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct CreateTransactionTypePayload {
@@ -112,20 +110,19 @@ pub struct TransactionTypeResponse {
     pub created_at: NaiveDateTime,
 }
 
-// ============ Transaction Detail DTOs ============
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct CreateTransactionDetailPayload {
-    pub transaction_id: i64,
-    pub title: String,
-    pub description: Option<String>,
-}
+// #[derive(Debug, Serialize, Deserialize, ToSchema)]
+// pub struct CreateTransactionDetailPayload {
+//     pub transaction_id: i64,
+//     pub title: String,
+//     pub description: Option<String>,
+// }
 
-#[derive(Debug, Serialize, Deserialize, ToSchema)]
-pub struct UpdateTransactionDetailPayload {
-    pub title: Option<String>,
-    pub description: Option<String>,
-}
+// #[derive(Debug, Serialize, Deserialize, ToSchema)]
+// pub struct UpdateTransactionDetailPayload {
+//     pub title: Option<String>,
+//     pub description: Option<String>,
+// }
 
 #[derive(Debug, Serialize, Deserialize, ToSchema)]
 pub struct TransactionDetailResponse {

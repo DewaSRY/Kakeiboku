@@ -51,13 +51,13 @@
             </div>
           </div>
           <div class="flex flex-wrap gap-2">
-            <UButton variant="outline" color="neutral" size="sm">
+            <UButton variant="outline" color="neutral" size="sm" @click="showDeposit = true">
               {{ $t("dashboard.deposite") }}
             </UButton>
-            <UButton variant="outline" color="neutral" size="sm">
+            <UButton variant="outline" color="neutral" size="sm" @click="showAllocate = true">
               {{ $t("dashboard.alocated") }}
             </UButton>
-            <UButton variant="outline" color="neutral" size="sm">
+            <UButton variant="outline" color="neutral" size="sm" @click="showSpend = true">
               {{ $t("dashboard.spend") }}
             </UButton>
             <UButton variant="outline" color="neutral" size="sm" class="w-full sm:w-auto" @click="showCreateBasket = true">
@@ -110,6 +110,36 @@
           <CreateBasketForm
             @success="handleBasketCreated"
             @cancel="showCreateBasket = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Deposit Modal -->
+      <UModal v-model:open="showDeposit">
+        <template #content>
+          <DepositForm
+            @success="handleTransactionSuccess('deposit')"
+            @cancel="showDeposit = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Allocate Modal -->
+      <UModal v-model:open="showAllocate">
+        <template #content>
+          <AllocateForm
+            @success="handleTransactionSuccess('allocate')"
+            @cancel="showAllocate = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Spend Modal -->
+      <UModal v-model:open="showSpend">
+        <template #content>
+          <SpendForm
+            @success="handleTransactionSuccess('spend')"
+            @cancel="showSpend = false"
           />
         </template>
       </UModal>
@@ -170,6 +200,9 @@ const toast = useToast();
 const moneyStash = ref<UserMoneyStashResponse | null>(null);
 const branchSummary = ref<BranchSummaryResponse | null>(null);
 const showCreateBasket = ref(false);
+const showDeposit = ref(false);
+const showAllocate = ref(false);
+const showSpend = ref(false);
 const showDateFilter = ref(false);
 const dateFilter = ref<'this_month' | 'custom'>('this_month');
 const startDate = ref('');
@@ -251,6 +284,14 @@ function handleBasketCreated() {
   showCreateBasket.value = false;
   loadDashboardData();
   toast.add({ title: t("baskets.basketCreated"), color: "success" });
+}
+
+function handleTransactionSuccess(type: 'deposit' | 'allocate' | 'spend') {
+  showDeposit.value = false;
+  showAllocate.value = false;
+  showSpend.value = false;
+  filterThisMonth();
+  toast.add({ title: t("transactions.transactionCreated"), color: "success" });
 }
 
 onMounted(() => {

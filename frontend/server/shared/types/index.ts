@@ -20,6 +20,9 @@ export type {
   TransactionWithDetails,
   CreateTransactionPayload,
   CreateTransactionTypePayload,
+  DepositPayload,
+  AllocatePayload,
+  SpendPayload,
   // Common types
   CommonErrorResponse,
   CommonResponse,
@@ -41,8 +44,11 @@ export {
   RegisterPayloadSchema,
   CreateBasketPayloadSchema,
   UpdateBasketPayloadSchema,
-  CreateTransactionPayloadSchema
-} from '~/dtos'
+  CreateTransactionPayloadSchema,
+  DepositPayloadSchema,
+  AllocatePayloadSchema,
+  SpendPayloadSchema,
+} from "~/dtos";
 
 // Server-specific types
 export interface RefreshTokenRequest {

@@ -15,7 +15,7 @@ where
         r#"
         INSERT INTO transactions (created_by_id, from_basket_id, to_basket_id, amount, transaction_type_id)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING id, created_by_id, from_basket_id, to_basket_id, amount, transaction_type_id, created_at
+        RETURNING id, created_by_id, from_basket_id, to_basket_id, amount::FLOAT8 as amount, transaction_type_id, created_at
         "#,
     )
     .bind(created_by_id)

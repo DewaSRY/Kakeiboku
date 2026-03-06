@@ -126,7 +126,7 @@ pub async fn get_basket_transactions(
     }
 
     let limit = limit.unwrap_or(50);
-    let page = page.unwrap_or(0);
+    let page = page.unwrap_or(1).max(1);
     let offset = (page - 1) * limit;
 
     let transactions = transaction_repository::find_by_basket_id(pool, basket_id, limit, offset)

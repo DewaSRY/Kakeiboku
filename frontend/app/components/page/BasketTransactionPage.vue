@@ -12,23 +12,22 @@
         :title="$t('transactions.title')"
         :description="$t('transactions.description')"
       />
-      <UCard>
-        <DataTable
-          :columns="columns"
-          :data="transactions"
-          empty-icon="i-heroicons-document-text"
-          :empty-message="$t('transactions.noTransactions')"
-        >
-          <template #amount-data="{ row }">
-            <span :class="row.original.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
-              {{ formatCurrency(row.original.amount) }}
-            </span>
-          </template>
-          <template #created_at-data="{ row }">
-            {{ formatDate(row.original.created_at) }}
-          </template>
-        </DataTable>
-      </UCard>
+      <UTable :data="transactions" :columns="tableColumns">
+        <template #amount-data="{ row }">
+          <span :class="row.original.amount >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+            {{ formatCurrency(row.original.amount) }}
+          </span>
+        </template>
+        <template #created_at-data="{ row }">
+          {{ formatDate(row.original.created_at) }}
+        </template>
+        <template #empty-state>
+          <div class="flex flex-col items-center justify-center py-6 gap-3">
+            <UIcon name="i-heroicons-document-text" class="w-8 h-8 text-gray-400" />
+            <span class="text-sm text-gray-500">{{ $t('transactions.noTransactions') }}</span>
+          </div>
+        </template>
+      </UTable>
     </template>
   </UDashboardPanel>
 </template>
@@ -45,7 +44,7 @@ const toast = useToast();
 const route = useRoute();
 
 const transactions = ref<TransactionResponse[]>([]);
-const columns = computed<TableColumn<TransactionResponse>[]>(() => [
+const tableColumns = computed<TableColumn<TransactionResponse>[]>(() => [
   { accessorKey: "id", header: t("transactions.id") },
   { accessorKey: "amount", header: t("common.amount") },
   { accessorKey: "transaction_type_id", header: t("common.type") },
@@ -71,6 +70,7 @@ async function loadTransactions() {
   try {
     const basketId = Number(route.params.basketId);
     const response = await transactionService.fetchBasketTransactions(basketId, { limit: 50, page: 1 });
+    console.log("Fetched transactions:", response.data);
     transactions.value = response.data;
   } catch (error) {
     toast.add({ title: t("transactions.loadFailed"), color: "error" });

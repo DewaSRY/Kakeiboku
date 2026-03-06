@@ -28,7 +28,7 @@ const route = useRoute()
 const navItems = computed(() => [
   { path: '/user/dashboard', label: t('nav.dashboard'), icon: 'i-heroicons-home' },
   { path: '/user/baskets', label: t('nav.baskets'), icon: 'i-heroicons-archive-box' },
-  { path: '/user/transactions', label: t('nav.transactions'), icon: 'i-heroicons-arrow-path' },
+  // Removed direct transactions link. Transactions are now accessed via baskets.
   { path: '/admin/dashboard', label: t('nav.admin'), icon: 'i-heroicons-shield-check' }
 ])
 

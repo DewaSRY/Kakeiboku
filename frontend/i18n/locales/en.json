@@ -36,7 +36,8 @@
     "version": "Kakeibo v1.0.0",
     "noDescription": "No description",
     "title": "Title",
-    "optional": "Optional"
+    "optional": "Optional",
+    "apply": "Apply"
   },
   "home": {
     "heroTitle": "Master Your Finances with",
@@ -114,7 +115,23 @@
     "totalIncome": "Total Income",
     "totalExpense": "Total Expense",
     "baskets": "Baskets",
-    "transactions": "Transactions"
+    "transactions": "Transactions",
+    "moneyStash": "Money Stash",
+    "totalSave": "Total Save",
+    "totalSpend": "Total Spend",
+    "mainBranch": "Main branch",
+    "deposite": "Deposite",
+    "alocated": "Alocated",
+    "spend": "Spend",
+    "depositTitle": "Deposit Money",
+    "allocateTitle": "Allocate Money",
+    "spendTitle": "Spend Money",
+    "createBranchBasket": "Create Branch Basket",
+    "alocatedMoney": "Alocated money",
+    "thisMonth": "This Month",
+    "filterByDate": "Filter by date",
+    "startDate": "Start Date",
+    "endDate": "End Date"
   },
   "transactions": {
     "title": "Transactions",

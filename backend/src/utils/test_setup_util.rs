@@ -1,6 +1,7 @@
 use crate::{configs::app_config, state::AppState};
 use sqlx::postgres::PgPoolOptions;
 
+#[warn(unused)]
 pub async fn setup() -> AppState {
     dotenvy::dotenv().expect("Failed to load .env file");
     let app_config = app_config::AppConfig::from_env();

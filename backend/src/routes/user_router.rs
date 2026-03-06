@@ -4,7 +4,8 @@ use axum::{
 };
 
 use crate::handlers::{
-    basket_transaction_handle, common_handler, user_basket_handler, user_transaction_handler,
+    basket_transaction_handle, common_handler, dashboard_handler, user_basket_handler,
+    user_transaction_handler,
 };
 
 pub fn user_routes() -> Router<crate::state::AppState> {
@@ -18,8 +19,11 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(basket_transaction_handle::get_basket_transactions),
         );
 
-    let transaction_routes =
-        Router::new().route("/", post(user_transaction_handler::create_transaction));
+    let transaction_routes = Router::new()
+        .route("/", post(user_transaction_handler::create_transaction))
+        .route("/deposit", post(user_transaction_handler::deposit))
+        .route("/allocate", post(user_transaction_handler::allocate))
+        .route("/spend", post(user_transaction_handler::spend));
 
     let common_routes = Router::new()
         .route(
@@ -31,8 +35,13 @@ pub fn user_routes() -> Router<crate::state::AppState> {
             get(common_handler::get_transaction_types),
         );
 
+    let dashboard_routes = Router::new()
+        .route("/money-stash", get(dashboard_handler::get_money_stash))
+        .route("/branch-summary", get(dashboard_handler::get_branch_summary));
+
     Router::new()
         .nest("/user/baskets", basket_routes)
         .nest("/user/transactions", transaction_routes)
         .nest("/user/common", common_routes)
+        .nest("/user/dashboard", dashboard_routes)
 }

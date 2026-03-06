@@ -43,7 +43,6 @@
           v-for="basket in branchBaskets"
           :key="basket.id"
           class="cursor-pointer hover:shadow-md transition-shadow"
-          @click="navigateTo(`/user/baskets/${basket.id}`)"
         >
           <div class="flex items-start justify-between">
             <div>
@@ -53,6 +52,13 @@
               <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
                 {{ basket.description || $t("common.noDescription") }}
               </p>
+              <UButton
+                size="xs"
+                class="mt-2"
+                @click="navigateTo(`/user/baskets/${basket.id}/transactions`)"
+              >
+                {{ $t("baskets.viewTransactions") }}
+              </UButton>
             </div>
             <UBadge :color="getStatusColor(basket.status)">
               {{ basket.status }}

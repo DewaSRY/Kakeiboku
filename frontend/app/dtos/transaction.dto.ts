@@ -34,11 +34,11 @@ export const TransactionResponseSchema = z.object({
   id: z.number(),
   created_by_id: z.number(),
   from_basket_id: z.number().nullable().optional(),
-  to_basket_id: z.number(),
+  to_basket_id: z.number().nullable().optional(),
   amount: z.number(),
   transaction_type_id: z.number(),
-  created_at: z.string()
-})
+  created_at: z.string(),
+});
 
 export type TransactionResponse = z.infer<typeof TransactionResponseSchema>
 
@@ -95,3 +95,35 @@ export const UpdateTransactionTypePayloadSchema = z.object({
 })
 
 export type UpdateTransactionTypePayload = z.infer<typeof UpdateTransactionTypePayloadSchema>
+
+// Deposit Payload - external money into main basket
+export const DepositPayloadSchema = z.object({
+  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  transaction_type_id: z.number().min(1, 'Transaction type is required'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().nullable().optional()
+})
+
+export type DepositPayload = z.infer<typeof DepositPayloadSchema>
+
+// Allocate Payload - main basket to branch basket
+export const AllocatePayloadSchema = z.object({
+  to_basket_id: z.number().min(1, 'Target basket is required'),
+  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  transaction_type_id: z.number().min(1, 'Transaction type is required'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().nullable().optional()
+})
+
+export type AllocatePayload = z.infer<typeof AllocatePayloadSchema>
+
+// Spend Payload - branch basket to external
+export const SpendPayloadSchema = z.object({
+  from_basket_id: z.number().min(1, 'Source basket is required'),
+  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  transaction_type_id: z.number().min(1, 'Transaction type is required'),
+  title: z.string().min(1, 'Title is required'),
+  description: z.string().nullable().optional()
+})
+
+export type SpendPayload = z.infer<typeof SpendPayloadSchema>

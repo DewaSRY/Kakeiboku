@@ -1,7 +1,7 @@
 use utoipa::OpenApi;
 
 use crate::handlers::{
-    auth_handler, basket_transaction_handle, common_handler, user_basket_handler,
+    auth_handler, basket_transaction_handle, common_handler, dashboard_handler, user_basket_handler,
     user_transaction_handler,
 };
 
@@ -17,10 +17,16 @@ use crate::handlers::{
         user_basket_handler::update_basket,
         // Transactions
         user_transaction_handler::create_transaction,
+        user_transaction_handler::deposit,
+        user_transaction_handler::allocate,
+        user_transaction_handler::spend,
         basket_transaction_handle::get_basket_transactions,
         // Common
         common_handler::get_basket_categories,
         common_handler::get_transaction_types,
+        // Dashboard
+        dashboard_handler::get_money_stash,
+        dashboard_handler::get_branch_summary,
     ),
     components(
         schemas(
@@ -34,11 +40,19 @@ use crate::handlers::{
             crate::dtos::transaction_dto::TransactionWithDetails,
             crate::dtos::transaction_dto::TransactionTypeResponse,
             crate::dtos::transaction_dto::CreateTransactionPayload,
+            crate::dtos::transaction_dto::DepositPayload,
+            crate::dtos::transaction_dto::AllocatePayload,
+            crate::dtos::transaction_dto::SpendPayload,
             crate::dtos::transaction_dto::CreateTransactionTypePayload,
             crate::dtos::transaction_dto::UpdateTransactionTypePayload,
             crate::dtos::transaction_dto::TransactionBasketInfo,
             crate::dtos::transaction_dto::TransactionTypeInfo,
             crate::dtos::transaction_dto::TransactionDetailResponse,
+            crate::dtos::dashboard_dto::UserMoneyStash,
+            crate::dtos::dashboard_dto::UserBranchPercent,
+            crate::dtos::dashboard_dto::UserMoneyStashResponse,
+            crate::dtos::dashboard_dto::BranchStats,
+            crate::dtos::dashboard_dto::BranchSummaryResponse,
         )
     ),
     tags(
@@ -46,6 +60,7 @@ use crate::handlers::{
         (name = "baskets", description = "Basket management for storing money"),
         (name = "transactions", description = "Transaction management"),
         (name = "common", description = "Common data endpoints"),
+        (name = "dashboard", description = "Dashboard and summary endpoints"),
         (name = "admin", description = "Admin operations")
     ),
     info(

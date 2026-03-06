@@ -20,13 +20,23 @@ export type {
   TransactionWithDetails,
   CreateTransactionPayload,
   CreateTransactionTypePayload,
+  DepositPayload,
+  AllocatePayload,
+  SpendPayload,
   // Common types
   CommonErrorResponse,
   CommonResponse,
   IdNameResponse,
   PaginatedIdNameResponse,
-  PaginationParams
-} from '~/dtos'
+  PaginationParams,
+  // Dashboard types
+  UserMoneyStash,
+  UserBranchPercent,
+  UserMoneyStashResponse,
+  BranchStats,
+  BranchSummaryResponse,
+  DateRangeQuery,
+} from "~/dtos";
 
 // Re-export schemas for validation
 export {
@@ -34,8 +44,11 @@ export {
   RegisterPayloadSchema,
   CreateBasketPayloadSchema,
   UpdateBasketPayloadSchema,
-  CreateTransactionPayloadSchema
-} from '~/dtos'
+  CreateTransactionPayloadSchema,
+  DepositPayloadSchema,
+  AllocatePayloadSchema,
+  SpendPayloadSchema,
+} from "~/dtos";
 
 // Server-specific types
 export interface RefreshTokenRequest {

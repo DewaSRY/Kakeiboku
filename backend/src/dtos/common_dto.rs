@@ -48,7 +48,7 @@ pub struct PaginationQuery {
     pub page: Option<i64>,
 }
 
-#[derive(Serialize, Clone, ToSchema)]
+#[derive(Debug,Serialize, Clone, ToSchema)]
 pub struct PaginatedResponse<T> {
     pub data: Vec<T>,
     pub page: i64,
@@ -69,9 +69,6 @@ where
         }
     }
 
-    pub fn to_response(&self) -> (StatusCode, Json<Self>) {
-        (StatusCode::OK, Json(self.clone()))
-    }
 }
 
 /// Simple response with only id and name for common listing endpoints

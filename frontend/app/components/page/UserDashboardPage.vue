@@ -8,97 +8,100 @@
       </UDashboardNavbar>
     </template>
     <template #body>
+      <!-- Money Stash Section -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
-          {{ $t("dashboard.title") }}
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+          {{ $t("dashboard.moneyStash") }}
         </h1>
-        <p class="text-gray-600 dark:text-gray-400 mt-1">
-          {{ $t("dashboard.subtitle") }}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <DashboardStatCard
-          :title="$t('dashboard.totalBalance')"
-          :value="formatCurrency(totalBalance)"
-          icon="i-heroicons-banknotes"
-          color="amber"
-        />
-
-        <DashboardStatCard
-          :title="$t('dashboard.mainWallet')"
-          :value="formatCurrency(mainBasket?.balance || 0)"
-          icon="i-heroicons-wallet"
-          color="green"
-        />
         
-        <DashboardStatCard
-          :title="$t('dashboard.branchBasketsCount')"
-          :value="branchBaskets.length.toString()"
-          icon="i-heroicons-archive-box"
-          color="blue"
-        />
+        <!-- Total Save & Spend Row -->
+        <div class="flex gap-4 mb-6">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t("dashboard.totalSave") }}</span>
+            <div class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded">
+              <span class="font-medium text-gray-900 dark:text-white">{{ formatCurrency(moneyStash?.money_stash.total_save || 0) }}</span>
+            </div>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t("dashboard.totalSpend") }}</span>
+            <div class="px-3 py-1 border border-gray-300 dark:border-gray-600 rounded">
+              <span class="font-medium text-gray-900 dark:text-white">{{ formatCurrency(moneyStash?.money_stash.total_spend || 0) }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Category Percentages -->
+        <div class="flex flex-wrap gap-4 mb-6 border-b border-gray-200 dark:border-gray-700 pb-4">
+          <div 
+            v-for="category in moneyStash?.branch_category_percentages || []" 
+            :key="category.branch_category_name"
+            class="text-center"
+          >
+            <p class="text-xs text-gray-500 dark:text-gray-400">{{ category.branch_category_name }}</p>
+            <p class="text-lg font-semibold text-gray-900 dark:text-white">{{ category.total_percent }} %</p>
+          </div>
+        </div>
+
+        <!-- Main Branch and Actions -->
+        <div class="flex flex-wrap items-center gap-4">
+          <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-600 dark:text-gray-400">{{ $t("dashboard.mainBranch") }}</span>
+            <div class="px-4 py-2 bg-amber-400 rounded font-bold text-gray-900">
+              RP. {{ formatNumber(moneyStash?.money_stash.main_branch || 0) }}
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <UButton variant="outline" color="neutral" size="sm" @click="showDeposit = true">
+              {{ $t("dashboard.deposite") }}
+            </UButton>
+            <UButton variant="outline" color="neutral" size="sm" @click="showAllocate = true">
+              {{ $t("dashboard.alocated") }}
+            </UButton>
+            <UButton variant="outline" color="neutral" size="sm" @click="showSpend = true">
+              {{ $t("dashboard.spend") }}
+            </UButton>
+            <UButton variant="outline" color="neutral" size="sm" class="w-full sm:w-auto" @click="showCreateBasket = true">
+              {{ $t("dashboard.createBranchBasket") }}
+            </UButton>
+          </div>
+        </div>
       </div>
 
-      <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Branch Baskets -->
-        <PageContentCard :title="$t('dashboard.branchBaskets')">
-          <template #header-action>
-            <UButton
-              color="primary"
+      <!-- Allocated Money Section -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-xl font-bold text-gray-900 dark:text-white">
+            {{ $t("dashboard.alocatedMoney") }}
+          </h2>
+          <div class="flex gap-2">
+            <UButton 
+              :variant="dateFilter === 'this_month' ? 'solid' : 'outline'" 
+              color="neutral" 
               size="sm"
-              icon="i-heroicons-plus"
-              @click="showCreateBasket = true"
+              @click="filterThisMonth"
             >
-              {{ $t("dashboard.newBasket") }}
+              {{ $t("dashboard.thisMonth") }}
             </UButton>
-          </template>
-
-          <PageEmptyState
-            v-if="branchBaskets.length === 0"
-            icon="i-heroicons-archive-box"
-            :message="$t('dashboard.noBranchBaskets')"
-            padding="sm"
-          />
-
-          <div v-else class="space-y-4">
-            <BasketItem
-              v-for="basket in branchBaskets"
-              :key="basket.id"
-              :basket="basket"
-              @click="navigateTo(`/user/baskets/${basket.id}`)"
-            />
-          </div>
-        </PageContentCard>
-
-        <!-- Recent Transactions -->
-        <PageContentCard :title="$t('dashboard.recentTransactions')">
-          <template #header-action>
-            <UButton
-              color="neutral"
-              variant="ghost"
-              size="sm"
-              @click="navigateTo('/user/transactions')"
-            >
-              {{ $t("common.viewAll") }}
+            <UButton variant="outline" color="neutral" size="sm" @click="showDateFilter = true">
+              {{ $t("dashboard.filterByDate") }}
             </UButton>
-          </template>
-
-          <PageEmptyState
-            v-if="recentTransactions.length === 0"
-            icon="i-heroicons-arrow-path"
-            :message="$t('dashboard.noTransactions')"
-            padding="sm"
-          />
-
-          <div v-else class="space-y-4">
-            <TransactionItem
-              v-for="transaction in recentTransactions"
-              :key="transaction.id"
-              :transaction="transaction"
-            />
           </div>
-        </PageContentCard>
+        </div>
+
+        <!-- Bar Chart -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg p-4 min-h-75">
+          <VisXYContainer :data="chartData" :height="280">
+            <VisGroupedBar
+              :x="(d: ChartDataItem) => d.index"
+              :y="(d: ChartDataItem) => d.total"
+              :color="'#86efac'"
+              :roundedCorners="4"
+              :barPadding="0.3"
+            />
+            <VisAxis type="x" :tickFormat="(i: number) => chartData[i]?.name || ''" />
+            <VisAxis type="y" :tickFormat="(v: number) => formatCompactNumber(v)" />
+          </VisXYContainer>
+        </div>
       </div>
 
       <!-- Create Basket Modal -->
@@ -110,50 +113,170 @@
           />
         </template>
       </UModal>
+
+      <!-- Deposit Modal -->
+      <UModal v-model:open="showDeposit">
+        <template #content>
+          <DepositForm
+            @success="handleTransactionSuccess('deposit')"
+            @cancel="showDeposit = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Allocate Modal -->
+      <UModal v-model:open="showAllocate">
+        <template #content>
+          <AllocateForm
+            @success="handleTransactionSuccess('allocate')"
+            @cancel="showAllocate = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Spend Modal -->
+      <UModal v-model:open="showSpend">
+        <template #content>
+          <SpendForm
+            @success="handleTransactionSuccess('spend')"
+            @cancel="showSpend = false"
+          />
+        </template>
+      </UModal>
+
+      <!-- Date Filter Modal -->
+      <UModal v-model:open="showDateFilter">
+        <template #content>
+          <div class="p-6">
+            <h3 class="text-lg font-semibold mb-4">{{ $t("dashboard.filterByDate") }}</h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {{ $t("dashboard.startDate") }}
+                </label>
+                <UInput v-model="startDate" type="date" />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  {{ $t("dashboard.endDate") }}
+                </label>
+                <UInput v-model="endDate" type="date" />
+              </div>
+              <div class="flex justify-end gap-2">
+                <UButton variant="outline" color="neutral" @click="showDateFilter = false">
+                  {{ $t("common.cancel") }}
+                </UButton>
+                <UButton color="primary" @click="applyDateFilter">
+                  {{ $t("common.apply") }}
+                </UButton>
+              </div>
+            </div>
+          </div>
+        </template>
+      </UModal>
     </template>
   </UDashboardPanel>
 </template>
 
 <script setup lang="ts">
-import type { BasketResponse, TransactionResponse } from "~/dtos";
-import { useBaskets, useTransactions } from "#imports";
+import { VisXYContainer, VisGroupedBar, VisAxis } from "@unovis/vue";
+import type { UserMoneyStashResponse, BranchSummaryResponse } from "~/dtos";
+import { useDashboard } from "#imports";
 
 definePageMeta({
   layout: "dashboard",
 });
 
+interface ChartDataItem {
+  index: number;
+  name: string;
+  total: number;
+}
+
 const { t } = useI18n();
-const basketService = useBaskets();
-const transactionService = useTransactions();
+const dashboardService = useDashboard();
 const toast = useToast();
 
-const totalBalance = ref(0);
-const mainBasket = ref<BasketResponse | null>(null);
-const branchBaskets = ref<BasketResponse[]>([]);
-const recentTransactions = ref<TransactionResponse[]>([]);
+const moneyStash = ref<UserMoneyStashResponse | null>(null);
+const branchSummary = ref<BranchSummaryResponse | null>(null);
 const showCreateBasket = ref(false);
+const showDeposit = ref(false);
+const showAllocate = ref(false);
+const showSpend = ref(false);
+const showDateFilter = ref(false);
+const dateFilter = ref<'this_month' | 'custom'>('this_month');
+const startDate = ref('');
+const endDate = ref('');
+
+const chartData = computed<ChartDataItem[]>(() => {
+  if (!branchSummary.value?.data) return [];
+  return branchSummary.value.data.map((item, index) => ({
+    index,
+    name: item.name,
+    total: item.total
+  }));
+});
 
 const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("en-US", {
+  return new Intl.NumberFormat("id-ID", {
     style: "currency",
-    currency: "USD",
+    currency: "IDR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
   }).format(amount);
 };
 
-async function loadDashboardData() {
+const formatNumber = (amount: number) => {
+  return new Intl.NumberFormat("id-ID", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+};
+
+const formatCompactNumber = (value: number) => {
+  if (value >= 1000000) {
+    return `${(value / 1000000).toFixed(1)}M`;
+  }
+  if (value >= 1000) {
+    return `${(value / 1000).toFixed(0)}K`;
+  }
+  return value.toString();
+};
+
+async function loadDashboardData(params?: { start_date?: string; end_date?: string }) {
   try {
-    const [basketsResponse, transactions] = await Promise.all([
-      basketService.fetchBaskets(),
-      transactionService.getRecentTransactions(5),
+    const [stashData, summaryData] = await Promise.all([
+      dashboardService.fetchMoneyStash(),
+      dashboardService.fetchBranchSummary(params)
     ]);
 
-    const allBaskets = basketsResponse.data;
-    mainBasket.value = allBaskets.find((b) => b.basket_type === "main") || null;
-    branchBaskets.value = allBaskets.filter((b) => b.basket_type !== "main");
-    totalBalance.value = allBaskets.reduce((acc, b) => acc + b.balance, 0);
-    recentTransactions.value = transactions;
+    moneyStash.value = stashData;
+    branchSummary.value = summaryData;
   } catch (error) {
     toast.add({ title: t("common.error"), color: "error" });
+  }
+}
+
+function filterThisMonth() {
+  dateFilter.value = 'this_month';
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  
+  loadDashboardData({
+    start_date: firstDay.toISOString().split('T')[0],
+    end_date: lastDay.toISOString().split('T')[0]
+  });
+}
+
+function applyDateFilter() {
+  if (startDate.value && endDate.value) {
+    dateFilter.value = 'custom';
+    showDateFilter.value = false;
+    loadDashboardData({
+      start_date: startDate.value,
+      end_date: endDate.value
+    });
   }
 }
 
@@ -163,7 +286,15 @@ function handleBasketCreated() {
   toast.add({ title: t("baskets.basketCreated"), color: "success" });
 }
 
+function handleTransactionSuccess(type: 'deposit' | 'allocate' | 'spend') {
+  showDeposit.value = false;
+  showAllocate.value = false;
+  showSpend.value = false;
+  filterThisMonth();
+  toast.add({ title: t("transactions.transactionCreated"), color: "success" });
+}
+
 onMounted(() => {
-  loadDashboardData();
+  filterThisMonth();
 });
 </script>

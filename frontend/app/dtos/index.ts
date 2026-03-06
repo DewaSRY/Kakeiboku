@@ -9,3 +9,6 @@ export * from './transaction.dto'
 
 // Common DTOs
 export * from './common.dto'
+
+// Dashboard DTOs
+export * from './dashboard.dto'

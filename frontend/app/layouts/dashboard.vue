@@ -20,14 +20,7 @@ const links = [
       open.value = false;
     },
   },
-  {
-    label: t("nav.transactions"),
-    icon: "i-heroicons-arrow-path",
-    to: "/user/transactions",
-    onSelect: () => {
-      open.value = false;
-    },
-  },
+  // Removed direct transactions link. Transactions are now accessed via baskets.
 ] satisfies NavigationMenuItem[];
 </script>
 

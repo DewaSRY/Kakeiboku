@@ -1,38 +1,33 @@
 <template>
   <FormContainer :title="$t('dashboard.spendTitle')">
     <UForm :schema="SpendPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField :label="$t('transactions.fromBasket')" name="from_basket_id">
-        <USelect
-          v-model="formState.from_basket_id"
-          :items="branchBaskets"
-          value-key="id"
-          label-key="name"
-          :placeholder="$t('transactions.selectSource')"
-          size="lg"
-        />
-      </UFormField>
+      <UiSelectOption
+        v-model="formState.from_basket_id"
+        :items="branchBaskets"
+        :label="$t('transactions.fromBasket')"
+        name="from_basket_id"
+        :placeholder="$t('transactions.selectSource')"
+        required
+      />
 
-      <UFormField :label="$t('common.amount')" name="amount">
-        <UInput 
-          v-model.number="formState.amount" 
-          type="number"
-          :placeholder="$t('common.amount')"
-          size="lg"
-          step="0.01"
-          min="0.01"
-        />
-      </UFormField>
+      <UiNumberInput
+        v-model="formState.amount"
+        :label="$t('common.amount')"
+        name="amount"
+        :placeholder="$t('common.amount')"
+        mask="currency-idr"
+        icon="i-lucide-banknote"
+        required
+      />
 
-      <UFormField :label="$t('transactions.transactionType')" name="transaction_type_id">
-        <USelect
-          v-model="formState.transaction_type_id"
-          :items="transactionTypes"
-          value-key="id"
-          label-key="name"
-          :placeholder="$t('transactions.selectType')"
-          size="lg"
-        />
-      </UFormField>
+      <UiSelectOption
+        v-model="formState.transaction_type_id"
+        :items="transactionTypes"
+        :label="$t('transactions.transactionType')"
+        name="transaction_type_id"
+        :placeholder="$t('transactions.selectType')"
+        required
+      />
 
       <UiTextInputUi
         v-model="formState.title"
@@ -77,10 +72,10 @@ const transactionService = useTransactions()
 const basketService = useBaskets()
 const commonService = useCommonData()
 
-const formState = reactive<SpendPayload>({
-  from_basket_id: 0,
-  amount: 0,
-  transaction_type_id: 0,
+const formState = reactive<Partial<SpendPayload>>({
+  from_basket_id: undefined,
+  amount: undefined,
+  transaction_type_id: undefined,
   title: '',
   description: undefined
 })
@@ -111,7 +106,7 @@ async function handleSubmit() {
   error.value = null
   
   try {
-    await transactionService.spend(formState)
+    await transactionService.spend(formState as SpendPayload)
     emit('success')
   } catch (e: any) {
     error.value = e.response?.data?.message || t('form.createTransactionFailed')

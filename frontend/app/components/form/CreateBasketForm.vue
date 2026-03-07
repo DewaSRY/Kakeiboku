@@ -9,16 +9,14 @@
         icon="i-lucide-archive"
       />
 
-      <UFormField :label="$t('common.category')" name="basket_category_id">
-        <USelect
-          v-model="formState.basket_category_id"
-          :items="categories"
-          value-key="id"
-          label-key="name"
-          :placeholder="$t('baskets.selectCategory')"
-          size="lg"
-        />
-      </UFormField>
+      <UiSelectOption
+        v-model="formState.basket_category_id"
+        :items="categories"
+        :label="$t('common.category')"
+        name="basket_category_id"
+        :placeholder="$t('baskets.selectCategory')"
+        required
+      />
 
       <TextAreaInput
         v-model="formState.description"
@@ -52,9 +50,9 @@ const { t } = useI18n()
 const basketService = useBaskets()
 const commonService = useCommonData()
 
-const formState = reactive<CreateBasketPayload>({
+const formState = reactive<Partial<CreateBasketPayload>>({
   name: '',
-  basket_category_id: 0,
+  basket_category_id: undefined,
   description: undefined
 })
 
@@ -76,7 +74,7 @@ async function handleSubmit() {
   error.value = null
   
   try {
-    await basketService.createBasket(formState)
+    await basketService.createBasket(formState as CreateBasketPayload)
     emit('success')
   } catch (e: any) {
     error.value = e.response?.data?.message || t('baskets.createFailed')

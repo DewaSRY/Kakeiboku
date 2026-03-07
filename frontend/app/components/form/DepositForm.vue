@@ -1,27 +1,24 @@
 <template>
   <FormContainer :title="$t('dashboard.depositTitle')">
     <UForm :schema="DepositPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField :label="$t('common.amount')" name="amount">
-        <UInput 
-          v-model.number="formState.amount" 
-          type="number"
-          :placeholder="$t('common.amount')"
-          size="lg"
-          step="0.01"
-          min="0.01"
-        />
-      </UFormField>
+      <UiNumberInput
+        v-model="formState.amount"
+        :label="$t('common.amount')"
+        name="amount"
+        :placeholder="$t('common.amount')"
+        mask="currency-idr"
+        icon="i-lucide-banknote"
+        required
+      />
 
-      <UFormField :label="$t('transactions.transactionType')" name="transaction_type_id">
-        <USelect
-          v-model="formState.transaction_type_id"
-          :items="transactionTypes"
-          value-key="id"
-          label-key="name"
-          :placeholder="$t('transactions.selectType')"
-          size="lg"
-        />
-      </UFormField>
+      <UiSelectOption
+        v-model="formState.transaction_type_id"
+        :items="transactionTypes"
+        :label="$t('transactions.transactionType')"
+        name="transaction_type_id"
+        :placeholder="$t('transactions.selectType')"
+        required
+      />
 
       <UiTextInputUi
         v-model="formState.title"
@@ -64,9 +61,9 @@ const { t } = useI18n()
 const transactionService = useTransactions()
 const commonService = useCommonData()
 
-const formState = reactive<DepositPayload>({
-  amount: 0,
-  transaction_type_id: 0,
+const formState = reactive<Partial<DepositPayload>>({
+  amount: undefined,
+  transaction_type_id: undefined,
   title: '',
   description: undefined
 })
@@ -89,7 +86,7 @@ async function handleSubmit() {
   error.value = null
   
   try {
-    await transactionService.deposit(formState)
+    await transactionService.deposit(formState as DepositPayload)
     emit('success')
   } catch (e: any) {
     error.value = e.response?.data?.message || t('form.createTransactionFailed')

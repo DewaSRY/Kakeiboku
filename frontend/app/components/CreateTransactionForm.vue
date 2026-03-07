@@ -1,13 +1,13 @@
 <template>
   <FormContainer :title="$t('transactions.createTransaction')">
     <UForm :schema="CreateTransactionPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField :label="$t('common.title')" name="title">
-        <UInput 
-          v-model="formState.title" 
-          placeholder="e.g., Grocery shopping"
-          size="lg"
-        />
-      </UFormField>
+      <UiTextInputUi
+        v-model="formState.title"
+        :label="$t('common.title')"
+        name="title"
+        placeholder="e.g., Grocery shopping"
+        icon="i-lucide-file-text"
+      />
 
       <div class="grid grid-cols-2 gap-4">
         <UFormField :label="$t('transactions.fromBasket')" name="from_basket_id">

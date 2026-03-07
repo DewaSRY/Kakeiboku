@@ -1,13 +1,13 @@
 <template>
   <FormContainer :title="$t('baskets.createNewBasket')">
     <UForm :schema="CreateBasketPayloadSchema" :state="formState" @submit="handleSubmit" class="space-y-4">
-      <UFormField :label="$t('baskets.basketName')" name="name">
-        <UInput 
-          v-model="formState.name" 
-          :placeholder="$t('baskets.basketNamePlaceholder')"
-          size="lg"
-        />
-      </UFormField>
+      <UiTextInputUi
+        v-model="formState.name"
+        :label="$t('baskets.basketName')"
+        name="name"
+        :placeholder="$t('baskets.basketNamePlaceholder')"
+        icon="i-lucide-archive"
+      />
 
       <UFormField :label="$t('common.category')" name="basket_category_id">
         <USelect

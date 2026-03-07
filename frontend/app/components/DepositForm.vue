@@ -23,13 +23,13 @@
         />
       </UFormField>
 
-      <UFormField :label="$t('common.title')" name="title">
-        <UInput 
-          v-model="formState.title" 
-          :placeholder="$t('common.title')"
-          size="lg"
-        />
-      </UFormField>
+      <UiTextInputUi
+        v-model="formState.title"
+        :label="$t('common.title')"
+        name="title"
+        :placeholder="$t('common.title')"
+        icon="i-lucide-file-text"
+      />
 
       <UFormField :label="$t('common.description')" name="description">
         <UTextarea 

@@ -23,5 +23,4 @@
 
 <script setup lang="ts">
 import SignupForm from '../form/SignupForm.vue'
-
 </script>

@@ -5,29 +5,23 @@
     @submit="handleSubmit"
     class="space-y-4"
   >
-    <UFormField :label="$t('common.email')" name="email">
-      <UInput
-        v-model="formState.email"
-        type="email"
-        :placeholder="$t('auth.emailPlaceholder')"
-        size="lg"
-        class="w-full"
-      />
-    </UFormField>
+    <UiEmailInputUi
+      v-model="formState.email"
+      :label="$t('common.email')"
+      name="email"
+      :placeholder="$t('auth.emailPlaceholder')"
+    />
 
-    <UFormField :label="$t('common.password')" name="password">
-      <UInput
-        v-model="formState.password"
-        type="password"
-        :placeholder="$t('auth.passwordPlaceholder')"
-        size="lg"
-        class="w-full"
-      />
-    </UFormField>
+    <UiPasswordInputUi
+      v-model="formState.password"
+      :label="$t('common.password')"
+      name="password"
+      :placeholder="$t('auth.passwordPlaceholder')"
+    />
 
-    <UButton type="submit" color="primary" size="lg" block :loading="isLoading">
+    <UiSubmitButtonUi :loading="isLoading">
       {{ $t("common.signIn") }}
-    </UButton>
+    </UiSubmitButtonUi>
   </UForm>
 
   <UAlert

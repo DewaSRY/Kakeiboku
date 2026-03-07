@@ -8,6 +8,7 @@
     <UInput
       :model-value="modelValue"
       type="email"
+      :name="name"
       :placeholder="placeholder"
       :size="size"
       :icon="icon"

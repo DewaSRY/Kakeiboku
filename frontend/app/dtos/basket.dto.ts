@@ -4,23 +4,23 @@ export const BasketResponseSchema = z.object({
   id: z.number(),
   user_id: z.number(),
   name: z.string(),
-  description: z.string().nullable().optional(),
+  description: z.string().optional(),
   basket_category_id: z.number(),
   basket_type: z.string(),
   status: z.string(),
   balance: z.number(),
   created_at: z.string(),
-  updated_at: z.string()
-})
+  updated_at: z.string(),
+});
 
 export type BasketResponse = z.infer<typeof BasketResponseSchema>
 
 export const BasketCategoryResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string().nullable().optional(),
-  created_at: z.string()
-})
+  description: z.string().optional(),
+  created_at: z.string(),
+});
 
 export type BasketCategoryResponse = z.infer<typeof BasketCategoryResponseSchema>
 
@@ -33,10 +33,10 @@ export const CreateBasketPayloadSchema = z.object({
 export type CreateBasketPayload = z.infer<typeof CreateBasketPayloadSchema>
 
 export const UpdateBasketPayloadSchema = z.object({
-  name: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
-  status: z.string().nullable().optional()
-})
+  name: z.string().optional(),
+  description: z.string().optional(),
+  status: z.string().optional(),
+});
 
 export type UpdateBasketPayload = z.infer<typeof UpdateBasketPayloadSchema>
 

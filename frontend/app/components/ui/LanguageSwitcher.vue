@@ -13,10 +13,10 @@
 const { locale, locales, setLocale } = useI18n()
 
 const localeItems = computed(() => [
-  (locales.value as Array<{ code: string; name: string }>).map((loc) => ({
+  (locales.value as Array<{ code: "en" | "id"; name: string }>).map((loc) => ({
     label: loc.name,
     icon: locale.value === loc.code ? 'i-lucide-check' : undefined,
-    onSelect: () => setLocale(loc.code),
+    onSelect: () => setLocale(loc.code ),
   })),
 ])
 </script>

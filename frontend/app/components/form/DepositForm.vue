@@ -31,13 +31,13 @@
         icon="i-lucide-file-text"
       />
 
-      <UFormField :label="$t('common.description')" name="description">
-        <UTextarea 
-          v-model="formState.description" 
-          :placeholder="$t('transactions.optionalNotes')"
-          :rows="3"
-        />
-      </UFormField>
+      <TextAreaInput
+        v-model="formState.description"
+        :label="$t('common.description')"
+        name="description"
+        :placeholder="$t('transactions.optionalNotes')"
+        :rows="3"
+      />
 
       <FormActions 
         :submit-text="$t('dashboard.deposite')" 
@@ -53,6 +53,7 @@
 <script setup lang="ts">
 import { DepositPayloadSchema, type DepositPayload, type IdNameResponse } from '~/dtos'
 import { useTransactions, useCommonData } from '#imports'
+import TextAreaInput from '../ui/TextAreaInput.vue';
 
 const emit = defineEmits<{
   success: []
@@ -67,7 +68,7 @@ const formState = reactive<DepositPayload>({
   amount: 0,
   transaction_type_id: 0,
   title: '',
-  description: null
+  description: undefined
 })
 
 const transactionTypes = ref<IdNameResponse[]>([])

@@ -42,13 +42,14 @@
         icon="i-lucide-file-text"
       />
 
-      <UFormField :label="$t('common.description')" name="description">
-        <UTextarea 
-          v-model="formState.description" 
-          :placeholder="$t('transactions.optionalNotes')"
-          :rows="3"
-        />
-      </UFormField>
+      <TextAreaInput
+        v-model="formState.description"
+        :label="$t('common.description')"
+        name="description"
+        :placeholder="$t('transactions.optionalNotes')"
+        icon="i-lucide-file-text"
+        :rows="3"
+      />
 
       <FormActions 
         :submit-text="$t('dashboard.spend')" 
@@ -64,6 +65,7 @@
 <script setup lang="ts">
 import { SpendPayloadSchema, type SpendPayload, type BasketResponse, type IdNameResponse } from '~/dtos'
 import { useTransactions, useBaskets, useCommonData } from '#imports'
+import TextAreaInput from '../ui/TextAreaInput.vue';
 
 const emit = defineEmits<{
   success: []
@@ -80,7 +82,7 @@ const formState = reactive<SpendPayload>({
   amount: 0,
   transaction_type_id: 0,
   title: '',
-  description: null
+  description: undefined
 })
 
 const branchBaskets = ref<(Omit<BasketResponse, 'description'> & { description?: string })[]>([])

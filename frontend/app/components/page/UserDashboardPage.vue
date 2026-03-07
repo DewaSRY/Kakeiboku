@@ -193,6 +193,10 @@
 import { VisXYContainer, VisGroupedBar, VisAxis } from "@unovis/vue";
 import type { UserMoneyStashResponse, BranchSummaryResponse } from "~/dtos";
 import { useDashboard } from "#imports";
+import CreateBasketForm from '../form/CreateBasketForm.vue'
+import DepositForm from '../form/DepositForm.vue'
+import AllocateForm from '../form/AllocateForm.vue'
+import SpendForm from '../form/SpendForm.vue'
 
 definePageMeta({
   layout: "dashboard",

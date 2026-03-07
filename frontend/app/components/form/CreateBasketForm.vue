@@ -20,13 +20,13 @@
         />
       </UFormField>
 
-      <UFormField :label="$t('common.description')" name="description">
-        <UTextarea 
-          v-model="formState.description" 
-          :placeholder="$t('baskets.optionalDescription')"
-          :rows="3"
-        />
-      </UFormField>
+      <TextAreaInput
+        v-model="formState.description"
+        :label="$t('common.description')"
+        name="description"
+        :placeholder="$t('baskets.optionalDescription')"
+        :rows="3"
+      />
 
       <FormActions 
         :submit-text="$t('baskets.createBasket')" 
@@ -42,6 +42,7 @@
 <script setup lang="ts">
 import { CreateBasketPayloadSchema, type CreateBasketPayload, type IdNameResponse } from '~/dtos'
 import { useBaskets, useCommonData } from '#imports';
+import TextAreaInput from '../ui/TextAreaInput.vue';
 const emit = defineEmits<{
   success: []
   cancel: []
@@ -54,7 +55,7 @@ const commonService = useCommonData()
 const formState = reactive<CreateBasketPayload>({
   name: '',
   basket_category_id: 0,
-  description: null
+  description: undefined
 })
 
 const categories = ref<IdNameResponse[]>([])

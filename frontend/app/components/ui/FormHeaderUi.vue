@@ -24,7 +24,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  icon: 'i-heroicons-currency-dollar',
+  icon: 'i-lucide-circle-dollar-sign',
   iconSize: '16',
   iconColor: 'primary',
   subtitle: '',

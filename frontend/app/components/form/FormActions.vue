@@ -8,13 +8,11 @@
     >
       {{ cancelText || $t('common.cancel') }}
     </UButton>
-    <UButton 
-      type="submit" 
-      :color="submitColor" 
+    <UiSubmitButtonUi
       :loading="loading"
     >
       {{ submitText || $t('common.submit') }}
-    </UButton>
+    </UiSubmitButtonUi>
   </div>
 </template>
 

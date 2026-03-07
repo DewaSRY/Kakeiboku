@@ -4,10 +4,10 @@ import { TransactionBasketInfoSchema } from './basket.dto'
 export const TransactionTypeChildrenResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string().nullable().optional(),
+  description: z.string().optional(),
   parent_id: z.number().nullable().optional(),
-  created_at: z.string()
-})
+  created_at: z.string(),
+});
 
 export type TransactionTypeChildrenResponse = z.infer<typeof TransactionTypeChildrenResponseSchema>
 
@@ -22,11 +22,11 @@ export type TransactionTypeInfo = z.infer<typeof TransactionTypeInfoSchema>
 export const TransactionTypeResponseSchema = z.object({
   id: z.number(),
   name: z.string(),
-  description: z.string().nullable().optional(),
+  description: z.string().optional(),
   parent_id: z.number().nullable().optional(),
   children: z.array(TransactionTypeChildrenResponseSchema),
-  created_at: z.string()
-})
+  created_at: z.string(),
+});
 
 export type TransactionTypeResponse = z.infer<typeof TransactionTypeResponseSchema>
 
@@ -46,9 +46,9 @@ export const TransactionDetailResponseSchema = z.object({
   id: z.number(),
   transaction_id: z.number(),
   title: z.string(),
-  description: z.string().nullable().optional(),
-  created_at: z.string()
-})
+  description: z.string().optional(),
+  created_at: z.string(),
+});
 
 export type TransactionDetailResponse = z.infer<typeof TransactionDetailResponseSchema>
 
@@ -70,60 +70,60 @@ export type TransactionWithDetails = z.infer<typeof TransactionWithDetailsSchema
 export const CreateTransactionPayloadSchema = z.object({
   from_basket_id: z.number(),
   to_basket_id: z.number(),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
   transaction_type_id: z.number(),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().nullable().optional()
-})
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+});
 
 export type CreateTransactionPayload = z.infer<typeof CreateTransactionPayloadSchema>
 
 // Create Transaction Type Payload
 export const CreateTransactionTypePayloadSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().nullable().optional(),
-  parent_id: z.number().nullable().optional()
-})
+  name: z.string().min(1, "Name is required"),
+  description: z.string().optional(),
+  parent_id: z.number().nullable().optional(),
+});
 
 export type CreateTransactionTypePayload = z.infer<typeof CreateTransactionTypePayloadSchema>
 
 // Update Transaction Type Payload
 export const UpdateTransactionTypePayloadSchema = z.object({
   name: z.string().nullable().optional(),
-  description: z.string().nullable().optional(),
-  parent_id: z.number().nullable().optional()
-})
+  description: z.string().optional(),
+  parent_id: z.number().nullable().optional(),
+});
 
 export type UpdateTransactionTypePayload = z.infer<typeof UpdateTransactionTypePayloadSchema>
 
 // Deposit Payload - external money into main basket
 export const DepositPayloadSchema = z.object({
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
-  transaction_type_id: z.number().min(1, 'Transaction type is required'),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().nullable().optional()
-})
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
+  transaction_type_id: z.number().min(1, "Transaction type is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+});
 
 export type DepositPayload = z.infer<typeof DepositPayloadSchema>
 
 // Allocate Payload - main basket to branch basket
 export const AllocatePayloadSchema = z.object({
-  to_basket_id: z.number().min(1, 'Target basket is required'),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
-  transaction_type_id: z.number().min(1, 'Transaction type is required'),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().nullable().optional()
-})
+  to_basket_id: z.number().min(1, "Target basket is required"),
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
+  transaction_type_id: z.number().min(1, "Transaction type is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+});
 
 export type AllocatePayload = z.infer<typeof AllocatePayloadSchema>
 
 // Spend Payload - branch basket to external
 export const SpendPayloadSchema = z.object({
-  from_basket_id: z.number().min(1, 'Source basket is required'),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
-  transaction_type_id: z.number().min(1, 'Transaction type is required'),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().nullable().optional()
-})
+  from_basket_id: z.number().min(1, "Source basket is required"),
+  amount: z.number().min(0.01, "Amount must be greater than 0"),
+  transaction_type_id: z.number().min(1, "Transaction type is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+});
 
 export type SpendPayload = z.infer<typeof SpendPayloadSchema>

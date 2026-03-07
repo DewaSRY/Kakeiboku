@@ -13,7 +13,7 @@
         :title="$t('transactions.title')"
         :description="$t('transactions.description')"
         :action-label="$t('transactions.createTransaction')"
-        action-icon="i-heroicons-plus"
+        action-icon="i-lucide-plus"
         @action="showCreateTransaction = true"
       />
 
@@ -21,7 +21,7 @@
         <DataTable
           :columns="columns"
           :data="transactions"
-          empty-icon="i-heroicons-document-text"
+          empty-icon="i-lucide-file-text"
           :empty-message="$t('transactions.noTransactions')"
         >
           <template #amount-data="{ row }">

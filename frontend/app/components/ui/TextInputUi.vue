@@ -9,9 +9,11 @@
       :model-value="modelValue"
       type="text"
       :placeholder="placeholder"
+      :name="name"
       :size="size"
       :icon="icon"
       :disabled="disabled"
+      :rows="rows"
       @update:model-value="$emit('update:modelValue', $event)"
       class="w-full"
     />
@@ -30,6 +32,7 @@ interface Props {
   size?: 'sm' | 'md' | 'lg' | 'xl'
   icon?: string
   help?: string
+  rows?: number
 }
 
 withDefaults(defineProps<Props>(), {
@@ -40,8 +43,9 @@ withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
   size: 'xl',
-  icon: 'i-heroicons-user',
+  icon: 'i-lucide-user',
   help: '',
+  rows: 3,
 })
 
 defineEmits<{

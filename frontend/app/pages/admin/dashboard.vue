@@ -1,34 +1,34 @@
 <template>
   <div>
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $t('admin.title') }}</h1>
-      <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $t('admin.subtitle') }}</p>
+    <div class="mb-8 animate-fade-in">
+      <h1 class="text-3xl font-extrabold text-gray-900 dark:text-white">{{ $t('admin.title') }}</h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1">{{ $t('admin.subtitle') }}</p>
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-5 mb-8 stagger-children">
       <DashboardStatCard
         :title="$t('admin.totalUsers')"
         :value="stats.totalUsers.toString()"
-        icon="i-heroicons-users"
+        icon="i-lucide-users"
         color="blue"
       />
       <DashboardStatCard
         :title="$t('admin.activeUsers')"
         :value="stats.activeUsers.toString()"
-        icon="i-heroicons-user-group"
+        icon="i-lucide-user-check"
         color="green"
       />
       <DashboardStatCard
         :title="$t('admin.totalTransactions')"
         :value="stats.totalTransactions.toString()"
-        icon="i-heroicons-arrow-path"
+        icon="i-lucide-arrow-left-right"
         color="amber"
       />
       <DashboardStatCard
         :title="$t('admin.totalVolume')"
         :value="formatCurrency(stats.totalVolume)"
-        icon="i-heroicons-banknotes"
+        icon="i-lucide-banknote"
         color="purple"
       />
     </div>

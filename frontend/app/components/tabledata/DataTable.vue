@@ -25,7 +25,7 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  emptyIcon: 'i-heroicons-document-text',
+  emptyIcon: 'i-lucide-file-text',
   emptyMessage: 'No data found.'
 })
 </script>

@@ -6,44 +6,40 @@
     class="space-y-4"
   >
     <div class="grid grid-cols-2 gap-4">
-      <UFormField :label="$t('auth.firstName')" name="first_name">
-        <UInput
-          v-model="formState.first_name"
-          :placeholder="$t('auth.firstNamePlaceholder')"
-          size="lg"
-        />
-      </UFormField>
+      <UiTextInputUi
+        v-model="formState.first_name"
+        :label="$t('auth.firstName')"
+        name="first_name"
+        :placeholder="$t('auth.firstNamePlaceholder')"
+        icon="i-lucide-user"
+      />
 
-      <UFormField :label="$t('auth.lastName')" name="last_name">
-        <UInput
-          v-model="formState.last_name"
-          :placeholder="$t('auth.lastNamePlaceholder')"
-          size="lg"
-        />
-      </UFormField>
+      <UiTextInputUi
+        v-model="formState.last_name"
+        :label="$t('auth.lastName')"
+        name="last_name"
+        :placeholder="$t('auth.lastNamePlaceholder')"
+        icon="i-lucide-user"
+      />
     </div>
 
-    <UFormField :label="$t('common.email')" name="email">
-      <UInput
-        v-model="formState.email"
-        type="email"
-        :placeholder="$t('auth.emailPlaceholder')"
-        size="lg"
-      />
-    </UFormField>
+    <UiEmailInputUi
+      v-model="formState.email"
+      :label="$t('common.email')"
+      name="email"
+      :placeholder="$t('auth.emailPlaceholder')"
+    />
 
-    <UFormField :label="$t('common.password')" name="password">
-      <UInput
-        v-model="formState.password"
-        type="password"
-        :placeholder="$t('auth.minPasswordLength')"
-        size="lg"
-      />
-    </UFormField>
+    <UiPasswordInputUi
+      v-model="formState.password"
+      :label="$t('common.password')"
+      name="password"
+      :placeholder="$t('auth.minPasswordLength')"
+    />
 
-    <UButton type="submit" color="primary" size="lg" block :loading="isLoading">
+    <UiSubmitButtonUi :loading="isLoading">
       {{ $t("auth.createAccount") }}
-    </UButton>
+    </UiSubmitButtonUi>
   </UForm>
 
   <UAlert

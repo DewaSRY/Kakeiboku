@@ -5,13 +5,13 @@
     :required="required"
     :help="help"
   >
-    <UInput
+    <UTextarea
       :model-value="modelValue"
-      type="email"
       :placeholder="placeholder"
+      :name="name"
       :size="size"
-      :icon="icon"
       :disabled="disabled"
+      :rows="rows"
       @update:model-value="$emit('update:modelValue', $event)"
       class="w-full"
     />
@@ -22,23 +22,25 @@
 interface Props {
   modelValue?: string
   label?: string
-  name: string
+  name?: string
   placeholder?: string
   required?: boolean
   disabled?: boolean
   size?: 'sm' | 'md' | 'lg' | 'xl'
-  icon?: string
   help?: string
+  rows?: number
 }
 
 withDefaults(defineProps<Props>(), {
-  label: 'Email',
-  placeholder: 'Enter your email',
+  modelValue: '',
+  label: 'Description',
+  name: 'description',
+  placeholder: 'Enter description',
   required: false,
   disabled: false,
   size: 'xl',
-  icon: 'i-heroicons-envelope',
   help: '',
+  rows: 4,
 })
 
 defineEmits<{

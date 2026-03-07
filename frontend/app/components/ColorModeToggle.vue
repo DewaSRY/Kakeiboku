@@ -1,6 +1,6 @@
 <template>
   <UButton
-    :icon="colorMode.value === 'dark' ? 'i-heroicons-sun' : 'i-heroicons-moon'"
+    :icon="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'"
     color="neutral"
     variant="ghost"
     @click="toggleColorMode"

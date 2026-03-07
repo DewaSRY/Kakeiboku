@@ -22,8 +22,10 @@
           {{ formatDate(row.original.created_at) }}
         </template>
         <template #empty-state>
-          <div class="flex flex-col items-center justify-center py-6 gap-3">
-            <UIcon name="i-heroicons-document-text" class="w-8 h-8 text-gray-400" />
+          <div class="flex flex-col items-center justify-center py-12 gap-3">
+            <div class="w-14 h-14 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center mb-1">
+              <UIcon name="i-lucide-file-text" class="w-7 h-7 text-gray-400" />
+            </div>
             <span class="text-sm text-gray-500">{{ $t('transactions.noTransactions') }}</span>
           </div>
         </template>

@@ -12,6 +12,6 @@ interface Props {
 }
 
 withDefaults(defineProps<Props>(), {
-  icon: 'i-heroicons-document-text'
+  icon: 'i-lucide-file-text'
 })
 </script>

@@ -6,7 +6,7 @@
         :class="transaction.amount >= 0 ? 'bg-green-100 dark:bg-green-900/30' : 'bg-red-100 dark:bg-red-900/30'"
       >
         <UIcon 
-          :name="transaction.amount >= 0 ? 'i-heroicons-arrow-down-left' : 'i-heroicons-arrow-up-right'" 
+          :name="transaction.amount >= 0 ? 'i-lucide-arrow-down-left' : 'i-lucide-arrow-up-right'" 
           class="w-5 h-5"
           :class="transaction.amount >= 0 ? 'text-green-500' : 'text-red-500'"
         />

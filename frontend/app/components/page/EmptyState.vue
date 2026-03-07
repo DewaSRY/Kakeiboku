@@ -14,7 +14,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  icon: 'i-heroicons-inbox',
+  icon: 'i-lucide-inbox',
   padding: 'md'
 })
 

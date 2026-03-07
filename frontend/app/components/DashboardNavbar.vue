@@ -17,7 +17,7 @@
         <UButton 
           color="neutral" 
           variant="ghost" 
-          icon="i-heroicons-bell"
+          icon="i-lucide-bell"
           class="relative"
         />
         
@@ -32,7 +32,7 @@
           >
             <UAvatar size="sm" :alt="userName" />
             <span class="hidden md:block">{{ userName }}</span>
-            <UIcon name="i-heroicons-chevron-down" class="w-4 h-4" />
+            <UIcon name="i-lucide-chevron-down" class="w-4 h-4" />
           </UButton>
         </UDropdownMenu>
       </div>
@@ -50,11 +50,11 @@ const userName = ref('User')
 
 const userMenuItems = computed(() => [
   [
-    { label: t('common.profile'), icon: 'i-heroicons-user', click: () => navigateTo('/user/profile') },
-    { label: t('common.settings'), icon: 'i-heroicons-cog-6-tooth', click: () => navigateTo('/user/settings') }
+    { label: t('common.profile'), icon: 'i-lucide-user', click: () => navigateTo('/user/profile') },
+    { label: t('common.settings'), icon: 'i-lucide-settings', click: () => navigateTo('/user/settings') }
   ],
   [
-    { label: t('common.signOut'), icon: 'i-heroicons-arrow-right-on-rectangle', click: () => authService.logout() }
+    { label: t('common.signOut'), icon: 'i-lucide-log-out', click: () => authService.logout() }
   ]
 ])
 </script>

@@ -1,11 +1,11 @@
 <template>
-  <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm dark:shadow-gray-900/50 p-6">
+  <div class="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 card-hover">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-gray-500 dark:text-gray-400">{{ title }}</p>
-        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mt-1">{{ value }}</h3>
+        <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">{{ title }}</p>
+        <h3 class="text-2xl font-extrabold text-gray-900 dark:text-white mt-2">{{ value }}</h3>
       </div>
-      <div class="w-12 h-12 rounded-lg flex items-center justify-center" :class="bgColorClass">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center" :class="bgColorClass">
         <UIcon :name="icon" class="w-6 h-6" :class="iconColorClass" />
       </div>
     </div>

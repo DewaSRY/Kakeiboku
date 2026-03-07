@@ -40,7 +40,7 @@ withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
   size: 'xl',
-  icon: 'i-heroicons-user',
+  icon: 'i-lucide-user',
   help: '',
 })
 

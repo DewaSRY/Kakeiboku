@@ -37,7 +37,7 @@ withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
   size: 'xl',
-  icon: 'i-heroicons-envelope',
+  icon: 'i-lucide-mail',
   help: '',
 })
 

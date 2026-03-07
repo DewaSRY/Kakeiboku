@@ -17,7 +17,7 @@
     >
       <template #trailing>
         <UButton
-          :icon="showPassword ? 'i-heroicons-eye-slash' : 'i-heroicons-eye'"
+          :icon="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
           variant="link"
           :padded="false"
           @click="togglePassword"
@@ -48,7 +48,7 @@ withDefaults(defineProps<Props>(), {
   required: false,
   disabled: false,
   size: 'xl',
-  icon: 'i-heroicons-lock-closed',
+  icon: 'i-lucide-lock',
   help: '',
 })
 
